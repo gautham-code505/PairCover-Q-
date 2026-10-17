@@ -1,6 +1,6 @@
 # Q-Rescue: Quantum-Assisted Predictive Emergency Resource Allocation
 
-[![Tests: Passing](https://img.shields.io/badge/pytest-53%20passed-brightgreen.svg)](tests/)
+[![Tests: Passing](https://img.shields.io/badge/pytest-75%20passed-brightgreen.svg)](tests/)
 [![Qiskit: 2.5.2](https://img.shields.io/badge/Qiskit-2.5.2-blue.svg)](https://qiskit.org/)
 [![Streamlit: 1.65.0](https://img.shields.io/badge/Streamlit-1.65.0-red.svg)](https://streamlit.io/)
 [![Python: 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/)
@@ -97,8 +97,8 @@ In keeping with scientific integrity, the following limitations are explicitly s
 ### Installation
 Clone the repository and install the verified dependencies:
 ```bash
-git clone https://github.com/Sibi7Antony/Q-Rescue.git
-cd Q-Rescue
+git clone https://github.com/gautham-code505/PairCover-Q-.git
+cd PairCover-Q-
 
 # Create and activate virtual environment
 python -m venv venv
@@ -127,7 +127,7 @@ This serves the interactive application at `http://localhost:8501`, organized in
 - **Methodology:** Dispatch cost formulation, separation of dispatch cost vs QUBO energy vs expected energy $\langle H \rangle$, inputs matrix, and explicit synthetic data / no quantum advantage disclosure.
 
 ### 2. Run the Regression and Integration Test Suite
-Run the 58 automated regression and integration tests covering the mathematical formulation, QAOA simulation, result adapter, geometry, and UI integration:
+Run the 75 automated regression and integration tests covering the mathematical formulation, QAOA simulation, result adapter, geometry, and UI integration:
 ```bash
 # Set PYTHONPATH to src and run pytest
 pytest tests/ -v -o pythonpath=src
