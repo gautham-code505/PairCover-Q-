@@ -78,6 +78,24 @@ The QAOA simulation was audited across three $p=1$ seeds and one $p=2$ execution
 
 ---
 
+## Round 2: Rolling Dispatch Simulation
+
+The Round 1 result (cost 13 vs 22) is a single snapshot. To test it over time, `src/qrescue/simulation/` replays a stream of synthetic calls through a 24 x 24 km region with 7 ambulances and compares four policies on identical call streams: closest-idle, a classical single-call coverage rule (Jagtenberg-style), batch assignment without coverage, and PairCover-Q solved exactly at every 2-minute decision epoch. The run uses 30 paired replications of 7 days at each of four loads, plus a held-out seed set.
+
+- With a small coverage weight (lambda = 5), PairCover-Q never did significantly worse than closest-idle on late arrivals or mean response, and it kept significantly more demand covered at every load.
+- At 5 calls/hour it cut mean response by 2.2 min and late arrivals by 1.8 points. Most of that comes from assigning simultaneous calls together, not from the coverage term.
+- Larger coverage weights (lambda >= 20) and the single-call coverage rule increased late arrivals.
+- Per-epoch QUBOs average 3-5 qubits (max 18), and the two-unit coverage term matched the true coverage loss in more than 99.9% of decisions.
+
+Full write-up, tables and figures: [reports/rolling_simulation/README.md](reports/rolling_simulation/README.md). All data is synthetic.
+
+```bash
+python scripts/run_rolling_simulation.py      # ~4 min; --quick for a smoke run
+python scripts/report_rolling_simulation.py   # figures + tables
+```
+
+---
+
 ## 4. Limitations & Absence of Quantum Advantage
 
 In keeping with scientific integrity, the following limitations are explicitly stated:
@@ -127,7 +145,7 @@ This serves the interactive application at `http://localhost:8501`, organized in
 - **Methodology:** Dispatch cost formulation, separation of dispatch cost vs QUBO energy vs expected energy $\langle H \rangle$, inputs matrix, and explicit synthetic data / no quantum advantage disclosure.
 
 ### 2. Run the Regression and Integration Test Suite
-Run the 58 automated regression and integration tests covering the mathematical formulation, QAOA simulation, result adapter, geometry, and UI integration:
+Run the 100 automated regression and integration tests covering the mathematical formulation, QAOA simulation, result adapter, geometry, and UI integration:
 ```bash
 # Set PYTHONPATH to src and run pytest
 pytest tests/ -v -o pythonpath=src
@@ -169,9 +187,12 @@ Q-Rescue/
 │   └── paircover_q_demo.ipynb          # Runnable demonstration notebook with saved outputs
 ├── reports/
 │   ├── experiment_results.md           # Full QAOA audit report with exact benchmark tables
+│   ├── rolling_simulation/             # Round 2 rolling simulation: README, tables, figures, results JSON
 │   └── Q Rescue quantum dispatch...md  # Initial research validation and literature review
 ├── scripts/
 │   ├── run_qaoa_scenario2.py           # QAOA simulation and multi-seed audit script
+│   ├── run_rolling_simulation.py       # Rolling dispatch simulation experiment (Round 2)
+│   ├── report_rolling_simulation.py    # Figures and tables for the rolling simulation
 │   └── generate_notebook.py            # Automated notebook generator and runner
 ├── src/
 │   └── qrescue/
@@ -180,6 +201,11 @@ Q-Rescue/
 │       │   ├── scenario2.py            # 6-qubit PairCover-Q scenario implementation
 │       │   ├── qubo.py                 # QUBO energy evaluation
 │       │   └── brute_force.py          # Classical enumeration solver
+│       ├── simulation/
+│       │   ├── region.py               # Synthetic region, stations, hospitals, call stream
+│       │   ├── engine.py               # Rolling simulation loop and metrics
+│       │   ├── policies.py             # Closest-idle, coverage-single, batch, PairCover-Q
+│       │   └── paircover.py            # Per-epoch model, exact solver, epoch QUBO
 │       ├── quantum/
 │       │   └── ising.py                # QUBO-to-Ising mapping and Pauli operators
 │       └── validation/
@@ -189,6 +215,7 @@ Q-Rescue/
     ├── test_quantum.py                 # Basis-state ordering & QAOA smoke tests (2 tests)
     ├── test_qubo.py                    # 5-qubit QUBO and Ising equivalence tests (5 tests)
     ├── test_scenario2.py               # 6-qubit PairCover-Q exhaustive benchmark tests (10 tests)
+    ├── test_simulation.py              # Rolling simulation, epoch QUBO and policy tests (25 tests)
     ├── test_ui_components_smoke.py     # UI components and view smoke tests (5 tests)
     └── test_ui_helpers.py              # Pure presentation helper tests (18 tests)
 ```
