@@ -146,6 +146,7 @@ _CSS = f"""
   --amber: light-dark(#A15C00, #F5B946);
   --violet: light-dark(#6D4AD6, #B69CFF);
   --accent: var(--blue);
+  --display: 'Barlow Semi Condensed', 'Arial Narrow', 'IBM Plex Sans', sans-serif;
   --on-accent: light-dark(#FFFFFF, #06223F);
 }}
 .stApp {{
@@ -190,12 +191,14 @@ _CSS = f"""
   margin: 16px 0 6px 0;
 }}
 header[data-testid="stHeader"] {{
-  background: transparent !important;
-  height: 2.875rem !important;
+  background: color-mix(in srgb, var(--bg) 88%, transparent) !important;
+  backdrop-filter: saturate(140%) blur(8px);
+  border-bottom: 1px solid var(--divider);
   z-index: 99 !important;
 }}
+[data-testid="stDecoration"], [data-testid="stStatusWidget"] {{ display:none !important; }}
 .block-container {{
-  padding-top: 4.25rem !important;
+  padding-top: 4.6rem !important;
   padding-bottom: 2.5rem !important;
   max-width: 1360px !important;
 }}
@@ -486,6 +489,91 @@ td.num, th.num {{ text-align:right; font-variant-numeric:tabular-nums; white-spa
 .ckey {{ display:flex; flex-wrap:wrap; gap:4px 16px; font-size:.8rem; color:var(--muted); margin:-4px 0 12px; }}
 .ckey span {{ display:inline-flex; align-items:center; gap:6px; }}
 .ckey i {{ width:10px; height:10px; border-radius:50%; display:inline-block; }}
+/* ---------- App shell ---------- */
+.page-head {{ display:flex; flex-direction:column; gap:2px; }}
+.page-eyebrow {{ font-size:.72rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }}
+h1.page-title {{ font-family:var(--display); font-weight:600; font-size:2.05rem; line-height:1.05; letter-spacing:.005em; margin:0; padding:0; color:var(--text); }}
+.page-sub {{ color:var(--muted); font-size:.95rem; margin:2px 0 0; max-width:70ch; }}
+.theme-switch.compact {{ margin:0; padding:2px; width:max-content; margin-left:auto; }}
+.theme-switch.compact a {{ padding:3px 11px; font-size:.95rem; }}
+
+/* ---------- Home ---------- */
+.hero-eyebrow {{ font-size:.74rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin:.4rem 0 .9rem; }}
+.hero-title {{ font-family:var(--display); font-weight:600; font-size:clamp(2.4rem, 4.6vw, 3.9rem); line-height:.98; letter-spacing:-.005em; margin:0 0 1rem; color:var(--text); text-wrap:balance; }}
+.hero-title em {{ font-style:normal; color:var(--teal); }}
+.hero-title b {{ font-weight:600; color:var(--red); }}
+.hero-lede {{ font-size:1.06rem; line-height:1.6; color:var(--muted); max-width:56ch; margin:0 0 1.3rem; }}
+.hero-lede strong {{ color:var(--text); font-weight:600; }}
+.trust {{ display:flex; flex-wrap:wrap; gap:6px 18px; font-size:.82rem; color:var(--muted); margin-top:.9rem; }}
+.trust span::before {{ content:"✓"; color:var(--teal); font-weight:700; margin-right:6px; }}
+
+/* The decision film: the real coverage-demo layout replaying both decisions. */
+.film {{ background:var(--surface); border:1px solid var(--divider); border-radius:14px; padding:12px 12px 6px; box-shadow:0 10px 30px var(--shadow); }}
+.film-head {{ display:flex; justify-content:space-between; align-items:center; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); padding:2px 4px 6px; }}
+.film-head .rec {{ display:inline-flex; align-items:center; gap:6px; color:var(--red); font-weight:700; }}
+.film-head .rec::before {{ content:""; width:7px; height:7px; border-radius:50%; background:var(--red); animation:statusPulse 1.6s infinite; }}
+.film svg {{ width:100%; height:auto; display:block; }}
+.film .fgrid {{ stroke:var(--divider); stroke-width:1; opacity:.6; }}
+.film .unit rect {{ fill:var(--surface); stroke:var(--text); stroke-width:1.6; }}
+.film .unit text, .film .callm text {{ font-family:var(--display); font-weight:600; font-size:15px; fill:var(--text); text-anchor:middle; }}
+.film .callm circle.core {{ fill:var(--surface); stroke:var(--red); stroke-width:2.4; }}
+.film .callm circle.ring {{ fill:none; stroke:var(--red); stroke-width:1.5; animation:pulseCall 2.2s ease-in-out infinite; transform-box:fill-box; }}
+.film .route {{ fill:none; stroke-width:4; stroke-linecap:round; stroke-dasharray:240; stroke-dashoffset:240; }}
+.film .scene {{ opacity:0; }}
+.film .scene.a {{ animation:sceneA 12s infinite; }}
+.film .scene.b {{ animation:sceneB 12s infinite; }}
+.film .scene.a .route {{ stroke:var(--amber); animation:draw 12s infinite; }}
+.film .scene.b .route {{ stroke:var(--blue); animation:drawB 12s infinite; }}
+.film .pair {{ stroke-width:46; stroke-linecap:round; fill:none; }}
+.film .scene.a .pair {{ stroke:color-mix(in srgb, var(--red) 26%, transparent); }}
+.film .scene.b .pair {{ stroke:color-mix(in srgb, var(--teal) 26%, transparent); }}
+.film .verdict {{ font-family:var(--display); font-weight:600; font-size:19px; }}
+.film .scene.a .verdict {{ fill:var(--amber); }} .film .scene.b .verdict {{ fill:var(--teal); }}
+.film .small {{ font-size:12.5px; fill:var(--muted); }}
+.film .held {{ font-size:12px; font-weight:700; fill:var(--teal); text-anchor:middle; }}
+.film .lost {{ font-size:12px; font-weight:700; fill:var(--red); text-anchor:middle; }}
+@keyframes sceneA {{ 0%,2% {{opacity:0}} 6%,44% {{opacity:1}} 49%,100% {{opacity:0}} }}
+@keyframes sceneB {{ 0%,50% {{opacity:0}} 54%,94% {{opacity:1}} 99%,100% {{opacity:0}} }}
+@keyframes draw {{ 0%,6% {{stroke-dashoffset:240}} 20%,100% {{stroke-dashoffset:0}} }}
+@keyframes drawB {{ 0%,54% {{stroke-dashoffset:240}} 68%,100% {{stroke-dashoffset:0}} }}
+.film-foot {{ display:flex; gap:10px; justify-content:space-between; font-size:.8rem; color:var(--muted); padding:6px 4px 4px; border-top:1px solid var(--divider); margin-top:4px; }}
+@media (prefers-reduced-motion: reduce) {{
+  .film .scene.a {{ animation:none; opacity:0; }}
+  .film .scene.b {{ animation:none; opacity:1; }}
+  .film .route {{ animation:none !important; stroke-dashoffset:0; }}
+  .film .callm circle.ring, .film-head .rec::before {{ animation:none; }}
+}}
+
+.section-label {{ font-size:.74rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin:2.2rem 0 .8rem; display:flex; align-items:center; gap:12px; }}
+.section-label::after {{ content:""; flex:1; height:1px; background:var(--divider); }}
+.how {{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; }}
+.how > div {{ background:var(--surface); border:1px solid var(--divider); border-radius:12px; padding:16px 18px; position:relative; overflow:hidden; }}
+.how .n {{ font-family:var(--display); font-weight:600; font-size:2.6rem; line-height:1; color:color-mix(in srgb, var(--accent) 22%, transparent); position:absolute; right:14px; top:8px; }}
+.how h3 {{ font-family:var(--display); font-weight:600; font-size:1.25rem; margin:0 0 6px; color:var(--text); }}
+.how p {{ font-size:.9rem; line-height:1.5; color:var(--muted); margin:0; }}
+.how .chip {{ display:inline-block; font-size:.72rem; font-weight:700; padding:2px 8px; border-radius:999px; margin-bottom:10px; }}
+.proof {{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; }}
+.proof > div {{ border-top:3px solid var(--accent); background:var(--surface); border-radius:0 0 12px 12px; padding:14px 18px 16px;
+  border-left:1px solid var(--divider); border-right:1px solid var(--divider); border-bottom:1px solid var(--divider); }}
+.proof > div.q {{ border-top-color:var(--violet); }} .proof > div.g {{ border-top-color:var(--teal); }}
+.proof .big {{ font-family:var(--display); font-weight:600; font-size:2.6rem; line-height:1; color:var(--text); font-variant-numeric:tabular-nums; }}
+.proof .big small {{ font-size:1.1rem; color:var(--muted); font-weight:500; }}
+.proof p {{ font-size:.88rem; line-height:1.5; color:var(--muted); margin:8px 0 6px; }}
+.proof .src {{ font-size:.75rem; color:var(--muted); }}
+.proof .src a {{ color:var(--accent); }}
+.honest {{ display:grid; grid-template-columns:auto 1fr; gap:4px 16px; align-items:start; background:color-mix(in srgb, var(--amber) 8%, var(--surface));
+  border:1px solid color-mix(in srgb, var(--amber) 30%, transparent); border-radius:12px; padding:14px 18px; margin-top:2rem; }}
+.honest b {{ font-family:var(--display); font-size:1.15rem; font-weight:600; color:var(--text); grid-row:span 2; }}
+.honest span {{ font-size:.9rem; color:var(--muted); line-height:1.5; }}
+.foot {{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; margin-top:2.4rem; padding-top:14px; border-top:1px solid var(--divider); font-size:.8rem; color:var(--muted); }}
+.foot a {{ color:var(--accent); }}
+@media (max-width: 900px) {{ .how, .proof {{ grid-template-columns:1fr; }} }}
+
+/* Evidence page */
+.ev-card {{ background:var(--surface); border:1px solid var(--divider); border-radius:12px; padding:16px 18px; }}
+.ev-card h3 {{ font-family:var(--display); font-weight:600; font-size:1.35rem; margin:0 0 4px; }}
+.ev-card ul {{ margin:.4rem 0 0 1.1rem; padding:0; color:var(--muted); font-size:.92rem; line-height:1.55; }}
+.ev-card li b {{ color:var(--text); }}
 </style>
 """
 
@@ -819,6 +907,7 @@ def render_dispatch_console(
         st.markdown(f'<div class="status-line {tone}">{sentence}</div>', unsafe_allow_html=True)
 
     # 2. Executive Decision Summary Card (Judge-Friendly Results Presentation)
+    summary_html = ""
     if r and r.get("feasible"):
         total_obj = float(r.get("objective_value", 0.0))
         resp_cost = float(r.get("weighted_response_cost", 0.0))
@@ -907,7 +996,7 @@ def render_dispatch_console(
             baseline_str = "—"
             tradeoff_html = ""
 
-        st.markdown(
+        summary_html = (
             f'<div class="top-summary-card">'
             f'<div class="top-summary-head">'
             f'<div><b>Method shown: {H.display_method(r["method"])}</b> {prov_badge}</div>'
@@ -922,8 +1011,7 @@ def render_dispatch_console(
             f'<div class="top-kpi-box"><div class="lbl">vs Baseline</div><div class="val" style="font-size:1.05rem;color:var(--teal);">{baseline_str}</div><div class="sub">Objective Delta</div></div>'
             f'</div>'
             f'{tradeoff_html}'
-            f'</div>',
-            unsafe_allow_html=True
+            f'</div>'
         )
 
     # 2. Main 3 columns
@@ -1122,6 +1210,10 @@ def render_dispatch_console(
                     f'</div>'
                 )
                 st.markdown(card_html, unsafe_allow_html=True)
+
+    # Cost breakdown sits under the map and decision, so those stay on the first screen.
+    if summary_html:
+        st.markdown(summary_html, unsafe_allow_html=True)
 
     # 3. Why it changed delta statement
     if len(scen_runs) >= 2 and r and r.get("feasible"):
