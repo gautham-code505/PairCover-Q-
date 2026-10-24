@@ -838,10 +838,13 @@ def status_sentence(result: Mapping[str, Any] | None, scenario: Mapping[str, Any
     parts = [f'<span class="k">{name}</span> sent {sent}']
     if held:
         parts.append(f"kept {', '.join(held)} in reserve")
+    cov = as_float(result.get("coverage_penalty")) or 0.0
     if broken:
         parts.append(f"both backup partners {', '.join(broken)} left, so their area lost its backup")
-    elif pairs:
-        parts.append("every backup pair still has a unit at home")
+    elif cov > 0:
+        parts.append(f"this leaves part of the area with no ambulance nearby (coverage penalty {fmt_num(cov, 1)})")
+    elif pairs or (scenario.get("coverage") or {}).get("single"):
+        parts.append("every area keeps an ambulance nearby")
     if unserved:
         parts.append(f"{', '.join(unserved)} went unserved")
     text = "; ".join(parts) + f". Total cost <b>{cost}</b>."
@@ -850,4 +853,4 @@ def status_sentence(result: Mapping[str, Any] | None, scenario: Mapping[str, Any
         if hits is not None and shots:
             text += f" QAOA saw this plan in {hits} of {shots:,} shots."
         return "quantum", text
-    return ("warn" if broken else "ok"), text
+    return ("warn" if broken or cov > 0 else "ok"), text
