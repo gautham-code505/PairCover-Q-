@@ -96,7 +96,7 @@ class PairCoverStats:
     multi_call: int = 0             # ... with two or more non-P1 calls at once
     differs_from_greedy: int = 0    # batch choice differed from closest-idle on the same state
     model_loss_mismatch: int = 0    # pairwise model loss != true coverage loss of the choice
-    qubits: list = field(default_factory=list)   # (units x calls) per decision
+    qubits: list = field(default_factory=list)   # QUBO variables (eligible unit-call pairs) per decision
     truncated: int = 0              # epochs where more than max_calls calls were pending
     eligibility_fallback: int = 0   # epochs where a unit beyond the threshold had to be used
 
@@ -110,10 +110,15 @@ class PairCover:
     lam = 0 gives the coverage-free batch optimum, isolating what batching alone buys.
     """
 
-    def __init__(self, lam: float = 20.0, tau: float = 20.0, allow_deferral: bool = False, max_calls: int = 6):
+    def __init__(self, lam: float = 20.0, tau: float = 20.0, allow_deferral: bool = False, max_calls: int = 6,
+                 solver=None, recorder=None):
         self.lam, self.tau, self.allow_deferral, self.max_calls = lam, tau, allow_deferral, max_calls
         self.name = "paircover-q" if lam > 0 else "batch-no-coverage"
         self.stats = PairCoverStats()
+        # solver(model, allow_deferral) -> (assignment, cost); defaults to exact enumeration.
+        # recorder(model, assignment) is called after every decision (used to harvest QUBO instances).
+        self.solver = solver or solve_exact
+        self.recorder = recorder
 
     def __call__(self, state: DispatchState) -> list:
         free, out = set(range(len(state.idle))), []
@@ -137,12 +142,14 @@ class PairCover:
         wait = [state.t - state.calls[j].t for j in rest]
         model = build_model(sub_travel, weight, wait, sub_covers, state.zone_rate, self.lam, self.tau,
                             max_travel=state.cover_minutes)
-        assignment, _ = solve_exact(model, self.allow_deferral)
+        assignment, _ = self.solver(model, self.allow_deferral)
+        if self.recorder is not None:
+            self.recorder(model, assignment)
 
         st = self.stats
         st.decisions += 1
         st.multi_call += len(rest) >= 2
-        st.qubits.append(len(units) * len(rest))
+        st.qubits.append(int(model.eligible.sum()) if model.eligible is not None else model.n_units * model.n_calls)
         greedy = set(_greedy_pairs(sub_travel, [state.calls[j] for j in rest]))
         st.differs_from_greedy += set(assignment) != greedy
         st.eligibility_fallback += not all(model.is_eligible(u, k) for u, k in assignment)

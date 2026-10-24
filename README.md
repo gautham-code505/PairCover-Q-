@@ -85,7 +85,7 @@ The Round 1 result (cost 13 vs 22) is a single snapshot. To test it over time, `
 - With a small coverage weight (lambda = 5), PairCover-Q never did significantly worse than closest-idle on late arrivals or mean response, and it kept significantly more demand covered at every load.
 - At 5 calls/hour it cut mean response by 2.2 min and late arrivals by 1.8 points. Most of that comes from assigning simultaneous calls together, not from the coverage term.
 - Larger coverage weights (lambda >= 20) and the single-call coverage rule increased late arrivals.
-- Per-epoch QUBOs average 3-5 qubits (max 18), and the two-unit coverage term matched the true coverage loss in more than 99.9% of decisions.
+- Per-epoch QUBOs are small (mean about 2 qubits, max 8-12 under heavy load), and the two-unit coverage term matched the true coverage loss in more than 99.9% of decisions.
 
 Full write-up, tables and figures: [reports/rolling_simulation/README.md](reports/rolling_simulation/README.md). All data is synthetic.
 

@@ -54,12 +54,12 @@ All numbers are paired differences against closest-idle with 95% confidence inte
 
 5. **P1 calls are protected.** No coverage-aware policy significantly slowed P1 responses at any load.
 
-6. **The pairwise QUBO is the right model size.**
+6. **The pairwise model is nearly exact, and the per-epoch QUBOs are small.**
    - The two-unit coverage term disagreed with the true coverage loss in at most 9 of about 18,000 decisions per load (under 0.1%).
-   - Per-epoch problems average 3–5 qubits, with a 95th percentile of 6–7 and a maximum of 18.
+   - Counting only eligible ambulance–call pairs (one qubit each), per-epoch QUBOs average 1.6–2.1 qubits. The 95th percentile is 3–5 and the maximum is 8–12, reached only under heavy load.
    - PairCover-Q's choice differed from greedy in 3–13% of decisions, rising with load.
 
-   So running QAOA inside the simulation loop is realistic on a simulator for typical epochs. That is item 2 of the roadmap.
+   So in normal operation the quantum subproblem is tiny. Problems of 8 qubits or more appear only when several calls arrive together, which is why the QAOA benchmark (item 2) adds a separate family of multi-incident surge instances.
 
 ## What we can and cannot claim
 
