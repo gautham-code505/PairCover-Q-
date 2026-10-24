@@ -17,7 +17,7 @@ import sys
 import pytest
 
 _ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-for _p in (_ROOT, os.path.join(_ROOT, "src")):
+for _p in (_ROOT, os.path.join(_ROOT, "src"), os.path.join(_ROOT, "app")):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
@@ -67,11 +67,11 @@ def test_console_starts_with_no_decision(app: AppTest) -> None:
 
 def test_console_shows_the_run_that_just_executed(app: AppTest) -> None:
     shown = _run(app, "Nearest available")
-    assert "Greedy" in shown["card"] and "Greedy" in shown["zone"]
+    assert "Nearest available" in shown["card"] and "Nearest available" in shown["zone"]
     assert float(shown["cost"]) == 22.0
 
     shown = _run(app, "Exact optimisation")
-    assert "Exact" in shown["card"] and "Exact" in shown["zone"]
+    assert "Exact optimisation" in shown["card"] and "Exact optimisation" in shown["zone"]
     assert float(shown["cost"]) == 13.0
 
 
@@ -80,10 +80,10 @@ def test_new_run_wins_over_an_earlier_run_picker_choice(app: AppTest) -> None:
     _run(app, "Exact optimisation")
     picker = next(s for s in app.selectbox if s.key == "dc_select_run")
     picker.set_value(0).run()
-    assert "Greedy" in _console(app)["card"]
+    assert "Nearest available" in _console(app)["card"]
 
     shown = _run(app, "Exact optimisation")
-    assert "Exact" in shown["card"]
+    assert "Exact optimisation" in shown["card"]
     assert float(shown["cost"]) == 13.0
 
 
@@ -137,3 +137,75 @@ def test_statevector_figures_do_not_depend_on_shot_count() -> None:
         for sampled, exact in ((exp["sampled_opt_prob"], exp["sv_opt_prob"]), (exp["feasibility_rate"], exp["sv_feas_rate"])):
             assert abs(sampled - exact) < 5 * math.sqrt(exact * (1 - exact) / n)
         assert exp["optimum_hits"] == exp["counts"].get(exp["optimal_bitstring"], 0)
+
+
+def _main_text(at: AppTest) -> str:
+    return " ".join(m.value for m in at.markdown) + " ".join(c.value for c in at.caption)
+
+
+def test_main_menu_still_works_after_opening_a_diagnostic_tool(app: AppTest) -> None:
+    app.radio(key="adv_tool_pick").set_value("Overview").run()
+    app.radio(key="main_view").set_value(app.radio(key="main_view").options[1]).run()
+    assert not app.exception
+    assert app.radio(key="adv_tool_pick").value == "(None - Main Console)"
+    assert "QAOA Circuit" in _main_text(app)
+
+
+def test_scenario_builder_run_button_runs_the_ticked_methods(app: AppTest) -> None:
+    app.radio(key="adv_tool_pick").set_value("Scenario Builder").run()
+    next(b for b in app.button if "Run selected" in (b.label or "")).click().run()
+    assert not app.exception
+    assert len(app.session_state["pq_results"]) >= 1
+
+
+def test_guided_compare_runs_both_and_explains_the_change(app: AppTest) -> None:
+    app.button(key="dc_guided").click().run()
+    assert not app.exception
+    shown = _console(app)
+    assert "Exact optimisation" in shown["card"] and float(shown["cost"]) == 13.0
+    text = _main_text(app)
+    assert "Why it changed" in text and "22" in text
+
+
+def test_no_scenario_two_figures_leak_into_scenario_one(app: AppTest) -> None:
+    app.selectbox(key="hdr_scen_sel").set_value("Validation case · 5 qubits (Scenario 1)").run()
+    app.radio(key="dc_m_choice").set_value("QAOA").run()
+    app.button(key="dc_run_btn").click().run()
+    text = _main_text(app)
+    assert "6 qubits" not in text and "5 qubits" in text
+    assert "Matches optimum (62)" in text          # 62 is scenario 1's enumerated optimum
+    app.radio(key="main_view").set_value(app.radio(key="main_view").options[2]).run()
+    text = _main_text(app)
+    assert "68 / 1,000" not in text and "6.47%" not in text
+
+
+def test_exact_alone_does_not_quote_a_nearest_available_result_that_never_ran(app: AppTest) -> None:
+    _run(app, "Exact optimisation")
+    text = _main_text(app)
+    assert "Run Nearest available to compare" in text
+    assert "22.0" not in text
+
+
+def test_status_sentence_describes_only_what_the_result_did() -> None:
+    import ui_helpers as H  # noqa: E402  (app/ is on sys.path via the app import above)
+    scen = ra.get_scenario("scenario_2")
+    tone, text = H.status_sentence(None, scen)
+    assert tone == "idle" and "No decision yet" in text
+    tone, text = H.status_sentence(ra.run_greedy("scenario_2"), scen)
+    assert tone == "warn" and "A1+A2 left" in text and "<b>22</b>" in text
+    tone, text = H.status_sentence(ra.run_exact("scenario_2"), scen)
+    assert tone == "ok" and "kept A2 in reserve" in text and "<b>13</b>" in text
+
+
+def test_workflow_steps_follow_progress() -> None:
+    import ui_helpers as H
+    assert [s for _, s in H.workflow_steps(0, False)] == ["done", "now", "todo", "todo"]
+    assert [s for _, s in H.workflow_steps(1, False)] == ["done", "done", "done", "now"]
+    assert all(s == "done" for _, s in H.workflow_steps(2, True))
+
+
+def test_theme_config_defines_both_modes() -> None:
+    import tomllib
+    with open(os.path.join(_ROOT, ".streamlit", "config.toml"), "rb") as fh:
+        theme = tomllib.load(fh)["theme"]
+    assert {"light", "dark"} <= set(theme)  # both needed for the Light/Dark switch

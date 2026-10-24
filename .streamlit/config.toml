@@ -1,8 +1,53 @@
-# Dark base theme so native Streamlit widgets match app/ui_components.py.
-# Streamlit reads this from the directory you run `streamlit run` in (project root).
+# PairCover-Q theme. Both modes are defined, so viewers can pick Light or Dark
+# (the app's sidebar switch, or Settings in the ⋮ menu). Custom CSS in
+# app/ui_components.py follows whichever mode is active through CSS light-dark().
+#
+# Colour meanings are the same in both modes:
+#   red    = emergency call          blue   = ambulance dispatched / main action
+#   green  = held in reserve, backup kept, valid
+#   amber  = coverage at risk        violet = anything quantum
+
 [theme]
-base = "dark"
-primaryColor = "#2DD4BF"
-backgroundColor = "#0B1220"
-secondaryBackgroundColor = "#121B2D"
-textColor = "#E6EDF7"
+baseRadius = "8px"
+buttonRadius = "8px"
+showWidgetBorder = true
+showSidebarBorder = true
+baseFontSize = 15
+font = "'IBM Plex Sans':https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+codeFont = "'IBM Plex Mono':https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap"
+
+[theme.light]
+primaryColor = "#0B63C4"
+backgroundColor = "#F4F6F9"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#14202E"
+borderColor = "#CBD4E0"
+redColor = "#C62828"
+orangeColor = "#A15C00"
+greenColor = "#16803C"
+blueColor = "#0B63C4"
+violetColor = "#6D4AD6"
+dataframeBorderColor = "#D8DFE8"
+chartCategoricalColors = ["#0B63C4", "#16803C", "#6D4AD6", "#C62828", "#A15C00", "#55657A"]
+
+[theme.dark]
+primaryColor = "#4C9BF0"
+backgroundColor = "#0D131B"
+secondaryBackgroundColor = "#161F2B"
+textColor = "#E6EDF5"
+borderColor = "#2E3C4F"
+redColor = "#FF6B6B"
+orangeColor = "#F5B946"
+greenColor = "#3DDC97"
+blueColor = "#5AA9FF"
+violetColor = "#B69CFF"
+dataframeBorderColor = "#2E3C4F"
+chartCategoricalColors = ["#5AA9FF", "#3DDC97", "#B69CFF", "#FF6B6B", "#F5B946", "#9AA9BC"]
+
+[theme.light.sidebar]
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F4F6F9"
+
+[theme.dark.sidebar]
+backgroundColor = "#0A1017"
+secondaryBackgroundColor = "#161F2B"
