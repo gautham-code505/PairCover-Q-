@@ -45,7 +45,7 @@ pages = {
     ],
     "Quantum": [
         st.Page(shell.PAGES["lab"], title="Quantum Lab", icon=":material/memory:"),
-        st.Page(shell.PAGES["results"], title="Results & benchmarks", icon=":material/leaderboard:"),
+        st.Page(shell.PAGES["results"], title="Compare runs", icon=":material/leaderboard:"),
     ],
     "About": [
         st.Page(shell.PAGES["evidence"], title="Evidence", icon=":material/insights:"),

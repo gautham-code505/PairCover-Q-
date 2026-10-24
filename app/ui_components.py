@@ -536,7 +536,18 @@ h1.page-title {{ font-family:var(--display); font-weight:600; font-size:2.05rem;
 @keyframes sceneB {{ 0%,50% {{opacity:0}} 54%,94% {{opacity:1}} 99%,100% {{opacity:0}} }}
 @keyframes draw {{ 0%,6% {{stroke-dashoffset:240}} 20%,100% {{stroke-dashoffset:0}} }}
 @keyframes drawB {{ 0%,54% {{stroke-dashoffset:240}} 68%,100% {{stroke-dashoffset:0}} }}
-.film-foot {{ display:flex; gap:10px; justify-content:space-between; font-size:.8rem; color:var(--muted); padding:6px 4px 4px; border-top:1px solid var(--divider); margin-top:4px; }}
+.film {{ position:relative; }}
+.film-toggle {{ position:absolute; opacity:0; width:1px; height:1px; pointer-events:none; }}
+.film-btn {{ cursor:pointer; font-size:.72rem; font-weight:700; letter-spacing:.06em; color:var(--text); border:1px solid var(--divider);
+  border-radius:999px; padding:2px 10px; margin-left:8px; background:var(--surface2); }}
+.film-btn::after {{ content:"❚❚ Pause"; }}
+.film-toggle:checked ~ .film-head .film-btn::after {{ content:"▶ Play"; }}
+.film-toggle:focus-visible ~ .film-head .film-btn {{ outline:2px solid var(--accent); outline-offset:2px; }}
+.film-toggle:checked ~ svg, .film-toggle:checked ~ svg *, .film-toggle:checked ~ .film-head * {{ animation-play-state:paused !important; }}
+.film-foot {{ display:flex; gap:10px; justify-content:space-between; flex-wrap:wrap; font-size:.82rem; color:var(--text); padding:7px 4px 2px; border-top:1px solid var(--divider); margin-top:4px; }}
+.film-foot b {{ font-weight:700; }}
+.film-note {{ font-size:.76rem; color:var(--muted); padding:2px 4px 4px; }}
+@media (prefers-reduced-motion: reduce) {{ .film-btn {{ display:none; }} }}
 @media (prefers-reduced-motion: reduce) {{
   .film .scene.a {{ animation:none; opacity:0; }}
   .film .scene.b {{ animation:none; opacity:1; }}
@@ -873,7 +884,7 @@ def render_dispatch_console(
         f'<span><b>{len(calls)}</b>open calls</span>'
         f'<span><b>{len(ambulances)}</b>available units</span>'
         f'<span><b>{len(pairs)}</b>backup pair ({pair_str})</span>'
-        f'<span><b>{cost_str}</b>latest dispatch cost</span>'
+        f'<span><b>{cost_str}</b>dispatch cost of the plan shown</span>'
         f'</div>',
         unsafe_allow_html=True
     )
@@ -1003,7 +1014,7 @@ def render_dispatch_console(
             f'<div style="font-size:0.8rem;color:var(--muted);">{r.get("experiment", {}).get("timestamp", "Session Run")}</div>'
             f'</div>'
             f'<div class="top-summary-kpis">'
-            f'<div class="top-kpi-box"><div class="lbl">Total Objective</div><div class="val hi">{total_obj:.1f}</div><div class="sub">Response + Penalty</div></div>'
+            f'<div class="top-kpi-box"><div class="lbl">Dispatch cost</div><div class="val hi">{total_obj:.1f}</div><div class="sub">Response + coverage penalty</div></div>'
             f'<div class="top-kpi-box"><div class="lbl">Weighted Response</div><div class="val">{resp_cost:.1f}</div><div class="sub">Travel + Unserved</div></div>'
             f'<div class="top-kpi-box"><div class="lbl">Coverage Penalty</div><div class="val {"warn" if cov_cost > 0 else ""}">{cov_cost:.1f}</div><div class="sub">{"Backup Broken" if cov_cost > 0 else "Backup Preserved"}</div></div>'
             f'<div class="top-kpi-box"><div class="lbl">Calls Served</div><div class="val">{served_str}</div><div class="sub">{"100% Demand Met" if unserved_count == 0 else f"{unserved_count} Unserved"}</div></div>'
@@ -1103,7 +1114,7 @@ def render_dispatch_console(
             st.caption(f"Simulated response zone (synthetic mathematical topology). Euclidean distance equals travel time in minutes. Not a real GPS map or live road network. {extra_note}")
 
     with c_decide:
-        st.markdown('<div class="pc-header" style="padding-bottom:4px;margin-bottom:8px;"><span class="pc-eyebrow">Decision Method</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="pc-header" style="padding-bottom:4px;margin-bottom:8px;"><span class="pc-eyebrow">Run a method</span></div>', unsafe_allow_html=True)
         m_choice = st.radio(
             "Select solver",
             ["Nearest available", "Exact optimisation", "QAOA"],
@@ -1198,7 +1209,7 @@ def render_dispatch_console(
                 card_html = (
                     f'<div class="res">'
                     f'<div><div class="row"><b>{H.display_method(r["method"])}</b><span class="badge ok">✓ feasible · validated</span></div>{asg_rows}{unserved_rows}</div>'
-                    f'<div><div class="row"><span>Dispatch cost</span><span class="total">{H.fmt_num(total_obj, 1)}</span></div>'
+                    f'<div><div class="row"><span>Dispatch cost (response + coverage)</span><span class="total">{H.fmt_num(total_obj, 1)}</span></div>'
                     f'<div class="stack"><i style="width:{resp_pct:.1f}%;"></i><i class="cv" style="width:{cov_pct:.1f}%;"></i></div>'
                     f'<div class="row"><span>Weighted response</span><span class="num">{H.fmt_num(resp_cost, 1)}</span></div>'
                     f'<div class="row"><span>Coverage penalty</span><span class="num">{H.fmt_num(cov_cost, 1)}</span></div>'
@@ -1302,7 +1313,7 @@ def render_results_and_benchmarks(
 
     st.markdown(
         f'<div class="pc-header">'
-        f'<div><span class="pc-eyebrow">Results & Benchmarks</span><h2 class="pc-title">{scenario.get("name", "Scenario")}</h2></div>'
+        f'<div><span class="pc-eyebrow">Scenario</span><h2 class="pc-title">{scenario.get("name", "Scenario")}</h2></div>'
         f'</div>',
         unsafe_allow_html=True
     )

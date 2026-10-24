@@ -102,7 +102,7 @@ def on_compare(method_names: list[str], params: dict[str, Any] | None = None) ->
 # Page header
 # --------------------------------------------------------------------------- #
 
-def _theme_switch() -> str:
+def theme_switch_html() -> str:
     mode = ui.theme_mode()
     links = "".join(
         f"<a href='{href}' target='_self' class='{'on' if mode == key else ''}' "
@@ -137,7 +137,7 @@ def page_header(title: str, subtitle: str, *, scenario_picker: bool = False, eye
                 st.rerun()
     with right:
         c1, c2 = st.columns([1.2, 1], vertical_alignment="center")
-        c1.markdown(_theme_switch(), unsafe_allow_html=True)
+        c1.markdown(theme_switch_html(), unsafe_allow_html=True)
         with c2.popover("⚙", help="Settings"):
             st.markdown("**Session**")
             st.caption(f"{len(ss['pq_results'])} runs kept in this browser session.")

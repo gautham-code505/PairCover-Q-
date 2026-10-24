@@ -66,6 +66,9 @@ shell.set_active(shell.current_scenario())
 d = _decision()
 g, e = d["greedy"], d["exact"]
 
+_, sw = st.columns([8, 1])
+sw.markdown(shell.theme_switch_html(), unsafe_allow_html=True)
+
 left, right = st.columns([1.08, 1], gap="large", vertical_alignment="center")
 with left:
     st.markdown(
@@ -90,10 +93,14 @@ with left:
 
 with right:
     st.markdown(
-        f'<div class="film"><div class="film-head"><span class="rec">Replay</span><span>Coverage demo · 2 calls · 3 ambulances</span></div>'
+        # A visually hidden checkbox + label pauses the loop without JavaScript (WCAG 2.2.2).
+        f'<div class="film"><input type="checkbox" id="film-pause" class="film-toggle" aria-label="Pause the animation">'
+        f'<div class="film-head"><span class="rec">Replay</span><span>Coverage demo · 2 calls · 3 ambulances</span>'
+        f'<label for="film-pause" class="film-btn" title="Pause or play the animation"></label></div>'
         f'{_film(d)}'
-        f'<div class="film-foot"><span>A1 and A2 cover the same area for each other.</span>'
-        f'<span>Lines are travel minutes; positions are synthetic.</span></div></div>',
+        f'<div class="film-foot"><span><b>Nearest available:</b> A1 and A2 both leave, cost {g["objective_value"]:g}.</span>'
+        f'<span><b>PairCover-Q:</b> A2 stays home, cost {e["objective_value"]:g}.</span></div>'
+        f'<div class="film-note">A1 and A2 cover the same area for each other. Lines are travel minutes; positions are synthetic.</div></div>',
         unsafe_allow_html=True)
 
 st.markdown('<div class="section-label">How it works</div>', unsafe_allow_html=True)
@@ -119,12 +126,13 @@ st.markdown(
     f'weighted minute</b> but removes a coverage penalty of {g["coverage_penalty"]:g}, cutting total cost by {gain:g}.</p>'
     '<div class="src">Computed live by the solvers on this page load</div></div>'
     '<div><div class="big">−2.15 <small>min</small></div>'
-    '<p>Mean response time at 5 calls per hour in a simulated city over 7 days, 30 replications, against nearest-available '
-    '(95% CI −2.67 to −1.63). With a small coverage weight it was never worse at any load.</p>'
+    '<p>Mean response time at 5 calls per hour in a simulated city (7 days × 30 runs) against nearest-available, 95% CI −2.67 to −1.63. '
+    'Planning simultaneous calls together explains this: batching alone gets −2.18. The coverage term\'s own effect is slightly less '
+    'uncovered demand, with no significant change in late arrivals.</p>'
     f'<div class="src">Source: <a href="{REPO}/blob/main/reports/rolling_simulation/README.md" target="_blank">rolling-simulation report</a></div></div>'
     '<div class="q"><div class="big">19 <small>of 23</small></div>'
-    '<p>Benchmark problems (4–12 qubits) where depth-3 QAOA found the optimum more often than random guessing among valid plans. '
-    'It never beat the exact solver, and noise erodes the gain.</p>'
+    '<p>Simulation-derived problems (4–12 qubits) where depth-3 QAOA put more probability on the optimum than random guessing among valid plans. '
+    'Simulated, noiseless; noise erodes the gain, and the exact solver is still faster at these sizes.</p>'
     f'<div class="src">Source: <a href="{REPO}/blob/main/reports/qaoa_benchmark/README.md" target="_blank">QAOA benchmark report</a></div></div>'
     '</div>', unsafe_allow_html=True)
 

@@ -1,4 +1,6 @@
-# QAOA benchmark on real dispatch subproblems (Round 2, item 2)
+# QAOA benchmark on simulation-derived dispatch problems (Round 2, item 2)
+
+All 23 instances are synthetic: they come from the simulated city in [../rolling_simulation](../rolling_simulation/README.md) or are constructed surge cases. None is taken from observed ambulance records.
 
 **Question.** Round 1 ran QAOA on one hand-made 6-qubit scenario. How does it do on the problems PairCover-Q actually has to solve, at 4–12 qubits, against fair baselines, under noise, and inside the live simulation?
 

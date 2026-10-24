@@ -329,7 +329,7 @@ def run_greedy(scenario_id: str = "scenario_2") -> dict[str, Any]:
         "runtime_seconds": runtime,
         "experiment": {
             "kind": "classical_heuristic",
-            "run_id": f"greedy_{scenario_id}_{int(t0*1000)}",
+            "run_id": f"greedy_{scenario_id}",  # deterministic: a rerun replaces it
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "qubo_energy": qubo_e,
             "best_cost": total,
@@ -390,7 +390,7 @@ def run_exact(scenario_id: str = "scenario_2") -> dict[str, Any]:
         "runtime_seconds": runtime,
         "experiment": {
             "kind": "classical_exact",
-            "run_id": f"exact_{scenario_id}_{int(t0*1000)}",
+            "run_id": f"exact_{scenario_id}",  # deterministic: a rerun replaces it
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "qubo_energy": qubo_e,
             "best_cost": best_obj,
@@ -594,7 +594,7 @@ def run_qaoa(
         "p": p,
         "depth_p": p,
         "seed": seed,
-        "run_id": f"qaoa_{scenario_id}_p{p}_s{seed}_{int(t0*1000)}",
+        "run_id": f"qaoa_{scenario_id}_p{p}_s{seed}_it{maxiter}_sh{shots}",  # same settings give the same seeded run
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "optimizer": "COBYLA (rhobeg=0.5)",
         "evaluations_nfev": int(opt_result.nfev),
