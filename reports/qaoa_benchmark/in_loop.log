@@ -1,0 +1,1 @@
+load 4.0 rep 0: {'decisions': 480, 'trivial': 311, 'too_large': 0, 'outside_qubo': 2, 'qaoa_runs': 167, 'qaoa_agrees': 166, 'qaoa_fallback': 1, 'argmax_agrees': 126, 'random_agrees': 167, 'random_fallback': 0} (71s)
