@@ -1,0 +1,2421 @@
+{
+ "config": {
+  "shots": 4096,
+  "depths": [
+   1,
+   2
+  ],
+  "per_size": 2,
+  "levels": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.002,
+    0.0002,
+    0.01
+   ],
+   [
+    0.005,
+    0.0005,
+    0.015
+   ],
+   [
+    0.01,
+    0.001,
+    0.02
+   ]
+  ],
+  "basis": [
+   "cz",
+   "rz",
+   "sx",
+   "x"
+  ],
+  "coupling": "heavy-hex d=5 (57 qubits), gate counts only"
+ },
+ "rows": [
+  {
+   "id": "oper-4q-0",
+   "family": "operational",
+   "qubits": 4,
+   "p": 1,
+   "couplings": 6,
+   "ideal_p_opt": 0.15648647176103844,
+   "ideal_p_feasible": 0.35763604048316655,
+   "random_p_opt": 0.125,
+   "random_feasible_p_opt": 0.4,
+   "random_p_feasible": 0.3125,
+   "all_to_all_2q": 12,
+   "all_to_all_depth": 42,
+   "heavy_hex_2q": 18,
+   "heavy_hex_depth": 67,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.157470703125,
+     "p_feasible": 0.345458984375
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.155517578125,
+     "p_feasible": 0.3447265625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.15478515625,
+     "p_feasible": 0.34423828125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.152587890625,
+     "p_feasible": 0.343505859375
+    }
+   ],
+   "routing_ratio": 1.5,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.157470703125,
+     "p_feasible": 0.345458984375
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0029984994996246073,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.15478515625,
+     "p_feasible": 0.343505859375
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.007490617172814851,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.154296875,
+     "p_feasible": 0.34423828125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.014962437264446238,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.151611328125,
+     "p_feasible": 0.341796875
+    }
+   ]
+  },
+  {
+   "id": "oper-4q-0",
+   "family": "operational",
+   "qubits": 4,
+   "p": 2,
+   "couplings": 6,
+   "ideal_p_opt": 0.4318592577313418,
+   "ideal_p_feasible": 0.8039700589236469,
+   "random_p_opt": 0.125,
+   "random_feasible_p_opt": 0.4,
+   "random_p_feasible": 0.3125,
+   "all_to_all_2q": 24,
+   "all_to_all_depth": 74,
+   "heavy_hex_2q": 33,
+   "heavy_hex_depth": 118,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.42822265625,
+     "p_feasible": 0.79736328125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.39453125,
+     "p_feasible": 0.748291015625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.370849609375,
+     "p_feasible": 0.701416015625
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.33447265625,
+     "p_feasible": 0.6474609375
+    }
+   ],
+   "routing_ratio": 1.375,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.42822265625,
+     "p_feasible": 0.79736328125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0027489683199629633,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.3896484375,
+     "p_feasible": 0.738525390625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.006868547959959392,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.360107421875,
+     "p_feasible": 0.68798828125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.013724164819709284,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.31591796875,
+     "p_feasible": 0.62548828125
+    }
+   ]
+  },
+  {
+   "id": "oper-4q-1",
+   "family": "operational",
+   "qubits": 4,
+   "p": 1,
+   "couplings": 6,
+   "ideal_p_opt": 0.03531399818747814,
+   "ideal_p_feasible": 0.1264919398082494,
+   "random_p_opt": 0.0625,
+   "random_feasible_p_opt": 0.2,
+   "random_p_feasible": 0.3125,
+   "all_to_all_2q": 12,
+   "all_to_all_depth": 42,
+   "heavy_hex_2q": 18,
+   "heavy_hex_depth": 67,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.032470703125,
+     "p_feasible": 0.118896484375
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.03759765625,
+     "p_feasible": 0.1396484375
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.04150390625,
+     "p_feasible": 0.155517578125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.044677734375,
+     "p_feasible": 0.171875
+    }
+   ],
+   "routing_ratio": 1.5,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.032470703125,
+     "p_feasible": 0.118896484375
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0029984994996246073,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.037841796875,
+     "p_feasible": 0.142578125
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.007490617172814851,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.041259765625,
+     "p_feasible": 0.158447265625
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.014962437264446238,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.04541015625,
+     "p_feasible": 0.177978515625
+    }
+   ]
+  },
+  {
+   "id": "oper-4q-1",
+   "family": "operational",
+   "qubits": 4,
+   "p": 2,
+   "couplings": 6,
+   "ideal_p_opt": 0.5922059615924763,
+   "ideal_p_feasible": 0.8320957714412152,
+   "random_p_opt": 0.0625,
+   "random_feasible_p_opt": 0.2,
+   "random_p_feasible": 0.3125,
+   "all_to_all_2q": 24,
+   "all_to_all_depth": 75,
+   "heavy_hex_2q": 33,
+   "heavy_hex_depth": 118,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.589111328125,
+     "p_feasible": 0.828369140625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.545654296875,
+     "p_feasible": 0.787109375
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.500244140625,
+     "p_feasible": 0.740478515625
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.426025390625,
+     "p_feasible": 0.6748046875
+    }
+   ],
+   "routing_ratio": 1.375,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.589111328125,
+     "p_feasible": 0.828369140625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0027489683199629633,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.5390625,
+     "p_feasible": 0.779296875
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.006868547959959392,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.4794921875,
+     "p_feasible": 0.72216796875
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.013724164819709284,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.39892578125,
+     "p_feasible": 0.648193359375
+    }
+   ]
+  },
+  {
+   "id": "oper-5q-2",
+   "family": "operational",
+   "qubits": 5,
+   "p": 1,
+   "couplings": 10,
+   "ideal_p_opt": 0.020227771476076392,
+   "ideal_p_feasible": 0.344348193052095,
+   "random_p_opt": 0.03125,
+   "random_feasible_p_opt": 0.1,
+   "random_p_feasible": 0.3125,
+   "all_to_all_2q": 20,
+   "all_to_all_depth": 58,
+   "heavy_hex_2q": 30,
+   "heavy_hex_depth": 92,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.020263671875,
+     "p_feasible": 0.341064453125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.020751953125,
+     "p_feasible": 0.340576171875
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.020263671875,
+     "p_feasible": 0.3408203125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.02197265625,
+     "p_feasible": 0.33935546875
+    }
+   ],
+   "routing_ratio": 1.5,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.020263671875,
+     "p_feasible": 0.341064453125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0029984994996246073,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.020751953125,
+     "p_feasible": 0.3408203125
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.007490617172814851,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.0205078125,
+     "p_feasible": 0.338623046875
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.014962437264446238,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.024658203125,
+     "p_feasible": 0.340087890625
+    }
+   ]
+  },
+  {
+   "id": "oper-5q-2",
+   "family": "operational",
+   "qubits": 5,
+   "p": 2,
+   "couplings": 10,
+   "ideal_p_opt": 0.08054112760831392,
+   "ideal_p_feasible": 0.5534972025434345,
+   "random_p_opt": 0.03125,
+   "random_feasible_p_opt": 0.1,
+   "random_p_feasible": 0.3125,
+   "all_to_all_2q": 40,
+   "all_to_all_depth": 96,
+   "heavy_hex_2q": 64,
+   "heavy_hex_depth": 177,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.088134765625,
+     "p_feasible": 0.552734375
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.081787109375,
+     "p_feasible": 0.541259765625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.082275390625,
+     "p_feasible": 0.526611328125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.072265625,
+     "p_feasible": 0.4970703125
+    }
+   ],
+   "routing_ratio": 1.6,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.088134765625,
+     "p_feasible": 0.552734375
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.003198079487641281,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.080810546875,
+     "p_feasible": 0.53369140625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.007987991985966336,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.075439453125,
+     "p_feasible": 0.51318359375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.015951935774918713,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.067138671875,
+     "p_feasible": 0.4755859375
+    }
+   ]
+  },
+  {
+   "id": "oper-5q-3",
+   "family": "operational",
+   "qubits": 5,
+   "p": 1,
+   "couplings": 9,
+   "ideal_p_opt": 0.019860138270327645,
+   "ideal_p_feasible": 0.24764971774924854,
+   "random_p_opt": 0.03125,
+   "random_feasible_p_opt": 0.1,
+   "random_p_feasible": 0.3125,
+   "all_to_all_2q": 18,
+   "all_to_all_depth": 59,
+   "heavy_hex_2q": 28,
+   "heavy_hex_depth": 95,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.021484375,
+     "p_feasible": 0.24755859375
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.0224609375,
+     "p_feasible": 0.24951171875
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.02099609375,
+     "p_feasible": 0.251953125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.024169921875,
+     "p_feasible": 0.256103515625
+    }
+   ],
+   "routing_ratio": 1.5555555555555556,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.021484375,
+     "p_feasible": 0.24755859375
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.003109382203562161,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.022216796875,
+     "p_feasible": 0.25
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.0077669672923298405,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.022216796875,
+     "p_feasible": 0.254150390625
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.015512281432079833,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.023193359375,
+     "p_feasible": 0.259521484375
+    }
+   ]
+  },
+  {
+   "id": "oper-5q-3",
+   "family": "operational",
+   "qubits": 5,
+   "p": 2,
+   "couplings": 9,
+   "ideal_p_opt": 0.07576045298769352,
+   "ideal_p_feasible": 0.37594000476319867,
+   "random_p_opt": 0.03125,
+   "random_feasible_p_opt": 0.1,
+   "random_p_feasible": 0.3125,
+   "all_to_all_2q": 36,
+   "all_to_all_depth": 95,
+   "heavy_hex_2q": 63,
+   "heavy_hex_depth": 161,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.0751953125,
+     "p_feasible": 0.365966796875
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.07275390625,
+     "p_feasible": 0.3603515625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.070556640625,
+     "p_feasible": 0.360107421875
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.0673828125,
+     "p_feasible": 0.35107421875
+    }
+   ],
+   "routing_ratio": 1.75,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.0751953125,
+     "p_feasible": 0.365966796875
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0034973745622263186,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.070556640625,
+     "p_feasible": 0.35546875
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.008733586903357238,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.067138671875,
+     "p_feasible": 0.35205078125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.017434320140828352,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.059326171875,
+     "p_feasible": 0.34326171875
+    }
+   ]
+  },
+  {
+   "id": "oper-6q-4",
+   "family": "operational",
+   "qubits": 6,
+   "p": 1,
+   "couplings": 11,
+   "ideal_p_opt": 0.03482647770361139,
+   "ideal_p_feasible": 0.23620405983201467,
+   "random_p_opt": 0.03125,
+   "random_feasible_p_opt": 0.14285714285714285,
+   "random_p_feasible": 0.21875,
+   "all_to_all_2q": 22,
+   "all_to_all_depth": 61,
+   "heavy_hex_2q": 33,
+   "heavy_hex_depth": 102,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.033447265625,
+     "p_feasible": 0.23046875
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.03271484375,
+     "p_feasible": 0.229248046875
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.03076171875,
+     "p_feasible": 0.226806640625
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.031982421875,
+     "p_feasible": 0.224853515625
+    }
+   ],
+   "routing_ratio": 1.5,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.033447265625,
+     "p_feasible": 0.23046875
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0029984994996246073,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.032470703125,
+     "p_feasible": 0.22802734375
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.007490617172814851,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.031494140625,
+     "p_feasible": 0.22412109375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.014962437264446238,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.0322265625,
+     "p_feasible": 0.21875
+    }
+   ]
+  },
+  {
+   "id": "oper-6q-4",
+   "family": "operational",
+   "qubits": 6,
+   "p": 2,
+   "couplings": 11,
+   "ideal_p_opt": 0.046195555461820276,
+   "ideal_p_feasible": 0.7620806300073646,
+   "random_p_opt": 0.03125,
+   "random_feasible_p_opt": 0.14285714285714285,
+   "random_p_feasible": 0.21875,
+   "all_to_all_2q": 44,
+   "all_to_all_depth": 93,
+   "heavy_hex_2q": 77,
+   "heavy_hex_depth": 176,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.049560546875,
+     "p_feasible": 0.762451171875
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.048583984375,
+     "p_feasible": 0.70361328125
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.050048828125,
+     "p_feasible": 0.64208984375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.046142578125,
+     "p_feasible": 0.56298828125
+    }
+   ],
+   "routing_ratio": 1.75,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.049560546875,
+     "p_feasible": 0.762451171875
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0034973745622263186,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.0478515625,
+     "p_feasible": 0.68115234375
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.008733586903357238,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.048583984375,
+     "p_feasible": 0.596435546875
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.017434320140828352,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.046630859375,
+     "p_feasible": 0.4853515625
+    }
+   ]
+  },
+  {
+   "id": "oper-6q-5",
+   "family": "operational",
+   "qubits": 6,
+   "p": 1,
+   "couplings": 11,
+   "ideal_p_opt": 0.04520967164099154,
+   "ideal_p_feasible": 0.5682813080260251,
+   "random_p_opt": 0.015625,
+   "random_feasible_p_opt": 0.06666666666666667,
+   "random_p_feasible": 0.234375,
+   "all_to_all_2q": 22,
+   "all_to_all_depth": 61,
+   "heavy_hex_2q": 32,
+   "heavy_hex_depth": 92,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.042724609375,
+     "p_feasible": 0.55908203125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.04345703125,
+     "p_feasible": 0.543701171875
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.04296875,
+     "p_feasible": 0.533203125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.0390625,
+     "p_feasible": 0.508544921875
+    }
+   ],
+   "routing_ratio": 1.4545454545454546,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.042724609375,
+     "p_feasible": 0.55908203125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002907768113827869,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.043212890625,
+     "p_feasible": 0.5419921875
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.007264455282218307,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.042724609375,
+     "p_feasible": 0.526123046875
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.014512336355616995,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.0380859375,
+     "p_feasible": 0.50048828125
+    }
+   ]
+  },
+  {
+   "id": "oper-6q-5",
+   "family": "operational",
+   "qubits": 6,
+   "p": 2,
+   "couplings": 11,
+   "ideal_p_opt": 0.09169452914622706,
+   "ideal_p_feasible": 0.7194115873480431,
+   "random_p_opt": 0.015625,
+   "random_feasible_p_opt": 0.06666666666666667,
+   "random_p_feasible": 0.234375,
+   "all_to_all_2q": 44,
+   "all_to_all_depth": 95,
+   "heavy_hex_2q": 76,
+   "heavy_hex_depth": 187,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.09228515625,
+     "p_feasible": 0.718994140625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.087890625,
+     "p_feasible": 0.679443359375
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.07958984375,
+     "p_feasible": 0.6435546875
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.06982421875,
+     "p_feasible": 0.593994140625
+    }
+   ],
+   "routing_ratio": 1.7272727272727273,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.09228515625,
+     "p_feasible": 0.718994140625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0034520326007608793,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.0849609375,
+     "p_feasible": 0.66650390625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.008620654008153261,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.078125,
+     "p_feasible": 0.6162109375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.017209860072935124,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.05908203125,
+     "p_feasible": 0.5380859375
+    }
+   ]
+  },
+  {
+   "id": "oper-7q-6",
+   "family": "operational",
+   "qubits": 7,
+   "p": 1,
+   "couplings": 13,
+   "ideal_p_opt": 0.09089262371394521,
+   "ideal_p_feasible": 0.5955535873760065,
+   "random_p_opt": 0.015625,
+   "random_feasible_p_opt": 0.11764705882352941,
+   "random_p_feasible": 0.1328125,
+   "all_to_all_2q": 26,
+   "all_to_all_depth": 57,
+   "heavy_hex_2q": 37,
+   "heavy_hex_depth": 84,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.086181640625,
+     "p_feasible": 0.5869140625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.08251953125,
+     "p_feasible": 0.560791015625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.077880859375,
+     "p_feasible": 0.544189453125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.07861328125,
+     "p_feasible": 0.52197265625
+    }
+   ],
+   "routing_ratio": 1.4230769230769231,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.086181640625,
+     "p_feasible": 0.5869140625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002844949240644934,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.081298828125,
+     "p_feasible": 0.5517578125
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.007107851477079263,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.07421875,
+     "p_feasible": 0.5380859375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.014200607559621381,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.0703125,
+     "p_feasible": 0.498291015625
+    }
+   ]
+  },
+  {
+   "id": "oper-7q-6",
+   "family": "operational",
+   "qubits": 7,
+   "p": 2,
+   "couplings": 13,
+   "ideal_p_opt": 0.13753215513183323,
+   "ideal_p_feasible": 0.8403673517257906,
+   "random_p_opt": 0.015625,
+   "random_feasible_p_opt": 0.11764705882352941,
+   "random_p_feasible": 0.1328125,
+   "all_to_all_2q": 52,
+   "all_to_all_depth": 95,
+   "heavy_hex_2q": 87,
+   "heavy_hex_depth": 180,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.138427734375,
+     "p_feasible": 0.83984375
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.124267578125,
+     "p_feasible": 0.77001953125
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.10986328125,
+     "p_feasible": 0.6953125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.094970703125,
+     "p_feasible": 0.628173828125
+    }
+   ],
+   "routing_ratio": 1.6730769230769231,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.138427734375,
+     "p_feasible": 0.83984375
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.003343901136024785,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.1171875,
+     "p_feasible": 0.74267578125
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.008351300564474085,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.10498046875,
+     "p_feasible": 0.654052734375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.016674402194370108,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.080322265625,
+     "p_feasible": 0.556884765625
+    }
+   ]
+  },
+  {
+   "id": "oper-7q-7",
+   "family": "operational",
+   "qubits": 7,
+   "p": 1,
+   "couplings": 14,
+   "ideal_p_opt": 0.07991411981544702,
+   "ideal_p_feasible": 0.6015602063738746,
+   "random_p_opt": 0.015625,
+   "random_feasible_p_opt": 0.11764705882352941,
+   "random_p_feasible": 0.1328125,
+   "all_to_all_2q": 28,
+   "all_to_all_depth": 63,
+   "heavy_hex_2q": 46,
+   "heavy_hex_depth": 106,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.075439453125,
+     "p_feasible": 0.5966796875
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.0712890625,
+     "p_feasible": 0.577392578125
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.068359375,
+     "p_feasible": 0.549072265625
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.062744140625,
+     "p_feasible": 0.51611328125
+    }
+   ],
+   "routing_ratio": 1.6428571428571428,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.075439453125,
+     "p_feasible": 0.5966796875
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0032836015375592442,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.0703125,
+     "p_feasible": 0.5712890625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.008201076312257416,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.06201171875,
+     "p_feasible": 0.52783203125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01637570222738982,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.066162109375,
+     "p_feasible": 0.488037109375
+    }
+   ]
+  },
+  {
+   "id": "oper-7q-7",
+   "family": "operational",
+   "qubits": 7,
+   "p": 2,
+   "couplings": 14,
+   "ideal_p_opt": 0.11117661063751441,
+   "ideal_p_feasible": 0.8368456859109377,
+   "random_p_opt": 0.015625,
+   "random_feasible_p_opt": 0.11764705882352941,
+   "random_p_feasible": 0.1328125,
+   "all_to_all_2q": 56,
+   "all_to_all_depth": 102,
+   "heavy_hex_2q": 100,
+   "heavy_hex_depth": 206,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.11376953125,
+     "p_feasible": 0.835205078125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.098388671875,
+     "p_feasible": 0.7607421875
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.087158203125,
+     "p_feasible": 0.696044921875
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.077392578125,
+     "p_feasible": 0.613525390625
+    }
+   ],
+   "routing_ratio": 1.7857142857142858,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.11376953125,
+     "p_feasible": 0.835205078125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0035686220478613473,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.09423828125,
+     "p_feasible": 0.73876953125
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.008911026890070728,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.0810546875,
+     "p_feasible": 0.63818359375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.017786939533794066,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.058349609375,
+     "p_feasible": 0.534423828125
+    }
+   ]
+  },
+  {
+   "id": "surg-8q-8",
+   "family": "surge",
+   "qubits": 8,
+   "p": 1,
+   "couplings": 22,
+   "ideal_p_opt": 0.017743396545358014,
+   "ideal_p_feasible": 0.7203685085961268,
+   "random_p_opt": 0.00390625,
+   "random_feasible_p_opt": 0.022222222222222223,
+   "random_p_feasible": 0.17578125,
+   "all_to_all_2q": 44,
+   "all_to_all_depth": 85,
+   "heavy_hex_2q": 76,
+   "heavy_hex_depth": 180,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.01953125,
+     "p_feasible": 0.7158203125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.017822265625,
+     "p_feasible": 0.668212890625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.01806640625,
+     "p_feasible": 0.632568359375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.014892578125,
+     "p_feasible": 0.584716796875
+    }
+   ],
+   "routing_ratio": 1.7272727272727273,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.01953125,
+     "p_feasible": 0.7158203125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0034520326007608793,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.01806640625,
+     "p_feasible": 0.65625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.008620654008153261,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.0166015625,
+     "p_feasible": 0.602783203125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.017209860072935124,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.01220703125,
+     "p_feasible": 0.522705078125
+    }
+   ]
+  },
+  {
+   "id": "surg-8q-8",
+   "family": "surge",
+   "qubits": 8,
+   "p": 2,
+   "couplings": 22,
+   "ideal_p_opt": 0.024114408919618184,
+   "ideal_p_feasible": 0.9089317501345063,
+   "random_p_opt": 0.00390625,
+   "random_feasible_p_opt": 0.022222222222222223,
+   "random_p_feasible": 0.17578125,
+   "all_to_all_2q": 88,
+   "all_to_all_depth": 151,
+   "heavy_hex_2q": 177,
+   "heavy_hex_depth": 364,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.022705078125,
+     "p_feasible": 0.910400390625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.020751953125,
+     "p_feasible": 0.82666015625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.021484375,
+     "p_feasible": 0.736572265625
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.01611328125,
+     "p_feasible": 0.63916015625
+    }
+   ],
+   "routing_ratio": 2.0113636363636362,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.022705078125,
+     "p_feasible": 0.910400390625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.004018658863481406,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.023193359375,
+     "p_feasible": 0.785400390625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.01003139091348415,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.017822265625,
+     "p_feasible": 0.656005859375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.020011929223820113,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.0126953125,
+     "p_feasible": 0.500244140625
+    }
+   ]
+  },
+  {
+   "id": "surg-8q-9",
+   "family": "surge",
+   "qubits": 8,
+   "p": 1,
+   "couplings": 12,
+   "ideal_p_opt": 0.0463868347229008,
+   "ideal_p_feasible": 0.6506560344630434,
+   "random_p_opt": 0.0078125,
+   "random_feasible_p_opt": 0.05,
+   "random_p_feasible": 0.15625,
+   "all_to_all_2q": 24,
+   "all_to_all_depth": 61,
+   "heavy_hex_2q": 37,
+   "heavy_hex_depth": 86,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.04248046875,
+     "p_feasible": 0.64599609375
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.039794921875,
+     "p_feasible": 0.6123046875
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.038818359375,
+     "p_feasible": 0.597412109375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.03564453125,
+     "p_feasible": 0.55419921875
+    }
+   ],
+   "routing_ratio": 1.5416666666666667,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.04248046875,
+     "p_feasible": 0.64599609375
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0030816626837517624,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.04052734375,
+     "p_feasible": 0.607177734375
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.007697886976953061,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.03857421875,
+     "p_feasible": 0.588134765625
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.015374849170699534,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.032958984375,
+     "p_feasible": 0.533935546875
+    }
+   ]
+  },
+  {
+   "id": "surg-8q-9",
+   "family": "surge",
+   "qubits": 8,
+   "p": 2,
+   "couplings": 12,
+   "ideal_p_opt": 0.07262746409090176,
+   "ideal_p_feasible": 0.8706568505360693,
+   "random_p_opt": 0.0078125,
+   "random_feasible_p_opt": 0.05,
+   "random_p_feasible": 0.15625,
+   "all_to_all_2q": 48,
+   "all_to_all_depth": 105,
+   "heavy_hex_2q": 78,
+   "heavy_hex_depth": 199,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.072265625,
+     "p_feasible": 0.873291015625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.064453125,
+     "p_feasible": 0.811279296875
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.06103515625,
+     "p_feasible": 0.74365234375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.053955078125,
+     "p_feasible": 0.673583984375
+    }
+   ],
+   "routing_ratio": 1.625,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.072265625,
+     "p_feasible": 0.873291015625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0032479682418380396,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.062255859375,
+     "p_feasible": 0.789306640625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.008112296739259617,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.05908203125,
+     "p_feasible": 0.715576171875
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01619915505419456,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.043212890625,
+     "p_feasible": 0.606201171875
+    }
+   ]
+  },
+  {
+   "id": "surg-10q-13",
+   "family": "surge",
+   "qubits": 10,
+   "p": 1,
+   "couplings": 23,
+   "ideal_p_opt": 0.025088029117716952,
+   "ideal_p_feasible": 0.6077834357309388,
+   "random_p_opt": 0.001953125,
+   "random_feasible_p_opt": 0.018867924528301886,
+   "random_p_feasible": 0.103515625,
+   "all_to_all_2q": 46,
+   "all_to_all_depth": 96,
+   "heavy_hex_2q": 83,
+   "heavy_hex_depth": 210,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.022216796875,
+     "p_feasible": 0.5986328125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.01953125,
+     "p_feasible": 0.562744140625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.019287109375,
+     "p_feasible": 0.531005859375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.017578125,
+     "p_feasible": 0.47119140625
+    }
+   ],
+   "routing_ratio": 1.8043478260869565,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.022216796875,
+     "p_feasible": 0.5986328125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0036057926268384666,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.020263671875,
+     "p_feasible": 0.539794921875
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.009003591665211363,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.0185546875,
+     "p_feasible": 0.4951171875
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.017970864630453054,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.015625,
+     "p_feasible": 0.43603515625
+    }
+   ]
+  },
+  {
+   "id": "surg-10q-13",
+   "family": "surge",
+   "qubits": 10,
+   "p": 2,
+   "couplings": 23,
+   "ideal_p_opt": 0.07284205637018608,
+   "ideal_p_feasible": 0.8362501866338883,
+   "random_p_opt": 0.001953125,
+   "random_feasible_p_opt": 0.018867924528301886,
+   "random_p_feasible": 0.103515625,
+   "all_to_all_2q": 92,
+   "all_to_all_depth": 156,
+   "heavy_hex_2q": 179,
+   "heavy_hex_depth": 316,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.07177734375,
+     "p_feasible": 0.828125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.056884765625,
+     "p_feasible": 0.734619140625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.049560546875,
+     "p_feasible": 0.6455078125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.035400390625,
+     "p_feasible": 0.54150390625
+    }
+   ],
+   "routing_ratio": 1.9456521739130435,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.07177734375,
+     "p_feasible": 0.828125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.003887624394013023,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.054931640625,
+     "p_feasible": 0.697265625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.009705259905983143,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.038818359375,
+     "p_feasible": 0.56103515625
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.019364509518769668,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.0234375,
+     "p_feasible": 0.42236328125
+    }
+   ]
+  },
+  {
+   "id": "surg-10q-14",
+   "family": "surge",
+   "qubits": 10,
+   "p": 1,
+   "couplings": 22,
+   "ideal_p_opt": 0.02077048782939395,
+   "ideal_p_feasible": 0.4010917558481854,
+   "random_p_opt": 0.001953125,
+   "random_feasible_p_opt": 0.034482758620689655,
+   "random_p_feasible": 0.056640625,
+   "all_to_all_2q": 44,
+   "all_to_all_depth": 76,
+   "heavy_hex_2q": 78,
+   "heavy_hex_depth": 135,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.02490234375,
+     "p_feasible": 0.397216796875
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.019287109375,
+     "p_feasible": 0.373291015625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.016357421875,
+     "p_feasible": 0.34912109375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.015625,
+     "p_feasible": 0.30615234375
+    }
+   ],
+   "routing_ratio": 1.7727272727272727,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.02490234375,
+     "p_feasible": 0.397216796875
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.003542714460676666,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.017578125,
+     "p_feasible": 0.368408203125
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.008846506933819942,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.0146484375,
+     "p_feasible": 0.325927734375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01765872894414333,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.012939453125,
+     "p_feasible": 0.2724609375
+    }
+   ]
+  },
+  {
+   "id": "surg-10q-14",
+   "family": "surge",
+   "qubits": 10,
+   "p": 2,
+   "couplings": 22,
+   "ideal_p_opt": 0.05187655941411651,
+   "ideal_p_feasible": 0.7289866949682862,
+   "random_p_opt": 0.001953125,
+   "random_feasible_p_opt": 0.034482758620689655,
+   "random_p_feasible": 0.056640625,
+   "all_to_all_2q": 88,
+   "all_to_all_depth": 123,
+   "heavy_hex_2q": 176,
+   "heavy_hex_depth": 297,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.05322265625,
+     "p_feasible": 0.719970703125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.042724609375,
+     "p_feasible": 0.62646484375
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.035888671875,
+     "p_feasible": 0.544921875
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.031494140625,
+     "p_feasible": 0.4501953125
+    }
+   ],
+   "routing_ratio": 2.0,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.05322265625,
+     "p_feasible": 0.719970703125
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0039959999999999996,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.034912109375,
+     "p_feasible": 0.581298828125
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.009974999999999956,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.032958984375,
+     "p_feasible": 0.458251953125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01990000000000003,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.0166015625,
+     "p_feasible": 0.3310546875
+    }
+   ]
+  },
+  {
+   "id": "surg-12q-18",
+   "family": "surge",
+   "qubits": 12,
+   "p": 1,
+   "couplings": 35,
+   "ideal_p_opt": 0.0077052681963554834,
+   "ideal_p_feasible": 0.506813781482232,
+   "random_p_opt": 0.00048828125,
+   "random_feasible_p_opt": 0.013513513513513514,
+   "random_p_feasible": 0.0361328125,
+   "all_to_all_2q": 70,
+   "all_to_all_depth": 104,
+   "heavy_hex_2q": 127,
+   "heavy_hex_depth": 217,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.007080078125,
+     "p_feasible": 0.50634765625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.006103515625,
+     "p_feasible": 0.450439453125
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.00634765625,
+     "p_feasible": 0.40380859375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.004638671875,
+     "p_feasible": 0.3369140625
+    }
+   ],
+   "routing_ratio": 1.8142857142857143,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.007080078125,
+     "p_feasible": 0.50634765625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.003625616368657547,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.006103515625,
+     "p_feasible": 0.433349609375
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.00905295601027789,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.005859375,
+     "p_feasible": 0.364501953125
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.018068943932368353,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.005126953125,
+     "p_feasible": 0.28173828125
+    }
+   ]
+  },
+  {
+   "id": "surg-12q-18",
+   "family": "surge",
+   "qubits": 12,
+   "p": 2,
+   "couplings": 35,
+   "ideal_p_opt": 0.0186185364516308,
+   "ideal_p_feasible": 0.8508902226772325,
+   "random_p_opt": 0.00048828125,
+   "random_feasible_p_opt": 0.013513513513513514,
+   "random_p_feasible": 0.0361328125,
+   "all_to_all_2q": 140,
+   "all_to_all_depth": 169,
+   "heavy_hex_2q": 317,
+   "heavy_hex_depth": 476,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.01806640625,
+     "p_feasible": 0.853759765625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.01123046875,
+     "p_feasible": 0.703369140625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.010009765625,
+     "p_feasible": 0.546630859375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.0068359375,
+     "p_feasible": 0.386474609375
+    }
+   ],
+   "routing_ratio": 2.2642857142857142,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.01806640625,
+     "p_feasible": 0.853759765625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0045228470295418655,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.009765625,
+     "p_feasible": 0.60302734375
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.011285660546841103,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.005859375,
+     "p_feasible": 0.377197265625
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.022499848266808398,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.0048828125,
+     "p_feasible": 0.212158203125
+    }
+   ]
+  },
+  {
+   "id": "surg-12q-19",
+   "family": "surge",
+   "qubits": 12,
+   "p": 1,
+   "couplings": 35,
+   "ideal_p_opt": 0.0034902522340088302,
+   "ideal_p_feasible": 0.4361595551930626,
+   "random_p_opt": 0.000244140625,
+   "random_feasible_p_opt": 0.0070921985815602835,
+   "random_p_feasible": 0.034423828125,
+   "all_to_all_2q": 70,
+   "all_to_all_depth": 114,
+   "heavy_hex_2q": 124,
+   "heavy_hex_depth": 242,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.0029296875,
+     "p_feasible": 0.43603515625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.0029296875,
+     "p_feasible": 0.392822265625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.00341796875,
+     "p_feasible": 0.347900390625
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.002685546875,
+     "p_feasible": 0.292724609375
+    }
+   ],
+   "routing_ratio": 1.7714285714285714,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.0029296875,
+     "p_feasible": 0.43603515625
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.0035401236649100776,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.002685546875,
+     "p_feasible": 0.373291015625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.008840054707185518,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.002685546875,
+     "p_feasible": 0.318115234375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.017645906964754543,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.00244140625,
+     "p_feasible": 0.2548828125
+    }
+   ]
+  },
+  {
+   "id": "surg-12q-19",
+   "family": "surge",
+   "qubits": 12,
+   "p": 2,
+   "couplings": 35,
+   "ideal_p_opt": 0.007557099933933773,
+   "ideal_p_feasible": 0.7635883413686415,
+   "random_p_opt": 0.000244140625,
+   "random_feasible_p_opt": 0.0070921985815602835,
+   "random_p_feasible": 0.034423828125,
+   "all_to_all_2q": 140,
+   "all_to_all_depth": 184,
+   "heavy_hex_2q": 307,
+   "heavy_hex_depth": 489,
+   "noisy": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.006591796875,
+     "p_feasible": 0.76123046875
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.002,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.0048828125,
+     "p_feasible": 0.63134765625
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.005,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.003173828125,
+     "p_feasible": 0.517333984375
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.01,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.00244140625,
+     "p_feasible": 0.375244140625
+    }
+   ],
+   "routing_ratio": 2.192857142857143,
+   "noisy_heavy_hex_equiv": [
+    {
+     "e2": 0.0,
+     "e2_used": 0.0,
+     "e1": 0.0,
+     "readout": 0.0,
+     "p_opt": 0.006591796875,
+     "p_feasible": 0.76123046875
+    },
+    {
+     "e2": 0.002,
+     "e2_used": 0.004380483427999016,
+     "e1": 0.0002,
+     "readout": 0.01,
+     "p_opt": 0.003173828125,
+     "p_feasible": 0.555419921875
+    },
+    {
+     "e2": 0.005,
+     "e2_used": 0.01093159916835329,
+     "e1": 0.0005,
+     "readout": 0.015,
+     "p_opt": 0.002197265625,
+     "p_feasible": 0.3759765625
+    },
+    {
+     "e2": 0.01,
+     "e2_used": 0.021797867411709748,
+     "e1": 0.001,
+     "readout": 0.02,
+     "p_opt": 0.0009765625,
+     "p_feasible": 0.222900390625
+    }
+   ]
+  }
+ ]
+}

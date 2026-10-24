@@ -94,6 +94,17 @@ python scripts/run_rolling_simulation.py      # ~4 min; --quick for a smoke run
 python scripts/report_rolling_simulation.py   # figures + tables
 ```
 
+## Round 2: QAOA Benchmark on Real Dispatch Subproblems
+
+QAOA was benchmarked on 23 frozen PairCover-Q instances of 4-12 qubits: operational epochs harvested from the simulation, plus multi-incident surge cases. The benchmark covers depths 1-3, ramp/INTERP versus 20 random starts, a penalty sweep, a noise and heavy-hex routing study, and QAOA as the solver inside the live simulation. Every result is compared with uniform random sampling over all bitstrings and over valid assignments.
+
+- Depth-3 QAOA with a ramp/INTERP start beat uniform guessing among valid assignments on 19 of 23 instances (median 2.2x; 4.4x at 10 qubits, 3.0x at 12). From random starts it mostly did not, and depth 1 never did.
+- A penalty just above the provable bound works best; 2x and 4x penalties raise feasibility but lower the chance of the optimum.
+- At 1% two-qubit error, 10-12 qubit instances lose about half their advantage or more; heavy-hex routing needs 1.4-2.3x more two-qubit gates.
+- In the loop (1,360 QAOA decisions), QAOA's best of 1,024 shots was the exact optimum 99.6% of the time, but uniform random sampling also managed 100% at these sizes. It is a validated drop-in solver, not a better one.
+
+Full write-up: [reports/qaoa_benchmark/README.md](reports/qaoa_benchmark/README.md).
+
 ---
 
 ## 4. Limitations & Absence of Quantum Advantage
@@ -188,11 +199,16 @@ Q-Rescue/
 ├── reports/
 │   ├── experiment_results.md           # Full QAOA audit report with exact benchmark tables
 │   ├── rolling_simulation/             # Round 2 rolling simulation: README, tables, figures, results JSON
+│   ├── qaoa_benchmark/                 # Round 2 QAOA benchmark, noise study, QAOA-in-the-loop results
 │   └── Q Rescue quantum dispatch...md  # Initial research validation and literature review
 ├── scripts/
 │   ├── run_qaoa_scenario2.py           # QAOA simulation and multi-seed audit script
 │   ├── run_rolling_simulation.py       # Rolling dispatch simulation experiment (Round 2)
 │   ├── report_rolling_simulation.py    # Figures and tables for the rolling simulation
+│   ├── run_qaoa_benchmark.py           # QAOA benchmark on frozen epoch instances
+│   ├── run_qaoa_noise.py               # Aer noise and heavy-hex routing study
+│   ├── run_qaoa_in_loop.py             # QAOA as the solver inside the rolling simulation
+│   ├── report_qaoa_benchmark.py        # Figures and tables for the QAOA benchmark
 │   └── generate_notebook.py            # Automated notebook generator and runner
 ├── src/
 │   └── qrescue/
@@ -205,8 +221,11 @@ Q-Rescue/
 │       │   ├── region.py               # Synthetic region, stations, hospitals, call stream
 │       │   ├── engine.py               # Rolling simulation loop and metrics
 │       │   ├── policies.py             # Closest-idle, coverage-single, batch, PairCover-Q
-│       │   └── paircover.py            # Per-epoch model, exact solver, epoch QUBO
+│       │   ├── paircover.py            # Per-epoch model, exact solver, epoch QUBO
+│       │   └── instances.py            # Frozen benchmark instances (operational + surge)
 │       ├── quantum/
+│       │   ├── qaoa_fast.py            # Exact NumPy QAOA simulator (matches Qiskit QAOAAnsatz)
+│       │   ├── loop_solver.py          # QAOA solver for use inside the simulation
 │       │   └── ising.py                # QUBO-to-Ising mapping and Pauli operators
 │       └── validation/
 │           └── validator.py            # Hard-constraint feasibility validator
@@ -216,6 +235,8 @@ Q-Rescue/
     ├── test_qubo.py                    # 5-qubit QUBO and Ising equivalence tests (5 tests)
     ├── test_scenario2.py               # 6-qubit PairCover-Q exhaustive benchmark tests (10 tests)
     ├── test_simulation.py              # Rolling simulation, epoch QUBO and policy tests (25 tests)
+    ├── test_qaoa_fast.py               # Fast QAOA vs Qiskit equivalence tests (7 tests)
+    ├── test_qaoa_loop.py               # QAOA-in-the-loop and instance tests (4 tests)
     ├── test_ui_components_smoke.py     # UI components and view smoke tests (5 tests)
     └── test_ui_helpers.py              # Pure presentation helper tests (18 tests)
 ```

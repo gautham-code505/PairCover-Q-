@@ -145,7 +145,7 @@ def _main_text(at: AppTest) -> str:
 
 def test_main_menu_still_works_after_opening_a_diagnostic_tool(app: AppTest) -> None:
     app.radio(key="adv_tool_pick").set_value("Overview").run()
-    app.radio(key="main_view").set_value(app.radio(key="main_view").options[1]).run()
+    app.radio(key="main_view").set_value("⚛️ Quantum Lab").run()
     assert not app.exception
     assert app.radio(key="adv_tool_pick").value == "(None - Main Console)"
     assert "QAOA Circuit" in _main_text(app)
@@ -174,7 +174,7 @@ def test_no_scenario_two_figures_leak_into_scenario_one(app: AppTest) -> None:
     text = _main_text(app)
     assert "6 qubits" not in text and "5 qubits" in text
     assert "Matches optimum (62)" in text          # 62 is scenario 1's enumerated optimum
-    app.radio(key="main_view").set_value(app.radio(key="main_view").options[2]).run()
+    app.radio(key="main_view").set_value("📊 Results & Benchmarks").run()
     text = _main_text(app)
     assert "68 / 1,000" not in text and "6.47%" not in text
 

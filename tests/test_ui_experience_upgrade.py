@@ -33,7 +33,8 @@ def test_navigation_views_and_aliases() -> None:
     assert "⚛️ Quantum Lab" in ui.PRIMARY_VIEWS
     assert "📊 Results & Benchmarks" in ui.PRIMARY_VIEWS
     assert "📘 Method & Data" in ui.PRIMARY_VIEWS
-    assert len(ui.PRIMARY_VIEWS) == 4
+    assert "🆘 Create Your Emergency" in ui.PRIMARY_VIEWS
+    assert len(ui.PRIMARY_VIEWS) == 5
 
     # Verify all primary and secondary views are present in VIEWS and _VIEW_SUBTITLES
     for pv in ui.PRIMARY_VIEWS:
