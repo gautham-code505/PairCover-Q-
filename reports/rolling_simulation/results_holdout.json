@@ -27,7 +27,7 @@
  },
  "loads": {
   "2.0": {
-   "seconds": 12.3,
+   "seconds": 21.9,
    "policies": {
     "closest-idle": {
      "mean": {
@@ -1044,9 +1044,9 @@
       "model_loss_mismatch": 1,
       "eligibility_fallback": 18,
       "truncated": 0,
-      "qubits_mean": 5.297330427676383,
-      "qubits_p95": 7.0,
-      "qubits_max": 21
+      "qubits_mean": 2.0401797875238357,
+      "qubits_p95": 4.0,
+      "qubits_max": 9
      }
     },
     "paircover-q (lam=5)": {
@@ -1454,9 +1454,9 @@
       "model_loss_mismatch": 1,
       "eligibility_fallback": 17,
       "truncated": 0,
-      "qubits_mean": 5.298692454372106,
-      "qubits_p95": 7.0,
-      "qubits_max": 21
+      "qubits_mean": 2.033642059384364,
+      "qubits_p95": 4.0,
+      "qubits_max": 9
      }
     },
     "paircover-q (lam=10)": {
@@ -1864,15 +1864,15 @@
       "model_loss_mismatch": 1,
       "eligibility_fallback": 18,
       "truncated": 0,
-      "qubits_mean": 5.296377008989376,
-      "qubits_p95": 7.0,
-      "qubits_max": 21
+      "qubits_mean": 2.0284663579406157,
+      "qubits_p95": 4.0,
+      "qubits_max": 9
      }
     }
    }
   },
   "3.0": {
-   "seconds": 25.4,
+   "seconds": 37.5,
    "policies": {
     "closest-idle": {
      "mean": {
@@ -2889,9 +2889,9 @@
       "model_loss_mismatch": 5,
       "eligibility_fallback": 55,
       "truncated": 0,
-      "qubits_mean": 4.390704429920116,
-      "qubits_p95": 7.0,
-      "qubits_max": 18
+      "qubits_mean": 1.7890341321713872,
+      "qubits_p95": 4.0,
+      "qubits_max": 9
      }
     },
     "paircover-q (lam=5)": {
@@ -3299,9 +3299,9 @@
       "model_loss_mismatch": 3,
       "eligibility_fallback": 56,
       "truncated": 0,
-      "qubits_mean": 4.390376758965048,
-      "qubits_p95": 7.0,
-      "qubits_max": 18
+      "qubits_mean": 1.7853835678620062,
+      "qubits_p95": 4.0,
+      "qubits_max": 9
      }
     },
     "paircover-q (lam=10)": {
@@ -3709,15 +3709,15 @@
       "model_loss_mismatch": 5,
       "eligibility_fallback": 57,
       "truncated": 0,
-      "qubits_mean": 4.3838750680951515,
-      "qubits_p95": 7.0,
-      "qubits_max": 18
+      "qubits_mean": 1.781005992373343,
+      "qubits_p95": 4.0,
+      "qubits_max": 12
      }
     }
    }
   },
   "4.0": {
-   "seconds": 31.9,
+   "seconds": 41.1,
    "policies": {
     "closest-idle": {
      "mean": {
@@ -4734,9 +4734,9 @@
       "model_loss_mismatch": 6,
       "eligibility_fallback": 166,
       "truncated": 45,
-      "qubits_mean": 3.5001381406271586,
-      "qubits_p95": 6.0,
-      "qubits_max": 18
+      "qubits_mean": 1.650435142975549,
+      "qubits_p95": 3.0,
+      "qubits_max": 11
      }
     },
     "paircover-q (lam=5)": {
@@ -5144,9 +5144,9 @@
       "model_loss_mismatch": 6,
       "eligibility_fallback": 165,
       "truncated": 41,
-      "qubits_mean": 3.491644800441928,
-      "qubits_p95": 6.0,
-      "qubits_max": 18
+      "qubits_mean": 1.6488744648529208,
+      "qubits_p95": 3.0,
+      "qubits_max": 11
      }
     },
     "paircover-q (lam=10)": {
@@ -5554,15 +5554,15 @@
       "model_loss_mismatch": 5,
       "eligibility_fallback": 158,
       "truncated": 40,
-      "qubits_mean": 3.4858444966164894,
-      "qubits_p95": 6.0,
-      "qubits_max": 18
+      "qubits_mean": 1.6443170832757907,
+      "qubits_p95": 3.0,
+      "qubits_max": 9
      }
     }
    }
   },
   "5.0": {
-   "seconds": 15.1,
+   "seconds": 57.3,
    "policies": {
     "closest-idle": {
      "mean": {
@@ -6579,9 +6579,9 @@
       "model_loss_mismatch": 10,
       "eligibility_fallback": 267,
       "truncated": 495,
-      "qubits_mean": 3.025659741718136,
-      "qubits_p95": 6.0,
-      "qubits_max": 18
+      "qubits_mean": 1.9473891072431218,
+      "qubits_p95": 5.0,
+      "qubits_max": 12
      }
     },
     "paircover-q (lam=5)": {
@@ -6989,9 +6989,9 @@
       "model_loss_mismatch": 7,
       "eligibility_fallback": 276,
       "truncated": 497,
-      "qubits_mean": 3.021624354077735,
-      "qubits_p95": 6.0,
-      "qubits_max": 18
+      "qubits_mean": 1.9455178611547967,
+      "qubits_p95": 5.0,
+      "qubits_max": 12
      }
     },
     "paircover-q (lam=10)": {
@@ -7399,9 +7399,9 @@
       "model_loss_mismatch": 10,
       "eligibility_fallback": 291,
       "truncated": 501,
-      "qubits_mean": 3.0277277840269967,
-      "qubits_p95": 6.0,
-      "qubits_max": 18
+      "qubits_mean": 1.947525309336333,
+      "qubits_p95": 5.0,
+      "qubits_max": 12
      }
     }
    }
