@@ -88,17 +88,36 @@ _VIEW_SUBTITLES = {
 # Design tokens
 # --------------------------------------------------------------------------- #
 
-COLORS = {
-    "bg": "#070B14", "surface": "#101827", "surface_2": "#172338",
-    "border": "#465A7E",       # ≥3:1 on bg and surface (non-text contrast)
-    "divider": "#22314E",      # decorative hairlines only
-    "text": "#E6EDF7", "muted": "#9FB0C8",
-    "teal": "#2DD4BF",         # available / feasible / validated
-    "amber": "#F5A524",        # coverage risk / caution / synthetic
-    "red": "#FF6B6B",          # critical / infeasible / failure
-    "blue": "#60A5FA", "violet": "#C4A7FF",
+_PALETTES = {
+    "light": {"bg": "#F4F6F9", "surface": "#FFFFFF", "surface_2": "#EEF2F7", "border": "#C3CDDA", "divider": "#E1E7EF",
+              "text": "#14202E", "muted": "#556274", "teal": "#16803C", "amber": "#A15C00", "red": "#C62828",
+              "blue": "#0B63C4", "violet": "#6D4AD6"},
+    "dark": {"bg": "#0D131B", "surface": "#151D28", "surface_2": "#1C2633", "border": "#3A4B62", "divider": "#223042",
+             "text": "#E6EDF5", "muted": "#9AA9BC", "teal": "#3DDC97", "amber": "#F5B946", "red": "#FF6B6B",
+             "blue": "#5AA9FF", "violet": "#B69CFF"},
 }
-_METHOD_PALETTE = [COLORS["violet"], COLORS["blue"], "#E0A3D8", "#8FD3E8", "#B8C4D9"]
+
+
+def theme_mode() -> str:
+    """'light' or 'dark': the sidebar switch if used, else Streamlit's detected theme, else dark."""
+    try:
+        # Streamlit keeps its embed_options out of st.query_params, so read the active theme instead.
+        return "light" if st.context.theme.type == "light" else "dark"
+    except Exception:  # outside a Streamlit run (tests, scripts)
+        return "dark"
+
+
+class _ThemeColors(dict):
+    """COLORS[...] looks colours up for the active theme each time (Plotly cannot read CSS variables)."""
+    def __getitem__(self, key: str) -> str:
+        return _PALETTES[theme_mode()][key]
+
+    def get(self, key: str, default: Any = None) -> Any:
+        return _PALETTES[theme_mode()].get(key, default)
+
+
+COLORS = _ThemeColors(_PALETTES["dark"])
+_METHOD_PALETTE = ["#7C5CE0", "#2F80D6", "#C2569B", "#1E9AA8", "#7A8798"]  # mid-tones readable on both themes
 
 SYNTHETIC_LABEL = "SYNTHETIC TOPOLOGY"
 SYNTHETIC_NOTE = (
@@ -108,18 +127,31 @@ SYNTHETIC_NOTE = (
 _CSS = f"""
 <style>
 :root {{
-  --bg:{COLORS['bg']}; --surface:{COLORS['surface']}; --surface2:{COLORS['surface_2']};
-  --border:{COLORS['border']}; --divider:{COLORS['divider']}; --text:{COLORS['text']}; --muted:{COLORS['muted']};
-  --teal:{COLORS['teal']}; --amber:{COLORS['amber']}; --red:{COLORS['red']};
-  --blue:{COLORS['blue']}; --violet:{COLORS['violet']};
+  /* Neutrals */
+  --bg: light-dark(#F4F6F9, #0D131B);
+  --surface: light-dark(#FFFFFF, #151D28);
+  --surface2: light-dark(#EEF2F7, #1C2633);
+  --border: light-dark(#C3CDDA, #3A4B62);
+  --divider: light-dark(#E1E7EF, #223042);
+  --text: light-dark(#14202E, #E6EDF5);
+  --muted: light-dark(#556274, #9AA9BC);
+  --shadow: light-dark(rgba(20, 32, 46, 0.07), var(--shadow));
+  /* Meanings (same in both modes): call = red, ambulance moving = blue,
+     held / backup kept / valid = green ("teal" is its legacy name), risk = amber, quantum = violet */
+  --red: light-dark(#C62828, #FF6B6B);
+  --blue: light-dark(#0B63C4, #5AA9FF);
+  --teal: light-dark(#16803C, #3DDC97);
+  --amber: light-dark(#A15C00, #F5B946);
+  --violet: light-dark(#6D4AD6, #B69CFF);
+  --accent: var(--blue);
+  --on-accent: light-dark(#FFFFFF, #06223F);
 }}
 .stApp {{
-  background: radial-gradient(circle at 50% 0%, #0f1c34 0%, #080d19 65%, #050811 100%) fixed !important;
+  background: var(--bg) !important;
   color: var(--text);
 }}
 [data-testid="stSidebar"] {{
-  background: linear-gradient(180deg, #090e1a 0%, #050811 100%) !important;
-  border-right: 1px solid rgba(70, 90, 126, 0.28) !important;
+  border-right: 1px solid var(--divider) !important;
 }}
 .sidebar-status-chip {{
   display: inline-flex;
@@ -128,8 +160,8 @@ _CSS = f"""
   font-size: 0.73rem;
   font-weight: 600;
   color: var(--teal);
-  background: rgba(45, 212, 191, 0.1);
-  border: 1px solid rgba(45, 212, 191, 0.3);
+  background: color-mix(in srgb, var(--teal) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--teal) 30%, transparent);
   padding: 3px 9px;
   border-radius: 999px;
   margin-top: 4px;
@@ -152,7 +184,7 @@ _CSS = f"""
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #798ea8;
+  color: var(--muted);
   margin: 16px 0 6px 0;
 }}
 header[data-testid="stHeader"] {{
@@ -168,7 +200,7 @@ header[data-testid="stHeader"] {{
 :focus-visible {{ outline:2px solid var(--blue) !important; outline-offset:2px; }}
 .pc-header {{ display:flex; justify-content:space-between; align-items:flex-start; gap:1rem;
   flex-wrap:wrap; padding-bottom:.9rem; margin-bottom:1rem; border-bottom:1px solid var(--divider); }}
-.pc-eyebrow {{ color:var(--teal); font-size:.8rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }}
+.pc-eyebrow {{ color:var(--accent); font-size:.8rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }}
 .pc-title {{ font-size:1.75rem; font-weight:700; margin:.1rem 0 .2rem; line-height:1.2; }}
 .pc-sub {{ color:var(--muted); font-size:.95rem; max-width:64ch; }}
 .pc-section {{ margin:1.5rem 0 .35rem; font-size:1.05rem; font-weight:700; }}
@@ -176,18 +208,16 @@ header[data-testid="stHeader"] {{
 
 /* Translucent Glassmorphism Cards */
 .stats, .call, .unit, .res, .mapbox, .why, .empty, .pc-kpi, .pc-state, .top-summary-card {{
-  background: rgba(16, 24, 39, 0.78) !important;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(70, 90, 126, 0.35) !important;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  background: var(--surface) !important;
+  border: 1px solid color-mix(in srgb, var(--border) 35%, transparent) !important;
+  box-shadow: 0 4px 18px var(--shadow);
   border-radius: 8px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }}
 .call:hover, .unit:hover, .pc-kpi:hover {{
-  border-color: rgba(45, 212, 191, 0.5) !important;
+  border-color: color-mix(in srgb, var(--teal) 50%, transparent) !important;
   transform: translateY(-1px);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 6px 24px var(--shadow);
 }}
 
 /* Executive Top Summary Card */
@@ -213,12 +243,15 @@ header[data-testid="stHeader"] {{
 }}
 .top-summary-kpis {{
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  /* Six tiles: 3 x 2 on laptops, one row on wide screens, 2 x 3 on phones (auto-fit left one tile alone on a second row). */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }}
+@media (min-width: 1600px) {{ .top-summary-kpis {{ grid-template-columns: repeat(6, minmax(0, 1fr)); }} }}
+@media (max-width: 640px) {{ .top-summary-kpis {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }} }}
 .top-kpi-box {{
-  background: rgba(23, 35, 56, 0.6);
-  border: 1px solid rgba(70, 90, 126, 0.3);
+  background: var(--surface2);
+  border: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
   border-radius: 6px;
   padding: 8px 12px;
   display: flex;
@@ -246,8 +279,8 @@ header[data-testid="stHeader"] {{
   color: var(--muted);
 }}
 .tradeoff-box {{
-  background: rgba(45, 212, 191, 0.07);
-  border: 1px solid rgba(45, 212, 191, 0.28);
+  background: color-mix(in srgb, var(--teal) 7%, transparent);
+  border: 1px solid color-mix(in srgb, var(--teal) 28%, transparent);
   border-radius: 6px;
   padding: 10px 14px;
   font-size: 0.88rem;
@@ -255,8 +288,8 @@ header[data-testid="stHeader"] {{
   color: var(--text);
 }}
 .tradeoff-box.warn {{
-  background: rgba(245, 165, 36, 0.08);
-  border-color: rgba(245, 165, 36, 0.32);
+  background: color-mix(in srgb, var(--amber) 8%, transparent);
+  border-color: color-mix(in srgb, var(--amber) 32%, transparent);
 }}
 
 /* KPIs & Badges */
@@ -269,18 +302,18 @@ header[data-testid="stHeader"] {{
 .pc-kpi-hint {{ color:var(--muted); font-size:.84rem; margin-top:.1rem; overflow-wrap:anywhere; }}
 .pc-badge {{ display:inline-flex; align-items:center; gap:.35rem; padding:.16rem .6rem; margin:0 .25rem .25rem 0;
   border-radius:999px; font-size:.8rem; font-weight:700; border:1px solid; white-space:nowrap; }}
-.pc-badge.ok {{ color:var(--teal); border-color:var(--teal); background:rgba(45,212,191,.10); }}
-.pc-badge.warn,.pc-badge.synthetic {{ color:var(--amber); border-color:var(--amber); background:rgba(245,165,36,.10); }}
-.pc-badge.crit {{ color:var(--red); border-color:var(--red); background:rgba(255,107,107,.10); }}
-.pc-badge.info {{ color:var(--blue); border-color:var(--blue); background:rgba(96,165,250,.10); }}
-.pc-badge.violet {{ color:var(--violet); border-color:var(--violet); background:rgba(196,167,255,.10); }}
+.pc-badge.ok {{ color:var(--teal); border-color:var(--teal); background:color-mix(in srgb, var(--teal) 10%, transparent); }}
+.pc-badge.warn,.pc-badge.synthetic {{ color:var(--amber); border-color:var(--amber); background:color-mix(in srgb, var(--amber) 10%, transparent); }}
+.pc-badge.crit {{ color:var(--red); border-color:var(--red); background:color-mix(in srgb, var(--red) 10%, transparent); }}
+.pc-badge.info {{ color:var(--blue); border-color:var(--blue); background:color-mix(in srgb, var(--blue) 10%, transparent); }}
+.pc-badge.violet {{ color:var(--violet); border-color:var(--violet); background:color-mix(in srgb, var(--violet) 10%, transparent); }}
 .pc-badge.synthetic {{ letter-spacing:.08em; }}
 .pc-callout {{ display:flex; gap:.7rem; align-items:flex-start; border-radius:8px;
   padding:.65rem .9rem; margin:.4rem 0 1rem; font-size:.92rem; }}
-.pc-callout.ok {{ border-color:var(--teal); background:rgba(45,212,191,.07); }}
-.pc-callout.warn {{ border-color:var(--amber); background:rgba(245,165,36,.08); }}
-.pc-callout.crit {{ border-color:var(--red); background:rgba(255,107,107,.08); }}
-.pc-callout.info {{ border-color:var(--blue); background:rgba(96,165,250,.07); }}
+.pc-callout.ok {{ border-color:var(--teal); background:color-mix(in srgb, var(--teal) 7%, transparent); }}
+.pc-callout.warn {{ border-color:var(--amber); background:color-mix(in srgb, var(--amber) 8%, transparent); }}
+.pc-callout.crit {{ border-color:var(--red); background:color-mix(in srgb, var(--red) 8%, transparent); }}
+.pc-callout.info {{ border-color:var(--blue); background:color-mix(in srgb, var(--blue) 7%, transparent); }}
 
 /* Emergency Dispatch Console Prototype Styles */
 .stats {{ display:flex; flex-wrap:wrap; gap:6px 28px; padding:10px 16px; border-bottom:1px solid var(--divider); font-size:13px; color:var(--muted); margin-bottom:12px; }}
@@ -291,7 +324,7 @@ header[data-testid="stHeader"] {{
 .call .top, .unit .top {{ display:flex; justify-content:space-between; align-items:center; gap:8px; }}
 .call .id, .unit .id {{ font-size:17px; font-weight:700; color:var(--text); }}
 .pr {{ font-size:11px; padding:2px 6px; border-radius:3px; background:var(--surface2); color:var(--text); white-space:nowrap; }}
-.pr.hi {{ background:rgba(255,107,107,0.18); color:var(--red); font-weight:700; }}
+.pr.hi {{ background:color-mix(in srgb, var(--red) 18%, transparent); color:var(--red); font-weight:700; }}
 .sub {{ font-size:12px; color:var(--muted); }}
 .elig {{ display:flex; flex-wrap:wrap; gap:4px; }}
 .elig span {{ font-size:11.5px; border:1px solid var(--border); border-radius:3px; padding:1px 5px; color:var(--muted); }}
@@ -307,15 +340,15 @@ svg text {{ fill:var(--text); }}
 .ln {{ stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3 4; fill:none; }}
 .ln.off {{ opacity:.22; stroke-dasharray:2 4; }}
 .ln.on {{ stroke:var(--blue); stroke-width:3.5; stroke-dasharray:none; }}
-.ln.on.kept {{ stroke:var(--teal) !important; stroke-width:3.5; filter:drop-shadow(0 0 5px rgba(45,212,191,0.5)); }}
-.ln.on.hit {{ stroke:var(--amber) !important; stroke-width:3.5; filter:drop-shadow(0 0 5px rgba(245,165,36,0.5)); }}
+.ln.on.kept {{ stroke:var(--teal) !important; stroke-width:3.5; filter:drop-shadow(0 0 5px color-mix(in srgb, var(--teal) 50%, transparent)); }}
+.ln.on.hit {{ stroke:var(--amber) !important; stroke-width:3.5; filter:drop-shadow(0 0 5px color-mix(in srgb, var(--amber) 50%, transparent)); }}
 
 /* Animated Map Elements */
 @keyframes traceDash {{
   to {{ stroke-dashoffset: -20; }}
 }}
 .ln-trace {{
-  stroke: rgba(255, 255, 255, 0.85);
+  stroke: var(--surface);
   stroke-width: 2;
   stroke-dasharray: 6 12;
   animation: traceDash 1.2s linear infinite;
@@ -346,8 +379,8 @@ svg text {{ fill:var(--text); }}
   .mapbox *, .call-pulse, .ln-trace, .veh-marker {{ animation: none !important; }}
 }}
 
-.lt {{ font-size:11px; fill:var(--muted); paint-order:stroke; stroke:var(--surface); stroke-width:4px; }}
-.lt.on {{ fill:var(--blue); font-weight:700; font-size:12.5px; }}
+.lt {{ font-size:13px; fill:var(--muted); paint-order:stroke; stroke:var(--surface); stroke-width:4px; }}
+.lt.on {{ fill:var(--blue); font-weight:700; font-size:14px; }}
 .lt.on.kept {{ fill:var(--teal); }}
 .lt.on.hit {{ fill:var(--amber); }}
 .lt.off {{ opacity:.3; }}
@@ -355,20 +388,20 @@ svg text {{ fill:var(--text); }}
 .cap {{ stroke:var(--amber); stroke-width:58; stroke-linecap:round; opacity:.16; fill:none; }}
 .cap.hit {{ stroke:var(--red); opacity:.32; }}
 .cap.kept {{ stroke:var(--teal); opacity:.22; }}
-.capt {{ font-size:11px; fill:var(--amber); paint-order:stroke; stroke:var(--surface); stroke-width:4px; }}
+.capt {{ font-size:13px; fill:var(--amber); paint-order:stroke; stroke:var(--surface); stroke-width:4px; }}
 .capt.hit {{ fill:var(--red); font-weight:700; }}
 .capt.kept {{ fill:var(--teal); font-weight:700; }}
 
 .u rect {{ fill:var(--surface); stroke:var(--text); stroke-width:1.6; }}
 .u.go rect {{ fill:var(--blue); stroke:var(--blue); }}
-.u.go .uid {{ fill:#ffffff; font-weight:700; }}
+.u.go .uid {{ fill:var(--on-accent); font-weight:700; }}
 .c circle {{ fill:var(--surface); stroke:var(--red); stroke-width:2; }}
-.c.unserved circle {{ fill:rgba(255,107,107,0.18); stroke-dasharray:4 3; }}
-.uid {{ font-size:13px; font-weight:700; text-anchor:middle; }}
-.ust {{ font-size:10.5px; fill:var(--muted); text-anchor:middle; paint-order:stroke; stroke:var(--surface); stroke-width:4px; }}
+.c.unserved circle {{ fill:color-mix(in srgb, var(--red) 18%, transparent); stroke-dasharray:4 3; }}
+.uid {{ font-size:15px; font-weight:700; text-anchor:middle; }}
+.ust {{ font-size:12px; fill:var(--muted); text-anchor:middle; paint-order:stroke; stroke:var(--surface); stroke-width:4px; }}
 .legend {{ display:flex; flex-wrap:wrap; gap:4px 16px; font-size:12px; color:var(--muted); margin-bottom:6px; }}
 .legend i {{ display:inline-block; width:18px; height:0; border-top:2px dashed var(--muted); vertical-align:middle; margin-right:5px; }}
-.legend i.a {{ border-top:3px solid var(--teal); }}
+.legend i.a {{ border-top:3px solid var(--blue); }}
 .legend i.b {{ border:0; height:10px; background:var(--amber); opacity:.35; border-radius:5px; }}
 
 .empty {{ padding:16px; color:var(--muted); font-size:13px; text-align:center; }}
@@ -376,15 +409,15 @@ svg text {{ fill:var(--text); }}
 .res > div {{ padding:10px 12px; display:flex; flex-direction:column; gap:6px; }}
 .res > div + div {{ border-top:1px solid var(--divider); }}
 .badge {{ font-size:11.5px; padding:2px 7px; border-radius:3px; white-space:nowrap; font-weight:600; display:inline-block; }}
-.badge.ok {{ color:var(--teal); border:1px solid var(--teal); background:rgba(45,212,191,0.1); }}
-.badge.bad {{ color:var(--red); border:1px solid var(--red); background:rgba(255,107,107,0.1); }}
-.badge.warn {{ color:var(--amber); border:1px solid var(--amber); background:rgba(245,165,36,0.1); }}
+.badge.ok {{ color:var(--teal); border:1px solid var(--teal); background:color-mix(in srgb, var(--teal) 10%, transparent); }}
+.badge.bad {{ color:var(--red); border:1px solid var(--red); background:color-mix(in srgb, var(--red) 10%, transparent); }}
+.badge.warn {{ color:var(--amber); border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 10%, transparent); }}
 .row {{ display:flex; justify-content:space-between; gap:10px; align-items:baseline; font-size:13px; }}
 .row > span:first-child {{ color:var(--muted); }}
 .stack {{ display:flex; height:12px; border-radius:2px; overflow:hidden; background:var(--surface2); width:100%; margin:3px 0; }}
-.stack i {{ display:block; background:#6e8280; }}
+.stack i {{ display:block; background:var(--muted); }}
 .stack i.cv {{ background:var(--amber); }}
-.total {{ font-size:24px; font-weight:700; color:var(--teal); font-variant-numeric:tabular-nums; }}
+.total {{ font-size:24px; font-weight:700; color:var(--text); font-variant-numeric:tabular-nums; }}
 .note {{ font-size:12px; color:var(--muted); line-height:1.4; }}
 .note.q {{ border-left:3px solid var(--violet); padding-left:8px; margin:4px 0; }}
 .note.w {{ border-left:3px solid var(--amber); padding-left:8px; margin:4px 0; color:var(--amber); }}
@@ -407,7 +440,7 @@ td.num, th.num {{ text-align:right; font-variant-numeric:tabular-nums; white-spa
 .bars {{ display:flex; flex-direction:column; gap:5px; }}
 .b {{ display:grid; grid-template-columns:64px minmax(50px,1fr) 34px; gap:8px; align-items:center; font-size:12px; }}
 .b .t {{ height:12px; background:var(--surface2); position:relative; border-radius:2px; }}
-.b .t i {{ display:block; height:100%; border-radius:2px; background:#6e8280; }}
+.b .t i {{ display:block; height:100%; border-radius:2px; background:var(--muted); }}
 .b.opt .t i {{ background:var(--teal); }}
 .b.inf .t i {{ background:repeating-linear-gradient(135deg,var(--red) 0 3px,transparent 3px 6px); }}
 .b .t u {{ position:absolute; top:-3px; bottom:-3px; width:0; border-left:2px solid var(--text); }}
@@ -424,6 +457,33 @@ td.num, th.num {{ text-align:right; font-variant-numeric:tabular-nums; white-spa
 .trf {{ fill:var(--violet); opacity:.1; }}
 .gl {{ stroke:var(--teal); stroke-width:1.5; stroke-dasharray:5 4; }}
 .ax {{ font-size:10.5px; fill:var(--muted); }}
+/* Theme switch (sidebar) */
+.theme-switch {{ display:flex; gap:4px; background:var(--surface2); border:1px solid var(--divider); border-radius:999px; padding:3px; margin:2px 0 6px; }}
+.theme-switch a {{ flex:1; text-align:center; font-size:.8rem; font-weight:600; padding:4px 8px; border-radius:999px; color:var(--muted) !important; text-decoration:none !important; }}
+.theme-switch a.on {{ background:var(--surface); color:var(--text) !important; box-shadow:0 1px 3px var(--shadow); }}
+
+/* Step bar: where the user is in the dispatch workflow */
+.steps {{ display:flex; gap:6px; margin:0 0 12px; flex-wrap:wrap; }}
+.step {{ flex:1 1 150px; display:flex; align-items:center; gap:8px; padding:7px 12px; border-radius:8px; border:1px solid var(--divider);
+  background:var(--surface); color:var(--muted); font-size:.86rem; min-width:0; }}
+.step b {{ display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%;
+  background:var(--surface2); color:var(--muted); font-size:.78rem; flex:none; }}
+.step.done {{ color:var(--text); }}
+.step.done b {{ background:color-mix(in srgb, var(--teal) 18%, transparent); color:var(--teal); }}
+.step.now {{ color:var(--text); border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; }}
+.step.now b {{ background:var(--accent); color:var(--on-accent); }}
+
+/* Status line: one plain sentence about what just happened */
+.status-line {{ display:block; padding:10px 14px; line-height:1.5; border-radius:8px; margin:0 0 12px;
+  background:var(--surface); border:1px solid var(--divider); border-left:4px solid var(--muted); font-size:.95rem; color:var(--text); }}
+.status-line.ok {{ border-left-color:var(--teal); }} .status-line.warn {{ border-left-color:var(--amber); }}
+.status-line.quantum {{ border-left-color:var(--violet); }} .status-line.idle {{ border-left-color:var(--accent); }}
+.status-line .k {{ font-weight:700; }}
+
+/* Colour key: the five meanings, shown once on the console */
+.ckey {{ display:flex; flex-wrap:wrap; gap:4px 16px; font-size:.8rem; color:var(--muted); margin:-4px 0 12px; }}
+.ckey span {{ display:inline-flex; align-items:center; gap:6px; }}
+.ckey i {{ width:10px; height:10px; border-radius:50%; display:inline-block; }}
 </style>
 """
 
@@ -680,7 +740,8 @@ def render_dispatch_console(
     current_key: str | None = None,
     on_run: Callable[[str, dict[str, Any]], None] | None = None,
     failures: Sequence[Mapping[str, Any]] | None = None,
-    key_prefix: str = "dc"
+    key_prefix: str = "dc",
+    on_compare: Callable[[list[str]], None] | None = None
 ) -> None:
     """
     Primary emergency-dispatch operations console view.
@@ -727,6 +788,34 @@ def render_dispatch_console(
         unsafe_allow_html=True
     )
 
+    # 1b. Where the user is (step bar), what the colours mean, and one plain sentence
+    #     about what is on screen. Shown on every visit so the workflow is never a guess.
+    steps = H.workflow_steps(len(scen_runs), len(scen_runs) >= 2)
+    st.markdown(
+        '<div class="steps">' + "".join(
+            f'<div class="step {state}"><b>{"✓" if state == "done" else i + 1}</b>{label}</div>'
+            for i, (label, state) in enumerate(steps)) + '</div>'
+        '<div class="ckey">'
+        '<span><i style="background:var(--red)"></i>emergency call</span>'
+        '<span><i style="background:var(--blue)"></i>ambulance dispatched</span>'
+        '<span><i style="background:var(--teal)"></i>held in reserve / backup kept</span>'
+        '<span><i style="background:var(--amber)"></i>coverage at risk</span>'
+        '<span><i style="background:var(--violet)"></i>quantum</span>'
+        '</div>',
+        unsafe_allow_html=True
+    )
+    tone, sentence = H.status_sentence(r, s)
+    if not scen_runs and on_compare:
+        g1, g2 = st.columns([3, 1], vertical_alignment="center")
+        with g1:
+            st.markdown(f'<div class="status-line {tone}" style="margin:0;">{sentence}</div>', unsafe_allow_html=True)
+        with g2:
+            if st.button("▶ Compare nearest vs exact", key=f"{key_prefix}_guided", type="primary", use_container_width=True,
+                         help="Runs Nearest available, then Exact optimisation, and shows what changed."):
+                on_compare(["Nearest available", "Exact optimisation"])
+    else:
+        st.markdown(f'<div class="status-line {tone}">{sentence}</div>', unsafe_allow_html=True)
+
     # 2. Executive Decision Summary Card (Judge-Friendly Results Presentation)
     if r and r.get("feasible"):
         total_obj = float(r.get("objective_value", 0.0))
@@ -738,66 +827,77 @@ def render_dispatch_console(
         served_str = f"{len(calls) - unserved_count} of {len(calls)}"
         fleet_str = f"{asg_count} Assigned · {held_count} Held in Reserve"
 
-        # Baseline comparison
-        greedy_run = next((x for x in scen_runs if "greedy" in x["method"].lower() and x.get("feasible")), None)
-        exact_run = next((x for x in scen_runs if "exact" in x["method"].lower() and x.get("feasible")), None)
-        
+        # Baseline comparison. Every figure below comes from a run in this session or from
+        # the scenario's enumerated landscape; nothing is quoted from a run that did not happen.
+        greedy_run = next((x for x in reversed(scen_runs) if "greedy" in x["method"].lower() and x.get("feasible")), None)
+        exact_run = next((x for x in reversed(scen_runs) if "exact" in x["method"].lower() and x.get("feasible")), None)
+        opt_obj = H.landscape_optimum(s.get("landscape"))
+        n_plans = len((s.get("landscape") or {}).get("feasible", []))
+        n_qubits = len(s.get("variables", []))
+        by_amb_now = {a for a, _ in r.get("assignments", [])}
+        broken = [p for p in pairs if p[0] in by_amb_now and p[1] in by_amb_now]
+
         m_lower = r["method"].lower()
         if "exact" in m_lower:
             prov_badge = '<span class="pc-badge ok">Classical Ground Truth</span>'
             if greedy_run:
-                g_obj = float(greedy_run.get("objective_value", 22.0))
+                g_obj = float(greedy_run["objective_value"])
                 diff = total_obj - g_obj
                 pct = (diff / g_obj) * 100 if g_obj else 0
-                baseline_str = f"{diff:+.1f} ({pct:+.1f}%) vs Greedy ({g_obj:.1f})"
-            elif sid == "scenario_2":
-                baseline_str = "-9.0 (-40.9%) vs Greedy (22.0)"
+                baseline_str = f"{diff:+.1f} ({pct:+.1f}%) vs Nearest available ({g_obj:.1f})"
+                g_resp = float(greedy_run.get("weighted_response_cost") or 0.0)
+                g_cov = float(greedy_run.get("coverage_penalty") or 0.0)
+                tradeoff_html = (
+                    '<div class="tradeoff-box">'
+                    f'⚖️ <b>The trade-off:</b> compared with Nearest available, response cost goes from <b>{g_resp:g}</b> to <b>{resp_cost:g}</b> '
+                    f'and the coverage penalty from <b>{g_cov:g}</b> to <b>{cov_cost:g}</b>, so the total falls from <b>{g_obj:g}</b> to <b>{total_obj:g}</b>. '
+                    '<i>Exact classical solution; no quantum advantage is claimed.</i>'
+                    '</div>'
+                )
             else:
-                baseline_str = "Global Optimum"
-            tradeoff_html = (
-                '<div class="tradeoff-box">'
-                '⚖️ <b>Operational Trade-off:</b> The Exact optimizer incurs a weighted response cost of <b>13.0</b> instead of <b>12.0</b> '
-                '(assigning A3 to C3 in 5 min instead of A2 in 4 min). However, holding A2 in reserve preserves mutual backup for Zone Shared, '
-                'completely removing the <b>+10.0 coverage penalty</b>. This lowers the total objective from <b>22.0 to 13.0</b> (-40.9% improvement). '
-                '<i>Note: This is an exact classical solution; quantum advantage is neither demonstrated nor claimed.</i>'
-                '</div>'
-            ) if sid == "scenario_2" else (
-                '<div class="tradeoff-box">'
-                '⚖️ <b>Operational Trade-off:</b> Exact solution rigorously validates baseline linear savings against coupling penalties.'
-                '</div>'
-            )
+                baseline_str = "Run Nearest available to compare"
+                tradeoff_html = (
+                    '<div class="tradeoff-box">'
+                    f'⚖️ This is the cheapest of all <b>{n_plans}</b> valid plans, found by checking every one. '
+                    'Run <b>Nearest available</b> next to see what it avoids.'
+                    '</div>'
+                )
         elif "greedy" in m_lower or "nearest" in m_lower:
             prov_badge = '<span class="pc-badge warn">Greedy Baseline</span>'
             if exact_run:
-                e_obj = float(exact_run.get("objective_value", 13.0))
+                e_obj = float(exact_run["objective_value"])
                 diff = total_obj - e_obj
-                baseline_str = f"Suboptimal ({diff:+.1f} vs Exact {e_obj:.1f})"
-            elif sid == "scenario_2":
-                baseline_str = "Suboptimal (+9.0 vs Exact 13.0)"
+                baseline_str = f"{diff:+.1f} vs Exact ({e_obj:.1f})" if abs(diff) > 1e-9 else f"Matches Exact ({e_obj:.1f})"
             else:
-                baseline_str = "Priority-Greedy Heuristic"
-            tradeoff_html = (
-                '<div class="tradeoff-box warn">'
-                '⚠️ <b>Greedy Deficit:</b> Nearest-available dispatch minimizes raw travel time (<b>12.0 min</b>), but dispatches both A1 and A2. '
-                'This strips mutual backup coverage in Zone Shared, triggering an automatic <b>+10.0 coverage penalty</b> and increasing total objective to <b>22.0</b>.'
-                '</div>'
-            ) if sid == "scenario_2" else (
-                '<div class="tradeoff-box warn">'
-                '⚠️ <b>Greedy Baseline:</b> Nearest-available dispatch does not account for quadratic coverage couplings.'
-                '</div>'
-            )
+                baseline_str = "Run Exact optimisation to compare"
+            if broken:
+                pair_txt = ", ".join(f"{a} and {b}" for a, b, _ in broken)
+                tradeoff_html = (
+                    '<div class="tradeoff-box warn">'
+                    f'⚠️ <b>What nearest-available misses:</b> it sends the closest unit to each call, so both backup partners <b>{pair_txt}</b> leave. '
+                    f'That adds a coverage penalty of <b>{cov_cost:g}</b> on top of a response cost of <b>{resp_cost:g}</b>, for a total of <b>{total_obj:g}</b>.'
+                    '</div>'
+                )
+            else:
+                tradeoff_html = (
+                    '<div class="tradeoff-box warn">'
+                    '⚠️ <b>Nearest available</b> sends the closest unit to each call and ignores backup coverage. '
+                    f'Here that costs <b>{resp_cost:g}</b> in response and <b>{cov_cost:g}</b> in coverage penalty.'
+                    '</div>'
+                )
         elif H.provenance(r)["is_qaoa"]:
             prov_badge = '<span class="pc-badge violet">Quantum Variational Heuristic</span>'
-            if exact_run:
-                e_obj = float(exact_run.get("objective_value", 13.0))
-                diff = total_obj - e_obj
-                baseline_str = "Matches Exact (13.0)" if abs(diff) < 1e-4 else f"{diff:+.1f} vs Exact ({e_obj:.1f})"
+            ref_obj = float(exact_run["objective_value"]) if exact_run else opt_obj
+            if ref_obj is not None:
+                gap = total_obj - ref_obj
+                baseline_str = f"Matches optimum ({ref_obj:g})" if abs(gap) < 1e-9 else f"{gap:+.1f} vs optimum ({ref_obj:g})"
+                verdict = "the same as the true optimum" if abs(gap) < 1e-9 else f"{gap:g} above the true optimum of {ref_obj:g}"
             else:
-                baseline_str = "Ground State Hit" if total_obj <= 13.0 else "Near-Optimal Sample"
+                baseline_str, verdict = "—", "not compared"
             tradeoff_html = (
                 '<div class="tradeoff-box">'
-                f'⚛️ <b>Variational Heuristic Result:</b> QAOA sampled the optimal configuration with objective <b>{total_obj:.1f}</b>. '
-                '<i>Note: Executed on a noiseless classical statevector simulator with 6 qubits. No physical quantum advantage is demonstrated.</i>'
+                f'⚛️ <b>QAOA result:</b> the cheapest valid plan among its samples costs <b>{total_obj:g}</b>, {verdict}. '
+                f'<i>Run on a noiseless classical simulator with {n_qubits} qubits. No quantum advantage is claimed.</i>'
                 '</div>'
             )
         else:
@@ -808,7 +908,7 @@ def render_dispatch_console(
         st.markdown(
             f'<div class="top-summary-card">'
             f'<div class="top-summary-head">'
-            f'<div><b>Selected Algorithm: {r["method"]}</b> {prov_badge}</div>'
+            f'<div><b>Method shown: {H.display_method(r["method"])}</b> {prov_badge}</div>'
             f'<div style="font-size:0.8rem;color:var(--muted);">{r.get("experiment", {}).get("timestamp", "Session Run")}</div>'
             f'</div>'
             f'<div class="top-summary-kpis">'
@@ -879,7 +979,7 @@ def render_dispatch_console(
         st.markdown(f'<div class="cards">{"".join(unit_cards)}</div>', unsafe_allow_html=True)
 
     with c_zone:
-        title_text = r["method"] if r else "candidates only · no decision yet"
+        title_text = H.display_method(r["method"]) if r else "candidates only · no decision yet"
         st.markdown(
             f'<div class="pc-header" style="padding-bottom:4px;margin-bottom:8px;">'
             f'<span class="pc-eyebrow">Simulated Response Zone</span>'
@@ -947,7 +1047,7 @@ def render_dispatch_console(
                 st.markdown(
                     f'<div class="res">'
                     f'<div>'
-                    f'<div class="row"><b>{r["method"]}</b><span class="badge bad">✕ no feasible sample</span></div>'
+                    f'<div class="row"><b>{H.display_method(r["method"])}</b><span class="badge bad">✕ no feasible sample</span></div>'
                     f'<p class="note">No feasible assignment in {shots_val} shots. No dispatch plan is shown.</p>'
                     f'</div>'
                     f'</div>',
@@ -1004,7 +1104,7 @@ def render_dispatch_console(
 
                 card_html = (
                     f'<div class="res">'
-                    f'<div><div class="row"><b>{r["method"]}</b><span class="badge ok">✓ feasible · validated</span></div>{asg_rows}{unserved_rows}</div>'
+                    f'<div><div class="row"><b>{H.display_method(r["method"])}</b><span class="badge ok">✓ feasible · validated</span></div>{asg_rows}{unserved_rows}</div>'
                     f'<div><div class="row"><span>Dispatch cost</span><span class="total">{H.fmt_num(total_obj, 1)}</span></div>'
                     f'<div class="stack"><i style="width:{resp_pct:.1f}%;"></i><i class="cv" style="width:{cov_pct:.1f}%;"></i></div>'
                     f'<div class="row"><span>Weighted response</span><span class="num">{H.fmt_num(resp_cost, 1)}</span></div>'
@@ -1028,7 +1128,7 @@ def render_dispatch_console(
             if why_text:
                 st.markdown(
                     f'<div class="why">'
-                    f'<div class="pc-eyebrow">Why it changed · {r["method"]} against {ref["method"]} · derived from the two results</div>'
+                    f'<div class="pc-eyebrow">Why it changed · {H.display_method(r["method"])} against {H.display_method(ref["method"])} · derived from the two results</div>'
                     f'<p>{why_text}</p>'
                     f'</div>',
                     unsafe_allow_html=True
@@ -1041,7 +1141,7 @@ def render_dispatch_console(
     else:
         if len(scen_runs) > 1:
             run_labels = [
-                f"#{i+1} · {x['method']} · Cost {H.fmt_num(x.get('objective_value'), 1) if x.get('feasible') else 'infeasible'}"
+                f"#{i+1} · {H.display_method(x['method'])} · Cost {H.fmt_num(x.get('objective_value'), 1) if x.get('feasible') else 'infeasible'}"
                 for i, x in enumerate(scen_runs)
             ]
             run_keys = [x.get("experiment", {}).get("run_id") or x["method"] for x in scen_runs]
@@ -1065,7 +1165,7 @@ def render_dispatch_console(
             if x.get("experiment", {}).get("success") is False:
                 st_str += " · not converged"
             ledger_rows.append({
-                "Method": x["method"],
+                "Method": H.display_method(x["method"]),
                 "Assignment": asg_str,
                 "Response": H.fmt_num(x.get("weighted_response_cost"), 1),
                 "Coverage": H.fmt_num(x.get("coverage_penalty"), 1),
@@ -1147,7 +1247,7 @@ def render_results_and_benchmarks(
                 tags.append('<span class="tag g">Nearest available</span>')
             q_hits = sum(1 for m in hit_methods if "qaoa" in m.lower())
             if q_hits:
-                tags.append(f'<span class="tag qq">QAOA best sample · {q_hits} runs</span>')
+                tags.append(f'<span class="tag qq">QAOA best sample · {q_hits} run{"s" if q_hits != 1 else ""}</span>')
             tag_html = f'<span class="tags">{"".join(tags)}</span>' if tags else ''
 
             plan_rows.append(
@@ -1212,11 +1312,22 @@ def render_results_and_benchmarks(
             "Runtime": "—"
         })
         st.dataframe(table_rows, use_container_width=True)
+        # Describe only QAOA runs that actually happened in this session, on this scenario.
+        q_notes = []
+        for q in [x for x in scen_runs if H.provenance(x)["is_qaoa"]][-3:]:
+            qe = q.get("experiment", {})
+            shots = qe.get("shots")
+            if shots and qe.get("sv_opt_prob") is not None:
+                q_notes.append(
+                    f"{q['method']}: optimum in {qe.get('optimum_hits', 0)} / {shots:,} shots ({H.fmt_pct(qe.get('sampled_opt_prob'), 2)}) "
+                    f"against an exact statevector probability of {H.fmt_pct(qe.get('sv_opt_prob'), 2)}; "
+                    f"valid plans in {H.fmt_pct(qe.get('feasibility_rate'), 1)} of shots (exact {H.fmt_pct(qe.get('sv_feas_rate'), 1)})."
+                )
         st.caption(
-            "**Benchmark Consistency & Metric Audit:** In interactive runs with 1,000 shots, QAOA yields ~68 / 1,000 (6.8%) optimum hits and ~720 / 1,000 (72.0%) feasible shots. "
-            "In the audited 10,000-shot experiment (reports/experiment_results.md), it recorded 693 / 10,000 (6.93%) optimum hits and 7,370 / 10,000 (73.70%) feasible shots. "
-            "Both empirical frequencies reflect shot noise around the exact theoretical statevector optimum probability of 6.47% and feasibility rate of 73.41%. "
-            f"Random baselines for {scenario.get('name', 'this scenario')}: {len(feasible_list)}/{total_states} ({H.fmt_pct(base_feas, 2)}) feasible, 1/{total_states} ({H.fmt_pct(base_opt, 2)}) optimum."
+            (("**QAOA runs this session.** " + " ".join(q_notes) + " Sampled figures differ from the exact ones by shot noise. ")
+             if q_notes else "Run QAOA to compare its sampled figures with the exact statevector values here. ")
+            + f"Random guessing on this scenario: {len(feasible_list)}/{total_states} ({H.fmt_pct(base_feas, 2)}) valid, "
+              f"1/{total_states} ({H.fmt_pct(base_opt, 2)}) optimum."
         )
 
         if scen_runs:
@@ -1952,8 +2063,12 @@ def render_quantum_lab(results: Sequence[Mapping[str, Any]] | Mapping[str, Any] 
             else:
                 empty_state("No convergence history", "The backend recorded no per-evaluation trace. Only initial and final energies are available (right).", "📉")
         with c2:
-            fig = build_endpoints_chart(exp)
-            if fig is not None:
+            # The endpoints chart stands in for a missing trace; beside a real trace it only repeats it.
+            fig = build_endpoints_chart(exp) if not hist else None
+            if hist:
+                st.caption(f"Started at {H.fmt_num(hist['values'][0], 3)} and ended at {H.fmt_num(hist['values'][-1], 3)} "
+                           f"after {len(hist['values'])} evaluations (expected energy, not dispatch cost).")
+            elif fig is not None:
                 _chart(fig, f"{key_prefix}_endpoints_{r['method']}_{idx}")
                 st.caption("Two endpoints only — this is not a convergence curve.")
             else:

@@ -673,7 +673,7 @@ def build_map_svg(scenario: Mapping[str, Any], result: Mapping[str, Any] | None 
     # Animated traces and vehicles along active routes
     if is_feas and animate:
         for a, c, t in active_routes:
-            veh_col = "#f5a524" if has_cov_penalty else "#2dd4bf"
+            veh_col = "var(--amber)" if has_cov_penalty else "var(--blue)"  # theme tokens; see ui_components._CSS
             # Route trace line
             svg_parts.append(
                 f'<line class="ln-trace" x1="{X(a):.1f}" y1="{Y(a):.1f}" x2="{X(c):.1f}" y2="{Y(c):.1f}"/>'
@@ -681,7 +681,7 @@ def build_map_svg(scenario: Mapping[str, Any], result: Mapping[str, Any] | None 
             # Moving ambulance marker
             svg_parts.append(
                 f'<g class="veh-marker">'
-                f'<circle r="4.5" fill="{veh_col}" filter="drop-shadow(0 0 5px {veh_col})"/>'
+                f'<circle r="4.5" style="fill:{veh_col};filter:drop-shadow(0 0 4px {veh_col})"/>'
                 f'<animateMotion dur="2.6s" repeatCount="indefinite" path="M {X(a):.1f} {Y(a):.1f} L {X(c):.1f} {Y(c):.1f}"/>'
                 f'</g>'
             )
@@ -768,3 +768,86 @@ def build_trace_svg(exp: Mapping[str, Any], width: int = 520, height: int = 210)
     ]
     return "".join(svg)
 
+
+
+# --------------------------------------------------------------------------- #
+# Plain-language labels
+# --------------------------------------------------------------------------- #
+
+_METHOD_DISPLAY = {
+    "Greedy (Priority Nearest)": "Nearest available",
+    "Exact Classical Solver": "Exact optimisation",
+}
+
+
+def display_method(method: Any) -> str:
+    """Name a method the way the console's method picker does.
+
+    The backend keeps its own method strings (tests and exports rely on them);
+    this only changes what a reader sees. QAOA labels already carry their settings.
+    """
+    name = str(method)
+    return _METHOD_DISPLAY.get(name, name)
+
+
+def landscape_optimum(landscape: Mapping[str, Any] | None) -> float | None:
+    """Lowest dispatch cost among all enumerated feasible plans, or None if unknown."""
+    rows = (landscape or {}).get("feasible") or []
+    vals = [as_float(r.get("obj")) for r in rows]
+    vals = [v for v in vals if v is not None]
+    return min(vals) if vals else None
+
+
+def workflow_steps(n_runs: int, has_comparison: bool) -> list[tuple[str, str]]:
+    """The console's four steps with a state each: 'done', 'now' or 'todo'."""
+    labels = ["Calls arrive", "Choose a method", "Run it", "Compare & see why"]
+    if n_runs == 0:
+        states = ["done", "now", "todo", "todo"]
+    elif not has_comparison:
+        states = ["done", "done", "done", "now"]
+    else:
+        states = ["done", "done", "done", "done"]
+    return list(zip(labels, states))
+
+
+def status_sentence(result: Mapping[str, Any] | None, scenario: Mapping[str, Any]) -> tuple[str, str]:
+    """One plain-English sentence about what the shown result did, and a tone for its colour.
+
+    Built only from the result and scenario passed in; returns (tone, html) with tone in
+    'idle', 'ok', 'warn' or 'quantum'.
+    """
+    calls = list(scenario.get("calls", []))
+    units = list(scenario.get("ambulances", []))
+    if not result:
+        return "idle", (f'<span class="k">No decision yet.</span> {len(calls)} calls are waiting and {len(units)} ambulances are free. '
+                        'Choose a method on the right and press <b>Run</b>, or compare two methods in one click.')
+    name = display_method(result.get("method"))
+    exp = result.get("experiment") or {}
+    if not result.get("feasible"):
+        shots = exp.get("shots")
+        return "warn", (f'<span class="k">{name} found no valid plan</span>'
+                        f'{f" in {shots:,} shots" if shots else ""}. Nothing was dispatched.')
+    asg = list(result.get("assignments") or [])
+    sent = ", ".join(f"{a} → {c}" for a, c in asg) or "no ambulance"
+    sent_units = {a for a, _ in asg}
+    held = [u for u in units if u not in sent_units]
+    pairs = (scenario.get("coverage") or {}).get("pairs", [])
+    broken = [f"{p[0]}+{p[1]}" for p in pairs if p[0] in sent_units and p[1] in sent_units]
+    cost = fmt_num(result.get("objective_value"), 0)
+    unserved = list(result.get("unserved_calls") or [])
+    parts = [f'<span class="k">{name}</span> sent {sent}']
+    if held:
+        parts.append(f"kept {', '.join(held)} in reserve")
+    if broken:
+        parts.append(f"both backup partners {', '.join(broken)} left, so their area lost its backup")
+    elif pairs:
+        parts.append("every backup pair still has a unit at home")
+    if unserved:
+        parts.append(f"{', '.join(unserved)} went unserved")
+    text = "; ".join(parts) + f". Total cost <b>{cost}</b>."
+    if provenance(result)["is_qaoa"]:
+        hits, shots = exp.get("best_sample_hits"), exp.get("shots")
+        if hits is not None and shots:
+            text += f" QAOA saw this plan in {hits} of {shots:,} shots."
+        return "quantum", text
+    return ("warn" if broken else "ok"), text
