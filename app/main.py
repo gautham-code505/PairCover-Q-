@@ -54,8 +54,8 @@ ss.setdefault("scenario_id", "scenario_2")
 
 st.sidebar.markdown(
     f"<div style='margin-bottom:0.4rem;'>"
-    f"<span style='font-size:1.25rem;font-weight:700;color:{ui.COLORS['teal']};'>🚑 PairCover-Q</span>"
-    f"<br><span style='font-size:0.75rem;color:{ui.COLORS['muted']};'>Quantum Emergency Resource Allocation</span>"
+    f"<span style='font-size:1.25rem;font-weight:700;color:var(--accent);'>🚑 PairCover-Q</span>"
+    f"<br><span style='font-size:0.75rem;color:var(--muted);'>Quantum Emergency Resource Allocation</span>"
     f"</div>"
     f"<div class='sidebar-status-chip'>"
     f"<span class='sidebar-status-dot'></span>"
@@ -111,6 +111,22 @@ if "sidebar_scen_pick" not in ss:
 if "hdr_scen_sel" not in ss:
     ss["hdr_scen_sel"] = default_hdr
 
+# Light / dark switch. Streamlit applies a theme only on page load, so each option is a
+# link that reloads the app with Streamlit's own theme option (this starts a new session).
+_mode = ui.theme_mode()
+st.sidebar.markdown("<div class='sidebar-section-label'>APPEARANCE</div>", unsafe_allow_html=True)
+st.sidebar.markdown(
+    "<div class='theme-switch' role='group' aria-label='Colour theme'>"
+    + "".join(
+        f"<a href='{href}' target='_self' class='{'on' if _mode == key else ''}' aria-pressed='{str(_mode == key).lower()}'>{label}</a>"
+        for key, label, href in (("light", "☀ Light", "?embed_options=light_theme"),
+                                 ("dark", "🌙 Dark", "?embed_options=dark_theme"))
+    )
+    + "</div>",
+    unsafe_allow_html=True,
+)
+st.sidebar.caption("Switching reloads the app and clears this session's runs. Without a choice, the app follows your device setting.")
+
 st.sidebar.markdown("<div class='sidebar-section-label'>ACTIVE SCENARIO</div>", unsafe_allow_html=True)
 selected_label = st.sidebar.selectbox(
     "Active Scenario",
@@ -123,7 +139,12 @@ selected_label = st.sidebar.selectbox(
 ss["scenario_id"] = scenario_options[st.session_state["sidebar_scen_pick"]]
 
 st.sidebar.markdown("<div class='sidebar-section-label'>CONSOLE NAVIGATION</div>", unsafe_allow_html=True)
-view = st.sidebar.radio("Console View", ui.PRIMARY_VIEWS, index=0)
+def _on_main_view_change() -> None:
+    # Choosing a main screen leaves any diagnostic tool; otherwise the tool kept
+    # covering the page and the main menu appeared to do nothing.
+    st.session_state["adv_tool_pick"] = "(None - Main Console)"
+
+view = st.sidebar.radio("Console View", ui.PRIMARY_VIEWS, index=0, key="main_view", on_change=_on_main_view_change)
 
 with st.sidebar.expander("🛠️ Advanced Diagnostic Tools", expanded=False):
     st.caption("Inspect individual secondary modules and standalone analytical tools.")
@@ -157,8 +178,8 @@ h_c1, h_c2, h_c3 = st.columns([1.6, 1.4, 0.6], vertical_alignment="center")
 with h_c1:
     st.markdown(
         f'<div style="display:flex;align-items:center;gap:10px;padding:2px 0;">'
-        f'<span style="font-size:22px;font-weight:700;color:{ui.COLORS["teal"]};line-height:1.2;">🚑 PairCover-Q</span>'
-        f'<span style="font-size:13px;color:{ui.COLORS["muted"]};">Emergency dispatch & coverage</span>'
+        f'<span style="font-size:22px;font-weight:700;color:var(--accent);line-height:1.2;">🚑 PairCover-Q</span>'
+        f'<span style="font-size:13px;color:var(--muted);">Emergency dispatch & coverage</span>'
         f'</div>',
         unsafe_allow_html=True
     )
@@ -222,6 +243,24 @@ def on_dispatch_run(method_name: str, params: dict[str, Any]) -> None:
         ss.pop("ql_run", None)
         st.rerun()
 
+def on_dispatch_compare(method_names: list[str], params: dict[str, Any] | None = None) -> None:
+    """Run several methods one after another (guided comparison, Scenario Builder) and show the last."""
+    last_key = None
+    for m in method_names:
+        ok, res = ui.run_with_loading(
+            f"Executing {m} on {scenario['name']}",
+            backend_run, m, scenario, params or {},
+            failures_state=ss, method=m, scenario_id=scenario["scenario_id"]
+        )
+        if ok and res:
+            ui.retain_result(ss, res)
+            last_key = res.get("experiment", {}).get("run_id") or res["method"]
+    if last_key:
+        ss["current_run_key"] = last_key
+        ss.pop("dc_select_run", None)
+        ss.pop("ql_run", None)
+        st.rerun()
+
 # --------------------------------------------------------------------------- #
 # View Router (4 Primary Areas + Collapsible Advanced Diagnostic Tools)
 # --------------------------------------------------------------------------- #
@@ -243,7 +282,8 @@ if effective_view in ("🚑 Dispatch Console", "Dispatch Console"):
         results=ss["pq_results"],
         current_key=ss.get("current_run_key"),
         on_run=on_dispatch_run,
-        failures=ss["pq_failures"]
+        failures=ss["pq_failures"],
+        on_compare=on_dispatch_compare
     )
 
 elif effective_view in ("⚛️ Quantum Lab", "Quantum Lab"):
@@ -271,7 +311,10 @@ elif effective_view == "Overview":
     ui.render_overview(scenario, ss["pq_results"], ss["pq_failures"])
 
 elif effective_view == "Scenario Builder":
-    ui.render_scenario_builder(scenario, ["Nearest available", "Exact optimisation", "QAOA"])
+    sel = ui.render_scenario_builder(scenario, ["Nearest available", "Exact optimisation", "QAOA"])
+    # The form's Run button used to be ignored; run what was ticked.
+    if sel and sel.get("run") and sel.get("methods"):
+        on_dispatch_compare(list(sel["methods"]), sel.get("params") or {})
 
 elif effective_view == "Dispatch Simulator":
     ui.render_dispatch_simulator(ss["pq_results"], scenario)
