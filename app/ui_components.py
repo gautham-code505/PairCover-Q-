@@ -57,17 +57,19 @@ get_feasible_rank = H.get_feasible_rank
 
 PRIMARY_VIEWS = (
     "🚑 Dispatch Console",
+    "🆘 Create Your Emergency",
     "⚛️ Quantum Lab",
     "📊 Results & Benchmarks",
     "📘 Method & Data"
 )
 VIEWS = (
-    "🚑 Dispatch Console", "⚛️ Quantum Lab", "📊 Results & Benchmarks", "📘 Method & Data",
+    "🚑 Dispatch Console", "🆘 Create Your Emergency", "⚛️ Quantum Lab", "📊 Results & Benchmarks", "📘 Method & Data",
     "Dispatch Console", "Quantum Lab", "Results and Benchmarks", "Results & Benchmarks",
     "Methodology", "Method & Data",
     "Overview", "Scenario Builder", "Dispatch Simulator", "Benchmark Analytics"
 )
 _VIEW_SUBTITLES = {
+    "🆘 Create Your Emergency": "Place your own calls on the synthetic city and compare how each method dispatches.",
     "🚑 Dispatch Console": "Real-time emergency queue, zone topology, backup risk, and solver execution.",
     "⚛️ Quantum Lab": "Variational optimization trace, bitstring sampling distribution, and circuit metrics.",
     "📊 Results & Benchmarks": "Cost ranking across all feasible plans and multi-method performance comparison.",
@@ -1006,8 +1008,11 @@ def render_dispatch_console(
             '</div>',
             unsafe_allow_html=True
         )
-        extra_note = "A4 is pre-assigned to critical call C1 and is outside this residual decision." if sid == "scenario_2" else "A2 cannot serve C1."
-        st.caption(f"Simulated response zone (synthetic mathematical topology). Euclidean distance equals travel time in minutes. Not a real GPS map or live road network. {extra_note}")
+        if s.get("note"):   # user-made situations on the synthetic city
+            st.caption(f"Positions are the synthetic city in km; route labels are travel minutes. Not a real map. {s['note']}")
+        else:
+            extra_note = "A4 is pre-assigned to critical call C1 and is outside this residual decision." if sid == "scenario_2" else "A2 cannot serve C1."
+            st.caption(f"Simulated response zone (synthetic mathematical topology). Euclidean distance equals travel time in minutes. Not a real GPS map or live road network. {extra_note}")
 
     with c_decide:
         st.markdown('<div class="pc-header" style="padding-bottom:4px;margin-bottom:8px;"><span class="pc-eyebrow">Decision Method</span></div>', unsafe_allow_html=True)
