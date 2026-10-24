@@ -21,6 +21,8 @@ for _p in (_ROOT_DIR, _SRC_DIR, _CURRENT_DIR):
 
 import streamlit as st
 import ui_components as ui
+import custom_emergency as ce
+from custom_view import render_custom_emergency
 
 from app.result_adapter import (
     get_scenario,
@@ -184,13 +186,16 @@ with h_c1:
         unsafe_allow_html=True
     )
 with h_c2:
-    st.selectbox(
-        "Header Scenario",
-        options=list(header_scen_map.keys()),
-        key="hdr_scen_sel",
-        on_change=_on_header_scen_change,
-        label_visibility="collapsed"
-    )
+    if view == "🆘 Create Your Emergency":
+        st.markdown('<div class="pc-caption" style="margin:0;">Your emergency · synthetic city</div>', unsafe_allow_html=True)
+    else:
+        st.selectbox(
+            "Header Scenario",
+            options=list(header_scen_map.keys()),
+            key="hdr_scen_sel",
+            on_change=_on_header_scen_change,
+            label_visibility="collapsed"
+        )
 with h_c3:
     st.markdown(
         f'<div style="text-align:right;display:flex;align-items:center;justify-content:flex-end;padding:2px 0;">'
@@ -207,6 +212,8 @@ st.markdown('<div style="border-bottom:1px solid var(--divider);margin-top:4px;m
 def backend_run(method_name: str, scen: dict[str, Any], params: dict[str, Any]) -> dict[str, Any]:
     """Backend dispatch runner adapting UI inputs to verified solver execution."""
     sid = scen["scenario_id"]
+    if str(sid).startswith(ce.SCENARIO_ID):
+        return ce.run_custom(method_name, scen, params)
     m_lower = method_name.lower()
     if "nearest" in m_lower or "greedy" in m_lower:
         return run_greedy(sid)
@@ -223,6 +230,7 @@ def backend_run(method_name: str, scen: dict[str, Any], params: dict[str, Any]) 
 
 def on_dispatch_run(method_name: str, params: dict[str, Any]) -> None:
     """Dispatches a method run from the Dispatch Console with loading state and history retention."""
+    scenario = ss.get("_active_scenario") or globals()["scenario"]
     ok, res = ui.run_with_loading(
         f"Executing {method_name} on {scenario['name']}",
         backend_run,
@@ -240,11 +248,13 @@ def on_dispatch_run(method_name: str, params: dict[str, Any]) -> None:
         # Drop the run picker's remembered choice (it would override the new run)
         # and redraw so the zone, cards and ledger show the run that just finished.
         ss.pop("dc_select_run", None)
+        ss.pop("ce_select_run", None)
         ss.pop("ql_run", None)
         st.rerun()
 
 def on_dispatch_compare(method_names: list[str], params: dict[str, Any] | None = None) -> None:
     """Run several methods one after another (guided comparison, Scenario Builder) and show the last."""
+    scenario = ss.get("_active_scenario") or globals()["scenario"]
     last_key = None
     for m in method_names:
         ok, res = ui.run_with_loading(
@@ -258,6 +268,7 @@ def on_dispatch_compare(method_names: list[str], params: dict[str, Any] | None =
     if last_key:
         ss["current_run_key"] = last_key
         ss.pop("dc_select_run", None)
+        ss.pop("ce_select_run", None)
         ss.pop("ql_run", None)
         st.rerun()
 
@@ -276,7 +287,17 @@ if ss.get("_last_view") != effective_view:
         height=0
     )
 
-if effective_view in ("🚑 Dispatch Console", "Dispatch Console"):
+ss["_active_scenario"] = scenario
+
+if effective_view == "🆘 Create Your Emergency":
+    # The builder sets the active scenario to the user's situation before its console runs anything.
+    def _set_active(scen: dict[str, Any]) -> None:
+        ss["_active_scenario"] = scen
+
+    render_custom_emergency(ss, ss["pq_results"], ss["pq_failures"], on_run=on_dispatch_run,
+                            on_compare=on_dispatch_compare, set_active=_set_active)
+
+elif effective_view in ("🚑 Dispatch Console", "Dispatch Console"):
     ui.render_dispatch_console(
         scenario=scenario,
         results=ss["pq_results"],
