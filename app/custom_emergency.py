@@ -30,7 +30,7 @@ SCENARIO_ID = "custom"
 COVER_MINUTES = 12.0      # a unit "covers" a zone it can reach within this time (as in the simulation)
 CALLS_PER_HOUR = 4.0      # city-wide demand used to weight coverage (moderate load in the simulation)
 TAU = 20.0                # unserved-call cost per unit of priority weight, as in Round 1
-DEFAULT_LAMBDA = 5.0      # coverage weight the rolling simulation found never worse than closest-idle
+DEFAULT_LAMBDA = 5.0      # coverage weight with no significant increase in late arrivals vs closest-idle in the simulation
 MAX_CALLS = 4
 MAX_QAOA_QUBITS = 12      # 2^12 states keeps the exact simulator fast enough for a click
 
@@ -179,7 +179,7 @@ def _result(scen, method, assignment, t0, experiment) -> dict[str, Any]:
     resp, cov, total = _costs(scen, assignment)
     names = _to_names(scen, assignment)
     served = {c for _, c in names}
-    experiment.setdefault("run_id", f"{method.split()[0].lower()}_custom_{int(t0 * 1000)}")
+    experiment.setdefault("run_id", f"{method.split()[0].lower()}_{scen['scenario_id']}")  # deterministic per situation
     experiment.setdefault("timestamp", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     return {
         "scenario_id": scen["scenario_id"], "method": method, "assignments": names,
@@ -289,9 +289,9 @@ def run_custom_qaoa(scen, p: int = 1, seed: int = 10, shots: int = 1000) -> dict
         return {"scenario_id": scen["scenario_id"], "method": method, "assignments": [], "unserved_calls": list(scen["calls"]),
                 "weighted_response_cost": None, "coverage_penalty": None, "objective_value": None, "feasible": False,
                 "runtime_seconds": time.perf_counter() - t0,
-                "experiment": exp | {"run_id": f"qaoa_custom_{int(t0 * 1000)}",
+                "experiment": exp | {"run_id": f"qaoa_{scen['scenario_id']}_p{p}_s{seed}_sh{shots}",
                                      "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}}
-    return _result(scen, method, best, t0, exp | {"run_id": f"qaoa_custom_p{p}_s{seed}_{int(t0 * 1000)}"})
+    return _result(scen, method, best, t0, exp | {"run_id": f"qaoa_{scen['scenario_id']}_p{p}_s{seed}_sh{shots}"})
 
 
 def run_custom(method: str, scen, params: dict[str, Any] | None = None) -> dict[str, Any]:
