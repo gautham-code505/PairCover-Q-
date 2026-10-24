@@ -178,24 +178,15 @@ def test_streamlit_app_navigation_and_views():
     at.session_state["pq_results"].append(g_res)
     at.session_state["pq_results"].append(e_res)
     
-    # Switch to Dispatch Console (Primary view)
-    at.sidebar.radio[0].set_value("🚑 Dispatch Console").run()
-    assert not at.exception
-    
-    # Switch to Quantum Lab
-    at.sidebar.radio[0].set_value("⚛️ Quantum Lab").run()
-    assert not at.exception
-    
-    # Switch to Results and Benchmarks
-    at.sidebar.radio[0].set_value("📊 Results & Benchmarks").run()
-    assert not at.exception
-    
-    # Switch to Method & Data
-    at.sidebar.radio[0].set_value("📘 Method & Data").run()
-    assert not at.exception
-    
-    # Switch to Scenario 1
-    at.sidebar.selectbox[0].set_value("Scenario 1 (Math Validation, 5 Qubits)").run()
+    # Every page opens without errors, with results already in the session.
+    for page in ("app_pages/console.py", "app_pages/your_emergency.py", "app_pages/quantum_lab.py",
+                 "app_pages/results.py", "app_pages/evidence.py", "app_pages/method.py", "app_pages/home.py"):
+        at.switch_page(page).run()
+        assert not at.exception, page
+
+    # The header's scenario picker switches to Scenario 1.
+    at.switch_page("app_pages/console.py").run()
+    at.selectbox(key="scenario_pick").set_value("scenario_1").run()
     assert not at.exception
     assert at.session_state["scenario_id"] == "scenario_1"
 

@@ -54,6 +54,7 @@ def _run(at: AppTest, method: str) -> dict:
 @pytest.fixture()
 def app() -> AppTest:
     at = AppTest.from_file(MAIN, default_timeout=120).run()
+    at.switch_page("app_pages/console.py").run()
     assert not at.exception
     return at
 
@@ -89,7 +90,7 @@ def test_new_run_wins_over_an_earlier_run_picker_choice(app: AppTest) -> None:
 
 def test_scenario_switch_never_shows_the_other_scenarios_result(app: AppTest) -> None:
     _run(app, "Exact optimisation")
-    app.selectbox(key="hdr_scen_sel").set_value("Validation case · 5 qubits (Scenario 1)").run()
+    app.selectbox(key="scenario_pick").set_value("scenario_1").run()
     shown = _console(app)
     assert shown["card"] is None and shown["cost"] == "—"
 
@@ -143,19 +144,20 @@ def _main_text(at: AppTest) -> str:
     return " ".join(m.value for m in at.markdown) + " ".join(c.value for c in at.caption)
 
 
-def test_main_menu_still_works_after_opening_a_diagnostic_tool(app: AppTest) -> None:
-    app.radio(key="adv_tool_pick").set_value("Overview").run()
-    app.radio(key="main_view").set_value("⚛️ Quantum Lab").run()
-    assert not app.exception
-    assert app.radio(key="adv_tool_pick").value == "(None - Main Console)"
-    assert "QAOA Circuit" in _main_text(app)
+def test_every_page_opens_from_the_home_page() -> None:
+    at = AppTest.from_file(MAIN, default_timeout=120).run()
+    assert not at.exception and "Send the right ambulance" in " ".join(m.value for m in at.markdown)
+    for page in ("console", "your_emergency", "quantum_lab", "results", "evidence", "method"):
+        at.switch_page(f"app_pages/{page}.py").run()
+        assert not at.exception, page
 
 
-def test_scenario_builder_run_button_runs_the_ticked_methods(app: AppTest) -> None:
-    app.radio(key="adv_tool_pick").set_value("Scenario Builder").run()
-    next(b for b in app.button if "Run selected" in (b.label or "")).click().run()
-    assert not app.exception
-    assert len(app.session_state["pq_results"]) >= 1
+def test_home_one_click_runs_both_methods() -> None:
+    at = AppTest.from_file(MAIN, default_timeout=120).run()
+    at.button(key="home_go").click().run()
+    assert not at.exception
+    methods = [r["method"] for r in at.session_state["pq_results"]]
+    assert methods == ["Greedy (Priority Nearest)", "Exact Classical Solver"]
 
 
 def test_guided_compare_runs_both_and_explains_the_change(app: AppTest) -> None:
@@ -168,13 +170,13 @@ def test_guided_compare_runs_both_and_explains_the_change(app: AppTest) -> None:
 
 
 def test_no_scenario_two_figures_leak_into_scenario_one(app: AppTest) -> None:
-    app.selectbox(key="hdr_scen_sel").set_value("Validation case · 5 qubits (Scenario 1)").run()
+    app.selectbox(key="scenario_pick").set_value("scenario_1").run()
     app.radio(key="dc_m_choice").set_value("QAOA").run()
     app.button(key="dc_run_btn").click().run()
     text = _main_text(app)
     assert "6 qubits" not in text and "5 qubits" in text
     assert "Matches optimum (62)" in text          # 62 is scenario 1's enumerated optimum
-    app.radio(key="main_view").set_value("📊 Results & Benchmarks").run()
+    app.switch_page("app_pages/results.py").run()
     text = _main_text(app)
     assert "68 / 1,000" not in text and "6.47%" not in text
 
