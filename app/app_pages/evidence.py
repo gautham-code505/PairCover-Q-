@@ -1,0 +1,76 @@
+"""Round 2 evidence: the 7-day simulated city and the QAOA benchmark, with their own charts."""
+
+from __future__ import annotations
+
+import os
+
+import streamlit as st
+
+import app_shell as shell
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+REPO = "https://github.com/gautham-code505/PairCover-Q-/blob/main"
+
+
+def _fig(rel: str, caption: str) -> None:
+    path = os.path.join(ROOT, rel)
+    if os.path.exists(path):
+        st.image(path, caption=caption, use_container_width=True)
+    else:
+        st.info(f"Figure not found: {rel}. Run the matching report script to regenerate it.")
+
+
+shell.page_header("Evidence", "Does the idea hold up beyond one example? Two Round 2 studies: a simulated city over seven "
+                  "days, and QAOA on 23 real decision problems from it.", eyebrow="About")
+shell.set_active(shell.current_scenario())
+
+sim, bench = st.tabs(["7-day simulated city", "QAOA benchmark"])
+
+with sim:
+    c1, c2 = st.columns([1, 1.25], gap="large")
+    with c1:
+        st.markdown(
+            '<div class="ev-card"><h3>Coverage-aware dispatch over time</h3>'
+            '<ul>'
+            '<li>A 24 × 24 km synthetic region: 7 ambulances at 6 stations, 2 hospitals, a dense centre, a town and a sparse periphery.</li>'
+            '<li>Calls arrive at random for <b>7 days</b>, repeated <b>30 times</b> per load; every policy sees the identical calls.</li>'
+            '<li>With a small coverage weight (λ = 5), PairCover-Q was <b>never worse</b> than nearest-available on late arrivals '
+            'or response time, at any load, on both the main and held-out seeds.</li>'
+            '<li>Uncovered demand fell at every load.</li>'
+            '<li>At 5 calls/hour: mean response <b>−2.15 min</b> (95% CI −2.67 to −1.63), late arrivals <b>−1.80 points</b>. '
+            'Most of that comes from planning simultaneous calls together.</li>'
+            '<li>Large coverage weights (λ ≥ 20) make arrivals later: protecting coverage has a price, and the simulation shows where it starts.</li>'
+            '</ul>'
+            f'<p class="pc-caption" style="margin-top:10px">Full method and tables: <a href="{REPO}/reports/rolling_simulation/README.md" '
+            'target="_blank">rolling-simulation report</a>.</p></div>',
+            unsafe_allow_html=True)
+    with c2:
+        _fig("reports/rolling_simulation/fig_paired_differences.png",
+             "Paired differences against nearest-available, 95% confidence intervals. Negative is better.")
+    with st.expander("How the coverage weight trades response time against coverage"):
+        _fig("reports/rolling_simulation/fig_lambda_tradeoff.png", "Effect of the coverage weight λ.")
+    with st.expander("The synthetic region"):
+        _fig("reports/rolling_simulation/fig_region.png", "Zones, demand, stations and hospitals (synthetic).")
+
+with bench:
+    c1, c2 = st.columns([1, 1.25], gap="large")
+    with c1:
+        st.markdown(
+            '<div class="ev-card"><h3>QAOA on real dispatch subproblems</h3>'
+            '<ul>'
+            '<li><b>23 frozen problems</b> of 4–12 qubits: decisions that actually occurred in the simulation, plus surge cases with several simultaneous calls.</li>'
+            '<li>With a ramp start and warm starts between depths, depth-3 QAOA found the optimum more often than random guessing among valid plans on '
+            '<b>19 of 23</b> (median 2.2×; 4.4× at 10 qubits). From random starting angles it mostly did not.</li>'
+            '<li>Raising the constraint penalty buys valid samples but lowers the chance of the optimum.</li>'
+            '<li>At 1% two-qubit error, 10–12 qubit problems lose about half their advantage; IBM\'s heavy-hex layout needs 1.4–2.3× more two-qubit gates.</li>'
+            '<li>Inside the simulation, QAOA\'s best of 1,024 shots matched the exact optimum 99.6% of the time, but random sampling did too at these sizes. '
+            '<b>It is a validated drop-in solver, not a better one.</b></li>'
+            '</ul>'
+            f'<p class="pc-caption" style="margin-top:10px">Full method and tables: <a href="{REPO}/reports/qaoa_benchmark/README.md" '
+            'target="_blank">QAOA benchmark report</a>.</p></div>',
+            unsafe_allow_html=True)
+    with c2:
+        _fig("reports/qaoa_benchmark/fig_qaoa_vs_random.png",
+             "Probability of the exact optimum: QAOA against random guessing among valid plans.")
+    with st.expander("Effect of hardware noise"):
+        _fig("reports/qaoa_benchmark/fig_noise.png", "Optimum probability under increasing two-qubit error (generic noise model).")

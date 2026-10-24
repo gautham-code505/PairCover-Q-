@@ -86,7 +86,7 @@ def test_each_situation_has_its_own_id() -> None:
 
 def test_screen_builds_compares_and_explains() -> None:
     at = AppTest.from_file(os.path.join(_ROOT, "app", "main.py"), default_timeout=180).run()
-    at.radio(key="main_view").set_value("🆘 Create Your Emergency").run()
+    at.switch_page("app_pages/your_emergency.py").run()
     assert not at.exception
     at.button(key="ce_guided").click().run()
     assert not at.exception

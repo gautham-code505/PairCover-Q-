@@ -98,12 +98,7 @@ def render_custom_emergency(
     ss.setdefault("ce_busy", [])
     ss.setdefault("ce_lambda", ce.DEFAULT_LAMBDA)
 
-    st.markdown(
-        '<div class="status-line idle"><span class="k">Create your own emergency.</span> '
-        'Click a zone on the city map to add a call there, or start from a ready-made situation. '
-        'Then run the methods below and compare them. The city, its stations and its demand are synthetic.</div>',
-        unsafe_allow_html=True)
-
+    st.markdown('<div class="pc-eyebrow" style="margin:4px 0 6px">Start from a ready-made situation</div>', unsafe_allow_html=True)
     preset_cols = st.columns(len(ce.PRESETS))
     for col, (name, pre) in zip(preset_cols, ce.PRESETS.items()):
         if col.button(name, key=f"ce_preset_{name}", use_container_width=True):
