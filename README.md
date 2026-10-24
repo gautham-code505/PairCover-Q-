@@ -94,7 +94,7 @@ python scripts/run_rolling_simulation.py      # ~4 min; --quick for a smoke run
 python scripts/report_rolling_simulation.py   # figures + tables
 ```
 
-## Round 2: QAOA Benchmark on Real Dispatch Subproblems
+## Round 2: QAOA Benchmark on Simulation-Derived Dispatch Problems
 
 QAOA was benchmarked on 23 frozen PairCover-Q instances of 4-12 qubits: operational epochs harvested from the simulation, plus multi-incident surge cases. The benchmark covers depths 1-3, ramp/INTERP versus 20 random starts, a penalty sweep, a noise and heavy-hex routing study, and QAOA as the solver inside the live simulation. Every result is compared with uniform random sampling over all bitstrings and over valid assignments.
 

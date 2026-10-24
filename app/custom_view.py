@@ -154,7 +154,7 @@ def render_custom_emergency(
             ss["ce_busy"] = busy
             st.rerun()
         lam = st.slider("How much to protect backup coverage (λ)", 0.0, 40.0, float(ss["ce_lambda"]), 1.0, key="ce_lambda_pick",
-                        help="0 ignores coverage. 5 is what the 7-day simulation found never made arrivals later. "
+                        help="0 ignores coverage. At 5, the 7-day simulation found no significant increase in late arrivals. "
                              "Higher values keep more areas covered at the cost of slower responses.")
         if lam != ss["ce_lambda"]:
             ss["ce_lambda"] = lam
