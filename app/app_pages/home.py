@@ -67,7 +67,9 @@ d = _decision()
 g, e = d["greedy"], d["exact"]
 
 _, sw = st.columns([8, 1])
-sw.markdown(shell.theme_switch_html(), unsafe_allow_html=True)
+# getattr fallback: a hot redeploy can leave an older app_shell (with _theme_switch) in memory.
+_switch = getattr(shell, "theme_switch_html", None) or getattr(shell, "_theme_switch")
+sw.markdown(_switch(), unsafe_allow_html=True)
 
 left, right = st.columns([1.08, 1], gap="large", vertical_alignment="center")
 with left:
