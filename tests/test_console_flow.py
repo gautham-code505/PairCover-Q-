@@ -35,7 +35,7 @@ def _console(at: AppTest) -> dict:
     """What the console is showing right now, read from the rendered markup."""
     md = " ".join(m.value for m in at.markdown)
     zone = re.search(r"Simulated Response Zone</span><span[^>]*>([^<]*)<", md)
-    cost = re.search(r"<b>([^<]*)</b>latest dispatch cost", md)
+    cost = re.search(r"<b>([^<]*)</b>dispatch cost of the plan shown", md)
     card = re.search(r'class="res"><div><div class="row"><b>([^<]*)</b>', md)
     return {
         "zone": zone.group(1) if zone else None,
@@ -211,3 +211,69 @@ def test_theme_config_defines_both_modes() -> None:
     with open(os.path.join(_ROOT, ".streamlit", "config.toml"), "rb") as fh:
         theme = tomllib.load(fh)["theme"]
     assert {"light", "dark"} <= set(theme)  # both needed for the Light/Dark switch
+
+
+# --------------------------------------------------------------------------- #
+# Regression tests from the October audit
+# --------------------------------------------------------------------------- #
+
+def test_rerunning_a_deterministic_method_replaces_its_record(app: AppTest) -> None:
+    _run(app, "Exact optimisation")
+    _run(app, "Exact optimisation")
+    _run(app, "Nearest available")
+    _run(app, "Nearest available")
+    methods = [r["method"] for r in app.session_state["pq_results"]]
+    assert methods == ["Exact Classical Solver", "Greedy (Priority Nearest)"]
+
+
+def test_cost_metrics_match_their_quantities(app: AppTest) -> None:
+    _run(app, "Nearest available")
+    text = " ".join(m.value for m in app.markdown)
+    tiles = dict(re.findall(r'<div class="lbl">([^<]*)</div><div class="val[^"]*"[^>]*>([^<]*)</div>', text))
+    assert tiles["Dispatch cost"] == "22.0" and tiles["Weighted Response"] == "12.0" and tiles["Coverage Penalty"] == "10.0"
+    assert "Total Objective" not in text and "latest dispatch cost" not in text
+    _run(app, "Exact optimisation")
+    text = " ".join(m.value for m in app.markdown)
+    tiles = dict(re.findall(r'<div class="lbl">([^<]*)</div><div class="val[^"]*"[^>]*>([^<]*)</div>', text))
+    assert tiles["Dispatch cost"] == "13.0" and tiles["Weighted Response"] == "13.0" and tiles["Coverage Penalty"] == "0.0"
+
+
+def test_no_page_suggests_real_data_or_overstates_the_simulation() -> None:
+    at = AppTest.from_file(MAIN, default_timeout=120).run()
+    banned = re.compile(r"real (dispatch|decision|ambulance) (sub)?problems|never (did )?worse", re.I)
+    for page in ("home", "console", "your_emergency", "quantum_lab", "results", "evidence", "method"):
+        at.switch_page(f"app_pages/{page}.py").run()
+        text = " ".join(m.value for m in at.markdown) + " ".join(c.value for c in at.caption)
+        assert not banned.search(text), (page, banned.search(text).group(0))
+
+
+def test_home_has_theme_switch_pause_control_and_text_summary() -> None:
+    at = AppTest.from_file(MAIN, default_timeout=120).run()
+    text = " ".join(m.value for m in at.markdown)
+    assert re.search(r"class=['\"]theme-switch", text)
+    assert 'id="film-pause"' in text and 'for="film-pause"' in text
+    assert "Nearest available:</b> A1 and A2 both leave, cost 22" in text
+    assert "PairCover-Q:</b> A2 stays home, cost 13" in text
+
+
+def test_infeasible_qaoa_result_shows_no_plan_and_no_costs() -> None:
+    """QAOA with no valid sample must never show routes, costs or a substituted exact answer."""
+    root = _ROOT.replace("\\", "/")
+    script = f"""
+import sys
+sys.path[:0] = [r"{root}", r"{root}/src", r"{root}/app"]
+import ui_components as ui
+from app.result_adapter import get_scenario
+scen = get_scenario("scenario_2")
+bad = {{"scenario_id": "scenario_2", "method": "QAOA (p=1, Seed=1)", "assignments": [], "unserved_calls": ["C2", "C3"],
+       "weighted_response_cost": None, "coverage_penalty": None, "objective_value": None, "feasible": False,
+       "runtime_seconds": 1.0, "experiment": {{"kind": "qaoa_sampled", "run_id": "q_bad", "shots": 500, "success": True}}}}
+ui.render_dispatch_console(scenario=scen, results=[bad], current_key="q_bad")
+"""
+    at = AppTest.from_string(script, default_timeout=60).run()
+    assert not at.exception, [e.value for e in at.exception]
+    text = " ".join(m.value for m in at.markdown)
+    assert "no feasible sample" in text and "500 shots" in text
+    assert "<b>—</b>dispatch cost of the plan shown" in text
+    assert "found no valid plan" in text
+    assert 'class="ln on' not in text          # no dispatched route drawn on the map

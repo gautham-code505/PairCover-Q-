@@ -95,4 +95,4 @@ def test_screen_builds_compares_and_explains() -> None:
     # A different situation must start clean: no result carried over.
     at.button(key="ce_preset_Short-staffed night").click().run()
     assert not at.exception
-    assert re.search(r"<b>—</b>latest dispatch cost", " ".join(m.value for m in at.markdown))
+    assert re.search(r"<b>—</b>dispatch cost of the plan shown", " ".join(m.value for m in at.markdown))
