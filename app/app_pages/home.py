@@ -115,8 +115,8 @@ st.markdown(
     '<h3>One yes/no per choice</h3><p>"Does ambulance A go to call C?" becomes one binary variable, one qubit. '
     'Losing a backup pair is a penalty between exactly two variables, which is the shape quantum optimisers take natively.</p></div>'
     '<div><span class="n">3</span><span class="chip" style="background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--teal)">Verify</span>'
-    '<h3>Three solvers, one answer key</h3><p>Nearest-available, exhaustive search and QAOA solve the same problem. '
-    'Every quantum result is graded against the exact answer and against random guessing.</p></div>'
+    '<h3>Three solvers, one answer key</h3><p>Nearest-available, exhaustive search and QAOA solve the same problem, QAOA on a '
+    'simulator and on a real IBM quantum computer. Every quantum result is graded against the exact answer and against random guessing.</p></div>'
     '</div>', unsafe_allow_html=True)
 
 gain = g["objective_value"] - e["objective_value"]
@@ -134,15 +134,17 @@ st.markdown(
     f'<div class="src">Source: <a href="{REPO}/blob/main/reports/rolling_simulation/README.md" target="_blank">rolling-simulation report</a></div></div>'
     '<div class="q"><div class="big">19 <small>of 23</small></div>'
     '<p>Simulation-derived problems (4–12 qubits) where depth-3 QAOA put more probability on the optimum than random guessing among valid plans. '
-    'Simulated, noiseless; noise erodes the gain, and the exact solver is still faster at these sizes.</p>'
+    'Noise erodes the gain: on the real IBM chip ibm_fez a 4-qubit case kept 27.7% against 20% for guessing, and by 6 qubits the gain was gone. '
+    'The exact solver is still faster at these sizes.</p>'
     f'<div class="src">Source: <a href="{REPO}/blob/main/reports/qaoa_benchmark/README.md" target="_blank">QAOA benchmark report</a></div></div>'
     '</div>', unsafe_allow_html=True)
 
 st.markdown(
     '<div class="honest"><b>Honest by design</b>'
-    '<span>The city, calls and ambulances are synthetic test data. QAOA runs on a noiseless simulator. At these sizes an '
+    '<span>The city, calls and ambulances are synthetic test data. QAOA runs live on a noiseless simulator; three circuits also ran '
+    'once on a real IBM quantum computer (see Classical vs Quantum). At these sizes an '
     'ordinary computer solves the problem instantly, so we claim no quantum advantage: we show where quantum fits, and what it would take.</span>'
     '</div>'
-    f'<div class="foot"><span>Team Evric · Q-Hack India 2026 · Track 04, Open Quantum Innovation</span>'
+    f'<div class="foot"><span>PairCover-Q · coverage-aware ambulance dispatch</span>'
     f'<span><a href="{REPO}" target="_blank">Source code on GitHub</a></span></div>',
     unsafe_allow_html=True)
