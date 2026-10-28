@@ -180,7 +180,8 @@ def test_streamlit_app_navigation_and_views():
     
     # Every page opens without errors, with results already in the session.
     for page in ("app_pages/console.py", "app_pages/your_emergency.py", "app_pages/quantum_lab.py",
-                 "app_pages/results.py", "app_pages/evidence.py", "app_pages/method.py", "app_pages/home.py"):
+                 "app_pages/results.py", "app_pages/evidence.py", "app_pages/method.py", "app_pages/home.py",
+                 "app_pages/classical_vs_quantum.py"):
         at.switch_page(page).run()
         assert not at.exception, page
 
