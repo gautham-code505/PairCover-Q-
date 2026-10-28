@@ -63,6 +63,8 @@ with bench:
             '<b>19 of 23</b> (median 2.2×; 4.4× at 10 qubits). From random starting angles it mostly did not.</li>'
             '<li>Raising the constraint penalty buys valid samples but lowers the chance of the optimum.</li>'
             '<li>At 1% two-qubit error, 10–12 qubit problems lose about half their advantage; IBM\'s heavy-hex layout needs 1.4–2.3× more two-qubit gates.</li>'
+            '<li>On the real IBM chip <b>ibm_fez</b>, a 4-qubit problem kept part of its gain (optimum 27.7% of shots against 20% for guessing, '
+            'and the most frequent answer was the best dispatch); a 6-qubit problem fell below guessing. See <b>Classical vs Quantum</b>.</li>'
             '<li>Inside the simulation, QAOA\'s best of 1,024 shots matched the exact optimum 99.6% of the time, but random sampling did too at these sizes. '
             '<b>It is a validated drop-in solver, not a better one.</b></li>'
             '</ul>'
