@@ -14,6 +14,10 @@ Two modes:
 - --fake NAME: a local fake backend (e.g. FakeTorino) with a noise model built from a real
   device's calibration snapshot. No account, no queue.
 
+--mitigate turns on dynamical decoupling plus gate and measurement twirling. Every real job
+also measures all-0 and all-1 on the qubits it uses, so each result is reported both raw and
+with readout errors corrected (per-qubit assignment matrices inverted, tensor-product model).
+
 Jobs can queue for hours. The script writes a manifest as soon as the job is submitted, so
 --no-wait plus a later --retrieve JOB_ID finishes the scoring.
 
@@ -36,6 +40,7 @@ sys.path.insert(0, os.path.join(_ROOT, "src"))
 sys.path.insert(0, os.path.join(_ROOT, "scripts"))
 
 import numpy as np
+from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 from qiskit.circuit.library import QAOAAnsatz
 from qiskit.transpiler import generate_preset_pass_manager
 
@@ -102,7 +107,45 @@ def build(spec, inst, ramp, pm):
     return isa, meta
 
 
+def calibration_circuits(qubits, num_qubits):
+    """All-0 and all-1 preparations on the given physical qubits, already ISA for the device."""
+    out = []
+    for flip in (False, True):
+        qc = QuantumCircuit(QuantumRegister(num_qubits, "q"), ClassicalRegister(len(qubits), "meas"))
+        if flip:
+            for q in qubits:
+                qc.x(q)
+        qc.measure(qubits, range(len(qubits)))
+        out.append(qc)
+    return out
+
+
+def readout_errors(cal0, cal1, qubits):
+    """{physical qubit: (P(read 1 | 0), P(read 0 | 1))} from the calibration counts."""
+    n0, n1 = sum(cal0.values()), sum(cal1.values())
+    return {q: (sum(c for k, c in cal0.items() if k[-1 - i] == "1") / n0,
+                sum(c for k, c in cal1.items() if k[-1 - i] == "0") / n1) for i, q in enumerate(qubits)}
+
+
+def correct_readout(counts, physical, errors):
+    """Invert each qubit's 2x2 assignment matrix on the measured distribution; clip and renormalise."""
+    n = len(physical)
+    p = np.zeros(2 ** n)
+    for k, c in counts.items():
+        p[int(k.replace(" ", ""), 2)] += c
+    t = (p / p.sum()).reshape([2] * n)      # axis 0 is the most significant bit, i.e. qubit n-1
+    for k, q in enumerate(physical):
+        e01, e10 = errors[str(q)] if str(q) in errors else errors[q]
+        a_inv = np.linalg.inv(np.array([[1 - e01, e10], [e01, 1 - e10]]))
+        ax = n - 1 - k
+        t = np.moveaxis(np.tensordot(a_inv, t, axes=([1], [ax])), 0, ax)
+    p = np.clip(t.reshape(-1), 0, None)
+    p /= p.sum()
+    return {format(i, f"0{n}b"): float(v) for i, v in enumerate(p) if v > 1e-12}
+
+
 def score(meta, counts, inst):
+    """Score a distribution of bitstrings: raw counts or (readout-corrected) probabilities."""
     prob = problem(inst[meta["id"]])
     shots = sum(counts.values())
     idx = {k: int(k.replace(" ", ""), 2) for k in counts}
@@ -118,7 +161,7 @@ def score(meta, counts, inst):
         "most_frequent": top[0][0], "most_frequent_is_optimal": bool(prob["opt"][idx[top[0][0]]]),
         "hardware_pick": decode(pick, prob["variables"]) if pick is not None else None,
         "hardware_pick_is_optimal": bool(pick is not None and prob["opt"][pick]),
-        "top_counts": dict(top[:16])}
+        "top_counts": dict(top[:16]), "counts": dict(counts)}
 
 
 def job_timing(job):
@@ -143,7 +186,17 @@ def job_timing(job):
 
 
 def finish(manifest, result, timing, inst):
-    rows = [score(meta, pub.data.meas.get_counts(), inst) for meta, pub in zip(manifest["circuits"], result)]
+    pubs = list(result)
+    rows = [score(meta, pub.data.meas.get_counts(), inst) for meta, pub in zip(manifest["circuits"], pubs)]
+    cal = manifest.get("calibration")
+    if cal:
+        cal0, cal1 = (pub.data.meas.get_counts() for pub in pubs[len(rows):len(rows) + 2])
+        errors = readout_errors(cal0, cal1, cal["qubits"])
+        manifest = manifest | {"readout_errors": {str(q): e for q, e in errors.items()}}
+        for r in rows:
+            fixed = score(r, correct_readout(r["counts"], r["physical_qubits"], errors), inst)
+            r["readout_corrected"] = {k: fixed[k] for k in ("p_opt", "p_feasible", "gain_vs_uniform_feasible",
+                                                             "most_frequent", "most_frequent_is_optimal")}
     out = manifest | {"status": "done", "timing": timing, "circuits": rows,
                       "completed_utc": datetime.now(timezone.utc).isoformat()}
     path = os.path.join(OUT, f"{manifest['label']}.json")
@@ -152,7 +205,8 @@ def finish(manifest, result, timing, inst):
         print(f"{r['id']} p={r['p']} ({r['qubits']}q, {r['isa_2q']} 2q gates, depth {r['isa_depth']}): "
               f"p_opt {r['p_opt']:.3f} hw vs {r['ideal_p_opt']:.3f} ideal vs {r['random_feasible_p_opt']:.3f} uniform-feasible; "
               f"pick {r['hardware_pick']} optimal={r['hardware_pick_is_optimal']}; classical {r['classical_best']} "
-              f"in {r['classical_seconds'] * 1e3:.2f} ms")
+              f"in {r['classical_seconds'] * 1e3:.2f} ms"
+              + (f"; readout-corrected p_opt {r['readout_corrected']['p_opt']:.3f}" if "readout_corrected" in r else ""))
     print(f"wrote {os.path.relpath(path, _ROOT)}")
     return out
 
@@ -165,6 +219,7 @@ def main():
     ap.add_argument("--fake", help="local fake backend class, e.g. FakeTorino")
     ap.add_argument("--no-wait", action="store_true", help="submit, write the manifest and exit")
     ap.add_argument("--retrieve", metavar="JOB_ID", help="fetch and score a job submitted earlier")
+    ap.add_argument("--mitigate", action="store_true", help="dynamical decoupling + gate and measurement twirling")
     args = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
     inst, ramp = load_benchmark()
@@ -190,18 +245,33 @@ def main():
     pm = generate_preset_pass_manager(backend=backend, optimization_level=3, seed_transpiler=7)
     isa, metas = zip(*(build(s, inst, ramp, pm) for s in args.circuits))
 
+    used = sorted({q for m in metas for q in m["physical_qubits"]})
+    pubs = list(isa) + calibration_circuits(used, backend.num_qubits)
+    sampler = SamplerV2(mode=backend)
+    if args.mitigate:
+        sampler.options.dynamical_decoupling.enable = True
+        sampler.options.dynamical_decoupling.sequence_type = "XpXm"
+        sampler.options.twirling.enable_gates = True
+        sampler.options.twirling.enable_measure = True
+        sampler.options.twirling.num_randomizations = 32
+        sampler.options.twirling.shots_per_randomization = args.shots // 32
+
     t0 = time.perf_counter()
-    job = SamplerV2(mode=backend).run(list(isa), shots=args.shots)
-    label = f"{backend.name if args.fake else 'real_' + backend.name}_{job.job_id()[:8]}"
+    job = sampler.run(pubs, shots=args.shots)
+    mode = "mit" if args.mitigate else "raw"
+    label = f"{backend.name if args.fake else 'real_' + backend.name}_{mode}_{job.job_id()[:8]}"
     manifest = {"label": label, "kind": "fake" if args.fake else "real", "backend": backend.name,
                 "backend_qubits": backend.num_qubits, "job_id": job.job_id(), "shots": args.shots,
                 "submitted_utc": datetime.now(timezone.utc).isoformat(), "status": "submitted",
                 "note": ("Local fake backend: noise from a calibration snapshot of the named device, run on Aer."
                          if args.fake else "Real IBM Quantum device. Angles were tuned noiselessly, not on the device."),
+                "mitigation": "dynamical decoupling (XpXm) + gate and measurement twirling (32 x 128)"
+                if args.mitigate else "none",
+                "calibration": {"qubits": used, "circuits": "all-0 and all-1, appended after the QAOA circuits"},
                 "circuits": list(metas)}
     if not args.fake:
         json.dump(manifest, open(os.path.join(OUT, f"job_{job.job_id()}.json"), "w", encoding="utf-8"), indent=1)
-    print(f"submitted {len(isa)} circuits to {backend.name}, job {job.job_id()}", flush=True)
+    print(f"submitted {len(isa)} circuits + 2 readout calibrations ({mode}) to {backend.name}, job {job.job_id()}", flush=True)
     if args.no_wait and not args.fake:
         print(f"later: python scripts/run_ibm_hardware.py --retrieve {job.job_id()}")
         return manifest

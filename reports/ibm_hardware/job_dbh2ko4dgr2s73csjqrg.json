@@ -1,0 +1,114 @@
+{
+ "label": "real_ibm_fez_raw_dbh2ko4d",
+ "kind": "real",
+ "backend": "ibm_fez",
+ "backend_qubits": 156,
+ "job_id": "dbh2ko4dgr2s73csjqrg",
+ "shots": 4096,
+ "submitted_utc": "2026-10-28T17:01:20.323183+00:00",
+ "status": "submitted",
+ "note": "Real IBM Quantum device. Angles were tuned noiselessly, not on the device.",
+ "mitigation": "none",
+ "calibration": {
+  "qubits": [
+   16,
+   22,
+   23,
+   24,
+   25,
+   26,
+   37
+  ],
+  "circuits": "all-0 and all-1, appended after the QAOA circuits"
+ },
+ "circuits": [
+  {
+   "id": "oper-4q-1",
+   "p": 1,
+   "qubits": 4,
+   "params": [
+    0.2638562492084522,
+    1.92679716870091
+   ],
+   "isa_depth": 64,
+   "isa_2q": 18,
+   "physical_qubits": [
+    23,
+    16,
+    24,
+    22
+   ],
+   "ideal_p_opt": 0.03531399818747814,
+   "ideal_p_feasible": 0.1264919398082494,
+   "random_p_opt": 0.0625,
+   "random_feasible_p_opt": 0.2,
+   "random_p_feasible": 0.3125,
+   "classical_best": [
+    "A3->C1"
+   ],
+   "classical_energy": -38.109944988646845,
+   "classical_seconds": 0.0001998999941861257
+  },
+  {
+   "id": "oper-4q-1",
+   "p": 2,
+   "qubits": 4,
+   "params": [
+    0.31391173942435535,
+    0.834785592538656,
+    2.1790581786291012,
+    1.4311579372249636
+   ],
+   "isa_depth": 117,
+   "isa_2q": 33,
+   "physical_qubits": [
+    23,
+    16,
+    24,
+    22
+   ],
+   "ideal_p_opt": 0.5922059615924763,
+   "ideal_p_feasible": 0.8320957714412152,
+   "random_p_opt": 0.0625,
+   "random_feasible_p_opt": 0.2,
+   "random_p_feasible": 0.3125,
+   "classical_best": [
+    "A3->C1"
+   ],
+   "classical_energy": -38.109944988646845,
+   "classical_seconds": 0.00011200000153621659
+  },
+  {
+   "id": "oper-6q-5",
+   "p": 2,
+   "qubits": 6,
+   "params": [
+    2.5362361767517476,
+    2.8610522155879465,
+    2.414743743167927,
+    3.5403806512881544
+   ],
+   "isa_depth": 177,
+   "isa_2q": 82,
+   "physical_qubits": [
+    25,
+    24,
+    37,
+    26,
+    22,
+    23
+   ],
+   "ideal_p_opt": 0.09169452914622706,
+   "ideal_p_feasible": 0.7194115873480431,
+   "random_p_opt": 0.015625,
+   "random_feasible_p_opt": 0.06666666666666667,
+   "random_p_feasible": 0.234375,
+   "classical_best": [
+    "A1->C1",
+    "A4->C2"
+   ],
+   "classical_energy": -48.84147558719914,
+   "classical_seconds": 0.00015300000086426735
+  }
+ ]
+}

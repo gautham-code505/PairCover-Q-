@@ -48,3 +48,12 @@ def test_hardware_row_reports_most_frequent_answer(runs):
 def test_decode_and_label():
     assert hc.decode(0b101, [(0, 0), (1, 0), (2, 1)]) == [(0, 0), (2, 1)]
     assert hc.label([]) == "no ambulance sent"
+
+
+def test_mitigation_rows_compare_within_one_session(runs):
+    rows = {r["key"]: r for r in hc.compare("oper-4q-1", 2, runs)["rows"]}
+    if "hw_ro" not in rows:
+        pytest.skip("no readout-calibrated runs")
+    ro = rows["hw_ro"]
+    assert ro["p_opt_before_readout"] is not None and ro["n_runs"] <= rows["hw_raw"]["n_runs"]
+    assert rows["hw_raw"]["p_opt_lo"] <= rows["hw_raw"]["p_opt"] <= rows["hw_raw"]["p_opt_hi"]
