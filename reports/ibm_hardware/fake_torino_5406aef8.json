@@ -1,0 +1,190 @@
+{
+ "label": "fake_torino_5406aef8",
+ "kind": "fake",
+ "backend": "fake_torino",
+ "backend_qubits": 133,
+ "job_id": "5406aef8-74ff-4573-b0a1-469922449e33",
+ "shots": 4096,
+ "submitted_utc": "2026-10-28T14:43:46.435691+00:00",
+ "status": "done",
+ "note": "Local fake backend: noise from a calibration snapshot of the named device, run on Aer.",
+ "circuits": [
+  {
+   "id": "oper-4q-1",
+   "p": 1,
+   "qubits": 4,
+   "params": [
+    0.2638562492084522,
+    1.92679716870091
+   ],
+   "isa_depth": 66,
+   "isa_2q": 18,
+   "physical_qubits": [
+    62,
+    61,
+    60,
+    54
+   ],
+   "ideal_p_opt": 0.03531399818747814,
+   "ideal_p_feasible": 0.1264919398082494,
+   "random_p_opt": 0.0625,
+   "random_feasible_p_opt": 0.2,
+   "random_p_feasible": 0.3125,
+   "classical_best": [
+    "A3->C1"
+   ],
+   "classical_energy": -38.109944988646845,
+   "classical_seconds": 9.270000009564683e-05,
+   "shots": 4096,
+   "p_opt": 0.03662109375,
+   "p_feasible": 0.154052734375,
+   "gain_vs_uniform_feasible": 0.18310546875,
+   "most_frequent": "1001",
+   "most_frequent_is_optimal": false,
+   "hardware_pick": [
+    "A3->C1"
+   ],
+   "hardware_pick_is_optimal": true,
+   "top_counts": {
+    "1001": 485,
+    "0011": 470,
+    "1010": 457,
+    "1100": 450,
+    "0101": 435,
+    "0110": 435,
+    "1111": 345,
+    "0000": 327,
+    "1011": 190,
+    "0100": 150,
+    "1101": 69,
+    "1110": 68,
+    "0111": 61,
+    "0010": 57,
+    "1000": 53,
+    "0001": 44
+   }
+  },
+  {
+   "id": "oper-4q-1",
+   "p": 2,
+   "qubits": 4,
+   "params": [
+    0.31391173942435535,
+    0.834785592538656,
+    2.1790581786291012,
+    1.4311579372249636
+   ],
+   "isa_depth": 119,
+   "isa_2q": 33,
+   "physical_qubits": [
+    61,
+    62,
+    60,
+    54
+   ],
+   "ideal_p_opt": 0.5922059615924763,
+   "ideal_p_feasible": 0.8320957714412152,
+   "random_p_opt": 0.0625,
+   "random_feasible_p_opt": 0.2,
+   "random_p_feasible": 0.3125,
+   "classical_best": [
+    "A3->C1"
+   ],
+   "classical_energy": -38.109944988646845,
+   "classical_seconds": 7.829999958630651e-05,
+   "shots": 4096,
+   "p_opt": 0.49560546875,
+   "p_feasible": 0.73388671875,
+   "gain_vs_uniform_feasible": 2.47802734375,
+   "most_frequent": "0100",
+   "most_frequent_is_optimal": true,
+   "hardware_pick": [
+    "A3->C1"
+   ],
+   "hardware_pick_is_optimal": true,
+   "top_counts": {
+    "0100": 2030,
+    "0001": 271,
+    "0000": 248,
+    "0010": 247,
+    "1100": 211,
+    "1000": 210,
+    "0110": 143,
+    "0101": 134,
+    "0011": 107,
+    "1010": 86,
+    "1101": 85,
+    "1110": 84,
+    "1001": 81,
+    "1011": 59,
+    "0111": 58,
+    "1111": 42
+   }
+  },
+  {
+   "id": "oper-6q-5",
+   "p": 2,
+   "qubits": 6,
+   "params": [
+    2.5362361767517476,
+    2.8610522155879465,
+    2.414743743167927,
+    3.5403806512881544
+   ],
+   "isa_depth": 191,
+   "isa_2q": 79,
+   "physical_qubits": [
+    99,
+    98,
+    92,
+    100,
+    80,
+    101
+   ],
+   "ideal_p_opt": 0.09169452914622706,
+   "ideal_p_feasible": 0.7194115873480431,
+   "random_p_opt": 0.015625,
+   "random_feasible_p_opt": 0.06666666666666667,
+   "random_p_feasible": 0.234375,
+   "classical_best": [
+    "A1->C1",
+    "A4->C2"
+   ],
+   "classical_energy": -48.84147558719914,
+   "classical_seconds": 0.0001373999984934926,
+   "shots": 4096,
+   "p_opt": 0.073486328125,
+   "p_feasible": 0.611328125,
+   "gain_vs_uniform_feasible": 1.102294921875,
+   "most_frequent": "101000",
+   "most_frequent_is_optimal": false,
+   "hardware_pick": [
+    "A1->C1",
+    "A4->C2"
+   ],
+   "hardware_pick_is_optimal": true,
+   "top_counts": {
+    "101000": 527,
+    "011000": 409,
+    "010001": 301,
+    "100001": 292,
+    "100100": 215,
+    "010100": 191,
+    "100000": 145,
+    "011001": 136,
+    "000011": 128,
+    "010101": 111,
+    "010000": 101,
+    "101001": 88,
+    "100101": 86,
+    "001000": 78,
+    "001010": 75,
+    "101010": 74
+   }
+  }
+ ],
+ "timing": {
+  "wall_seconds_incl_queue": 6.595246400000178
+ },
+ "completed_utc": "2026-10-28T14:43:52.989836+00:00"
+}
