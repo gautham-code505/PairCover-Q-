@@ -25,6 +25,7 @@ PAGES = {
     "home": "app_pages/home.py",
     "console": "app_pages/console.py",
     "custom": "app_pages/your_emergency.py",
+    "versus": "app_pages/classical_vs_quantum.py",
     "lab": "app_pages/quantum_lab.py",
     "results": "app_pages/results.py",
     "evidence": "app_pages/evidence.py",

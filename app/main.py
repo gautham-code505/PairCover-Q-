@@ -44,6 +44,7 @@ pages = {
         st.Page(shell.PAGES["custom"], title="Create your own emergency", icon=":material/add_location_alt:"),
     ],
     "Quantum": [
+        st.Page(shell.PAGES["versus"], title="Classical vs Quantum", icon=":material/compare_arrows:"),
         st.Page(shell.PAGES["lab"], title="Quantum Lab", icon=":material/memory:"),
         st.Page(shell.PAGES["results"], title="Compare runs", icon=":material/leaderboard:"),
     ],
