@@ -134,7 +134,8 @@ st.markdown(
     f'<div class="src">Source: <a href="{REPO}/blob/main/reports/rolling_simulation/README.md" target="_blank">rolling-simulation report</a></div></div>'
     '<div class="q"><div class="big">19 <small>of 23</small></div>'
     '<p>Simulation-derived problems (4–12 qubits) where depth-3 QAOA put more probability on the optimum than random guessing among valid plans. '
-    'Noise erodes the gain: on the real IBM chip ibm_fez a 4-qubit case kept 27.7% against 20% for guessing, and by 6 qubits the gain was gone. '
+    'On the real IBM chip ibm_fez (6 runs) a 4-qubit case hit the best plan 46–49% of the time against 20% for guessing; '
+    'at 6 qubits the gain was marginal and unreliable. '
     'The exact solver is still faster at these sizes.</p>'
     f'<div class="src">Source: <a href="{REPO}/blob/main/reports/qaoa_benchmark/README.md" target="_blank">QAOA benchmark report</a></div></div>'
     '</div>', unsafe_allow_html=True)

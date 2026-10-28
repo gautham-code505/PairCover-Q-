@@ -21,10 +21,11 @@ Q-Rescue decides which ambulance goes to which emergency when several calls arri
 | From random starts | mostly does not beat the baseline | same |
 | Noise | at 1% two-qubit error, 10-12 qubit instances lose about half or more of the gain | same |
 | QAOA in the loop | exact optimum 1,355 / 1,360, but uniform random gets 1,360 / 1,360 | same |
-| Real IBM hardware, 4 qubits, depth 2 | ibm_fez hits the optimum in 27.7% of shots (noiseless 59.2%, guessing among valid plans 20%); most frequent answer = best dispatch | reports/ibm_hardware |
-| Real IBM hardware, 6 qubits, depth 2 | 5.2% vs 6.7% guessing: below the baseline (82 two-qubit gates after routing) | same |
-| Latency | classical < 1 ms; ibm_fez 12.5 min end to end (2.8 min queue, 9.7 min processing, 3.2 s on the chip); 5 s of the free 600 s/month used | same |
-| Job | ibm_fez (Heron r2, 156 qubits), job dbh0tjpt9uhs73c960mg, 28 Oct 2026, 4,096 shots per circuit | same |
+| Real IBM hardware, 4 qubits, depth 2 | ibm_fez, 6 runs: 46–49% in the evening session, 28% in the first run two hours earlier (drift); noiseless 59.2%, guessing among valid plans 20%; most frequent answer = best dispatch in every run | reports/ibm_hardware |
+| Real IBM hardware, 6 qubits, depth 2 | 5.2–10.1% vs 6.7% guessing: around the baseline, never the top answer (82 two-qubit gates after routing) | same |
+| Error mitigation | readout correction +1 point; dynamical decoupling + twirling −1.7 to −2.6 points vs same-session raw runs | same |
+| Latency | classical < 1 ms; ibm_fez 12.5–20 min per job end to end, mostly queue; 3–5 s on the chip; 45 s of the free 600 s/month used for 6 jobs | same |
+| Jobs | ibm_fez (Heron r2, 156 qubits), 6 jobs on 28 Oct 2026 (first: dbh0tjpt9uhs73c960mg), 4,096 shots per circuit | same |
 
 ## The honest framing (say this before they ask)
 - No quantum advantage is claimed. Exact enumeration of these problems is instant.
@@ -38,7 +39,7 @@ Q-Rescue decides which ambulance goes to which emergency when several calls arri
 2. Our penalty is the provable bound + 1, and larger penalties lowered optimum probability. Is that consistent with what you see, or should we try another encoding?
 3. Is there a fair way to claim a scaling story without a demonstrated advantage?
 4. Is the quantum severity classifier (a variational classifier feeding the cost function) worth building before the sprint ends on 29 Oct, or should we polish what exists?
-5. ~~Can we run a small instance on real IBM hardware before the finale?~~ Done on 28 Oct (ibm_fez). Follow-up: which error mitigation should we try first?
+5. ~~Can we run a small instance on real IBM hardware before the finale?~~ Done on 28 Oct (ibm_fez, 6 jobs, with and without mitigation). Follow-up: is zero-noise extrapolation worth trying for two-qubit gate error?
 6. What would you want to see in the finale demo?
 
 ## Before the call

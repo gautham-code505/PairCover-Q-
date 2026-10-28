@@ -38,13 +38,15 @@ h1{font-size:28px;margin-bottom:4px} h2{margin-top:40px;border-top:2px solid #dd
 
 <h2>4. Classical vs quantum, on a real IBM quantum computer (3 min)</h2>
 <img src="versus.png" alt="Classical vs Quantum page">
-<div class="do">Open Quantum, then Classical vs Quantum. Start on "4 qubits &middot; depth 2". Point at the four timing cards, then the table, then the bar chart. Then click "6 qubits &middot; depth 2" and show that the chip falls below guessing.</div>
+<div class="do">Open Quantum, then Classical vs Quantum. Start on "4 qubits &middot; depth 2". Point at the four timing cards, then the table, then the bar chart. Then click "6 qubits &middot; depth 2" and show that the chip is only around guessing.</div>
 <div class="say">
 <p>Our mentor asked us to show classical and quantum side by side, and to run on real hardware. This page does both, on one dispatch problem.</p>
-<p>The first two rows are classical: the nearest-ambulance rule and an exact search over every option. They run live, in well under a millisecond. The third row is QAOA on a noiseless simulator, also live. The next row is the same circuit run on <b>ibm_fez</b>, a real 156-qubit IBM quantum processor, in IBM job dbh0tjpt9uhs73c960mg on 28 October. The last rows are IBM's noise copies of the same chip.</p>
-<p>On this 4-qubit problem, the answer the real chip gave most often is the best dispatch, A3 to call 1, the same as the exact solver. It hit the best plan in 27.7 percent of shots. Random guessing among valid plans gets 20 percent, so the chip is about 1.4 times better than guessing. In the noiseless simulator it was 59 percent, so noise took away about half of the gain.</p>
-<p>Now the latency. The classical answer takes a fraction of a millisecond. The quantum job took 12 and a half minutes end to end: almost 3 minutes in the queue and about 10 minutes of processing. The circuits themselves ran on the chip for only 3.2 seconds, using 5 seconds of our free 10 minutes a month.</p>
-<p>Now the 6-qubit problem. After mapping onto the chip the circuit has 82 two-qubit gates, and at that size the real chip finds the best plan only 5.2 percent of the time, below the 6.7 percent of guessing. So today's hardware helps only at the very smallest sizes. Notice also that here the nearest-ambulance rule picks a worse plan than the exact solver, because it ignores coverage. That is the point of our method.</p>
+<p>The first two rows are classical: the nearest-ambulance rule and an exact search over every option. They run live, in well under a millisecond. The third row is QAOA on a noiseless simulator, also live. The next row is the same circuit run on <b>ibm_fez</b>, a real 156-qubit IBM quantum processor, where we ran it six times on 28 October: three times raw and three times with error mitigation. The last row is IBM's noise copy of the same chip.</p>
+<p>On this 4-qubit problem, in all six runs the answer the real chip gave most often is the best dispatch, A3 to call 1, the same as the exact solver. In our evening session it hit the best plan in 46 to 49 percent of shots. Random guessing among valid plans gets 20 percent, so the chip is about 2.4 times better than guessing, and keeps about 80 percent of the noiseless 59 percent.</p>
+<p>We also learned that the hardware drifts: our very first run, two hours earlier, on the same qubits, got only 28 percent. That is why we repeated every run and show the range.</p>
+<p>We tried error mitigation. Correcting readout errors added about one point, because readout on this chip is already very good, about 1 percent error. Dynamical decoupling and twirling did not help. So the remaining error is from two-qubit gates, and that tells us what to work on next.</p>
+<p>Now the latency. The classical answer takes a fraction of a millisecond. A quantum job took between 12 and 20 minutes end to end, mostly waiting in the queue. The circuits themselves ran on the chip for only 3 to 5 seconds per job. All six jobs used 45 seconds of our free 10 minutes a month.</p>
+<p>Now the 6-qubit problem. After mapping onto the chip the circuit has 82 two-qubit gates, and at that size the real chip finds the best plan between 5 and 10 percent of the time, around the 6.7 percent of guessing, and its most frequent answer is never the best plan. So today's hardware helps only at the very smallest sizes. Notice also that here the nearest-ambulance rule picks a worse plan than the exact solver, because it ignores coverage. That is the point of our method.</p>
 </div>
 
 <h2>5. Results, with honest limits (1.5 min)</h2>
@@ -59,21 +61,23 @@ h1{font-size:28px;margin-bottom:4px} h2{margin-top:40px;border-top:2px solid #dd
 
 <h2>6. Roadmap (1 min)</h2>
 <div class="say">
-<p>We now know where the hardware stops helping for our encoding: between 4 and 6 qubits. Our next steps attack exactly that.</p>
+<p>We now know where the hardware stops helping for our encoding: between 4 and 6 qubits, and that the limit is two-qubit gate noise, not readout. Our next steps attack exactly that.</p>
 </div>
 <ol class="qa">
-<li><b>Error mitigation</b> on the hardware runs: dynamical decoupling, readout correction and twirling, which IBM Runtime offers directly.</li>
-<li><b>A feasibility-preserving XY mixer</b>, because on the real chip only 45 percent of samples were valid plans.</li>
+<li><b>Zero-noise extrapolation</b> for two-qubit gate error. We already tried readout correction (+1 point) and dynamical decoupling with twirling (no gain).</li>
+<li><b>A feasibility-preserving XY mixer</b>, because on the real chip only 45 to 71 percent of samples were valid plans.</li>
 <li><b>Shallower circuits and angles tuned on the device</b>, instead of angles tuned only in simulation.</li>
-<li><b>Repeated hardware runs</b> on several days and devices, to give error bars.</li>
+<li><b>Repeated hardware runs</b> on several days and devices: we saw a 20-point drift within two hours.</li>
 <li><b>Larger fleets</b>, where exact search stops being instant, which is where a quantum solver could start to matter.</li>
 </ol>
 
 <h2>If the judges ask...</h2>
 <ul>
-<li><b>"Is this faster than classical?"</b> No. Exact search takes under a millisecond; the hardware path took 12.5 minutes. We claim a validated pipeline and a measured path, not speed.</li>
-<li><b>"Did you really run on hardware?"</b> Yes: ibm_fez, IBM Heron r2, 156 qubits, job dbh0tjpt9uhs73c960mg on 28 Oct 2026, 4,096 shots per circuit. The raw counts are in reports/ibm_hardware in our repository.</li>
-<li><b>"Why does the real chip do worse than the fake backend?"</b> The fake backend copies an old calibration snapshot. The real chip has drift and crosstalk the copy leaves out, so we treat fake-backend numbers as optimistic.</li>
+<li><b>"Is this faster than classical?"</b> No. Exact search takes under a millisecond; a hardware job took 12 to 20 minutes, mostly queue. We claim a validated pipeline and a measured path, not speed.</li>
+<li><b>"Did you really run on hardware?"</b> Yes: ibm_fez, IBM Heron r2, 156 qubits, six jobs on 28 Oct 2026 (for example dbh0tjpt9uhs73c960mg), 4,096 shots per circuit. The raw counts are in reports/ibm_hardware in our repository.</li>
+<li><b>"Did you try error mitigation?"</b> Yes. Readout correction added about 1 point; dynamical decoupling with gate and measurement twirling lowered the hit rate by about 2 points. The remaining error is two-qubit gate noise; zero-noise extrapolation is next.</li>
+<li><b>"Why is the chip sometimes above the noiseless value?"</b> Most likely noise, not quantum gain: qubits relax towards 0, which favours plans with few ambulances sent, and our best plans are of that kind.</li>
+<li><b>"Why does the real chip differ from the fake backend?"</b> The fake backend copies one calibration snapshot. The real chip drifts: our runs ranged from 28 to 48 percent while the copy gave 52, so we treat fake-backend numbers as a best case.</li>
 <li><b>"How many qubits does a real problem need?"</b> One per eligible ambulance-call pair. Most real decisions are 2 qubits; 8 or more only when several calls arrive together.</li>
 <li><b>"Why QAOA?"</b> The problem is naturally a QUBO, and QAOA is the standard hybrid algorithm for QUBOs on near-term devices.</li>
 <li><b>"Is the data real?"</b> No, everything is synthetic and labelled that way. We have no real ambulance records.</li>
