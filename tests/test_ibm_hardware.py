@@ -32,3 +32,24 @@ def test_score_without_feasible_samples():
     meta = {"id": "oper-4q-1", "random_feasible_p_opt": 0.2}
     r = run_ibm_hardware.score(meta, {"1111": 10}, inst)
     assert r["p_feasible"] == 0 and r["hardware_pick"] is None
+
+
+def test_readout_correction_undoes_known_flips():
+    errors = {5: (0.05, 0.10), 9: (0.02, 0.08)}            # (P(1|0), P(0|1)) per physical qubit
+    true = {"01": 0.7, "10": 0.3}                          # qubit 0 is the rightmost bit
+    noisy = {}
+    for bits, p in true.items():
+        for out in ("00", "01", "10", "11"):
+            w = p
+            for k, q in enumerate([5, 9]):
+                t, o = bits[-1 - k], out[-1 - k]
+                e01, e10 = errors[q]
+                w *= (e01 if o == "1" else 1 - e01) if t == "0" else (e10 if o == "0" else 1 - e10)
+            noisy[out] = noisy.get(out, 0) + w
+    fixed = run_ibm_hardware.correct_readout({k: v * 1e6 for k, v in noisy.items()}, [5, 9], errors)
+    assert fixed.get("01", 0) == pytest.approx(0.7, abs=1e-6) and fixed.get("10", 0) == pytest.approx(0.3, abs=1e-6)
+
+
+def test_readout_errors_from_calibration_counts():
+    errs = run_ibm_hardware.readout_errors({"00": 90, "01": 10}, {"11": 80, "10": 20}, [3, 7])
+    assert errs[3] == pytest.approx((0.10, 0.20)) and errs[7] == pytest.approx((0.0, 0.0))

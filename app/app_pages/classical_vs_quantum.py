@@ -44,18 +44,28 @@ pick = choices[keys.index(key or keys[0])]
 seed = st.session_state.setdefault("cvq_seed", 7)
 res = hc.compare(pick[0], pick[1], runs, seed=seed)
 rows = {r["key"]: r for r in res["rows"]}
-real = next((r for r in res["rows"] if r["kind"] == "hardware"), None)
+raw = rows.get("hw_raw")
+n_jobs = len({j for r in res["rows"] for j in r.get("job_ids", [])})
 
 ui.kpi_row([
     {"label": "Exact classical answer", "value": _time(rows["exact"]["seconds"]), "hint": f"checked all {2 ** res['qubits']} options, live", "tone": "info"},
     {"label": "QAOA, noiseless simulator", "value": _time(rows["sim"]["seconds"]), "hint": f"{rows['sim']['shots']:,} samples, live", "tone": "violet"},
-    {"label": "QAOA on ibm_fez, end to end", "value": _time(real["seconds"]) if real else "—",
-     "hint": f"queue {_time(real['queue_seconds'])} + processing {_time(real['run_seconds'])}" if real else "", "tone": "warn"},
-    {"label": "Time on the quantum chip", "value": _time(real["chip_seconds"]) if real else "—",
-     "hint": "3 circuits × 4,096 shots, one job", "tone": "ok"},
+    {"label": "QAOA on ibm_fez, end to end", "value": _time(raw["seconds"]) if raw else "—",
+     "hint": f"queue {_time(raw['queue_seconds'])} + processing {_time(raw['run_seconds'])}, mean of {raw['n_runs']} jobs" if raw else "",
+     "tone": "warn"},
+    {"label": "Time on the quantum chip", "value": _time(raw["chip_seconds"]) if raw else "—",
+     "hint": "3 circuits × 4,096 shots per job", "tone": "ok"},
 ])
 
-ui.section("Side by side", "QAOA rows show the circuit's most frequent answer. Cost is response time plus coverage loss; lower is better.")
+
+def _p_range(r):
+    if r.get("n_runs", 1) > 1:
+        return f"{_pct(r['p_opt'])} ({r['p_opt_lo']:.1%}–{r['p_opt_hi']:.1%}, {r['n_runs']} runs)"
+    return _pct(r.get("p_opt"))
+
+
+ui.section("Side by side", "QAOA rows show the circuit's most frequent answer (the majority across runs on the chip). "
+           "Cost is response time plus coverage loss; lower is better.")
 table = []
 for r in res["rows"]:
     optimal = r.get("optimal", abs(r["cost"] - res["exact_cost"]) < 1e-9)
@@ -63,50 +73,66 @@ for r in res["rows"]:
         "Method": r["name"], "Runs on": r["where"],
         "Answer": hc.label(r["pairs"]) + ("" if r.get("valid", True) else " (invalid)"),
         "Cost": round(r["cost"], 2) if r["cost"] != float("inf") else None,
-        "Best?": "✔ yes" if optimal else "✖ no",
-        "P(optimum)": _pct(r.get("p_opt")),
+        "Best?": ("✔ yes" if optimal else "✖ no") + (f" ({r['optimal_runs']}/{r['n_runs']})" if r.get("n_runs", 1) > 1 else ""),
+        "P(optimum)": _p_range(r),
         "Valid samples": _pct(r.get("p_valid")),
         "2q gates / depth": f"{r['two_qubit']} / {r['depth']}" if r.get("two_qubit") else "—",
         "Time": _time(r["seconds"]) if r.get("seconds") is not None else "local, not timed",
     })
 ui._table(table, caption=f"Random guessing finds the optimum {_pct(res['uniform_p_opt'])} of the time over all bitstrings, "
-          f"{_pct(res['uniform_valid_p_opt'])} over valid assignments only.")
+          f"{_pct(res['uniform_valid_p_opt'])} over valid assignments only. Readout fix: per-qubit measurement errors, "
+          "calibrated in the same job, are inverted. DD + twirling: IBM Runtime's dynamical decoupling and gate/measurement twirling.")
 
 left, right = st.columns([1.25, 1], gap="large")
 with left:
-    bars = [("Random guess (any bitstring)", res["uniform_p_opt"], "#7A8798"),
-            ("Random guess (valid only)", res["uniform_valid_p_opt"], "#7A8798")]
-    bars += [(r["name"], r["p_opt"], TONE[r["kind"]]) for r in res["rows"] if r.get("p_opt") is not None]
+    bars = [("Random guess (any bitstring)", res["uniform_p_opt"], "#7A8798", 0, 0),
+            ("Random guess (valid only)", res["uniform_valid_p_opt"], "#7A8798", 0, 0)]
+    bars += [(r["name"], r["p_opt"], TONE[r["kind"]], r["p_opt"] - r.get("p_opt_lo", r["p_opt"]), r.get("p_opt_hi", r["p_opt"]) - r["p_opt"])
+             for r in res["rows"] if r.get("p_opt") is not None]
     fig = go.Figure(go.Bar(y=[b[0] for b in bars], x=[b[1] for b in bars], orientation="h", marker_color=[b[2] for b in bars],
+                           error_x=dict(type="data", symmetric=False, array=[b[4] for b in bars], arrayminus=[b[3] for b in bars],
+                                        color="#7A8798", thickness=1.5, width=4),
                            text=[_pct(b[1]) for b in bars], textposition="outside", cliponaxis=False,
                            hovertemplate="%{y}: %{x:.1%}<extra></extra>"))
-    fig.update_xaxes(tickformat=".0%", range=[0, max(b[1] for b in bars) * 1.25])
+    fig.update_xaxes(tickformat=".0%", range=[0, max(b[1] + b[4] for b in bars) * 1.3])
     fig.update_yaxes(autorange="reversed")
-    ui._chart(ui._style(fig, "How often each run lands on the best dispatch", 340), f"cvq_bars_{pick[0]}_{pick[1]}")
+    ui._chart(ui._style(fig, "How often each run lands on the best dispatch (bars: range over runs)", 420),
+              f"cvq_bars_{pick[0]}_{pick[1]}")
 with right:
-    sim, hw = rows["sim"], real
-    if hw and hw["optimal"] and hw["p_opt"] > res["uniform_valid_p_opt"]:
-        verdict = (f"On the real chip QAOA's most frequent answer is the best dispatch, and it hits the optimum "
-                   f"{hw['p_opt'] / res['uniform_valid_p_opt']:.1f}× as often as guessing among valid assignments. "
-                   f"Noise cut the noiseless {_pct(sim['p_opt'])} to {_pct(hw['p_opt'])}.")
-        tone = "ok"
-    elif hw:
-        verdict = (f"Here the chip does not beat guessing: {_pct(hw['p_opt'])} against {_pct(res['uniform_valid_p_opt'])} "
-                   f"for a random valid assignment. {hw['two_qubit']} two-qubit gates add too much noise at this size.")
-        tone = "warn"
-    else:
-        verdict, tone = "No real-device result for this problem.", "info"
+    sim, guess = rows["sim"], res["uniform_valid_p_opt"]
+    ro, mit, full = rows.get("hw_ro"), rows.get("hw_mit"), rows.get("hw_all")
+    points = []
+    if raw:
+        if raw["p_opt_lo"] > guess:
+            verdict = f"{raw['p_opt'] / guess:.1f}× guessing among valid assignments ({_pct(guess)})"
+        elif raw["p_opt_hi"] < guess:
+            verdict = f"below the {_pct(guess)} of guessing among valid assignments: {raw['two_qubit']} two-qubit gates add too much noise"
+        else:
+            verdict = f"sometimes above and sometimes below the {_pct(guess)} of guessing among valid assignments"
+        points.append(f"Raw, the chip hits the best dispatch <b>{_pct(raw['p_opt'])}</b> of the time on average "
+                      f"({raw['n_runs']} runs, {raw['optimal_runs']} with the best dispatch as the top answer): {verdict}.")
+        if raw["n_runs"] > 1 and raw["p_opt_hi"] > 1.3 * raw["p_opt_lo"]:
+            (t_lo, lo), (t_hi, hi) = min(raw["p_opt_by_run"], key=lambda x: x[1]), max(raw["p_opt_by_run"], key=lambda x: x[1])
+            points.append(f"<b>The device drifts.</b> Same circuit, same physical qubits: {_pct(lo)} at {t_lo[11:16]} UTC, "
+                          f"{_pct(hi)} at {t_hi[11:16]} UTC.")
+    if ro and mit:
+        base = ro["p_opt_before_readout"]
+        points.append(f"Error mitigation, against raw runs from the same session ({_pct(base)}): the readout fix adds "
+                      f"{(ro['p_opt'] - base) * 100:+.1f} points; dynamical decoupling + twirling gives {(mit['p_opt'] - base) * 100:+.1f}"
+                      + (f", and both together {(full['p_opt'] - base) * 100:+.1f}." if full else ".")
+                      + (" Twirling turns coherent errors into random ones; without noise extrapolation that does not raise the hit rate."
+                         if mit["p_opt"] <= base else ""))
+    if raw and raw["p_opt"] > sim["p_opt"]:
+        points.append(f"The chip's average is above the noiseless {_pct(sim['p_opt'])}. That is most likely a noise effect, not a quantum gain: "
+                      "qubits relaxing to 0 favour bitstrings with few 1s, and the best dispatch here has only a few.")
+    points.append(f"The exact classical search gives the right answer in {_time(rows['exact']['seconds'])}; a hardware job takes "
+                  f"{_time(raw['seconds']) if raw else '—'} end to end on average. <b>No quantum advantage is claimed.</b>")
+    if abs(rows["greedy"]["cost"] - res["exact_cost"]) > 1e-9:
+        points.append("The nearest-available rule picks a <b>worse</b> dispatch here: it ignores the coverage the exact solution keeps.")
     st.markdown(
-        '<div class="ev-card"><h3>What this shows</h3><ul>'
-        f'<li>{verdict}</li>'
-        f'<li>The exact classical search gives the right answer in {_time(rows["exact"]["seconds"])}. The hardware path took '
-        f'{_time(hw["seconds"]) if hw else "—"} end to end. <b>No quantum advantage is claimed.</b></li>'
-        + ('<li>The nearest-available rule picks a <b>worse</b> dispatch here: it ignores the coverage the exact solution keeps.</li>'
-           if abs(rows["greedy"]["cost"] - res["exact_cost"]) > 1e-9 else "")
-        + '<li>Fake backends replay a calibration snapshot and came out more optimistic than the real chip.</li>'
-        '</ul>'
-        f'<p class="pc-caption" style="margin-top:10px">IBM job <code>{hw["job_id"] if hw else "—"}</code>, '
-        f'{(hw["completed_utc"] or "")[:10] if hw else ""}. Full write-up: '
+        '<div class="ev-card"><h3>What this shows</h3><ul>' + "".join(f"<li>{x}</li>" for x in points) + '</ul>'
+        f'<p class="pc-caption" style="margin-top:10px">{n_jobs} IBM jobs on ibm_fez, '
+        f'{(raw["completed_utc"] or "")[:10] if raw else ""}. Full write-up: '
         f'<a href="{REPO}/reports/ibm_hardware/README.md" target="_blank">IBM hardware report</a>.</p></div>',
         unsafe_allow_html=True)
 
@@ -117,7 +143,9 @@ if st.button("Run the classical solvers and simulator again", key="cvq_rerun", h
 with st.expander("Limitations"):
     st.markdown(
         "- Problems are small (4–6 qubits) and synthetic; classical search is instant at these sizes.\n"
-        "- Hardware noise roughly halves the noiseless gain at 4 qubits and removes it at 6.\n"
-        "- No error mitigation was used, and the circuit angles were tuned in simulation, not on the chip.\n"
-        "- One job on one day; device calibration changes daily.\n"
+        "- Results drift: the same circuit on the same qubits moved from 28% to 48% within two hours.\n"
+        "- Mitigation tried: readout correction (about +1 point) and dynamical decoupling with twirling (no gain). "
+        "Zero-noise extrapolation was not tried.\n"
+        "- The circuit angles were tuned in simulation, not on the chip.\n"
+        "- Six jobs on one device on one day.\n"
         "- Minutes of queue and processing make hardware unusable for live dispatch today.")

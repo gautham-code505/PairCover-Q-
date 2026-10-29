@@ -25,6 +25,14 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 BENCH = os.path.join(ROOT, "reports", "qaoa_benchmark", "instances.json")
 HW_DIR = os.path.join(ROOT, "reports", "ibm_hardware")
 
+# Real-device rows: (key, name suffix, mitigated job?, readout-corrected numbers?)
+HW_GROUPS = [
+    ("raw", "", False, False),
+    ("ro", " + readout fix", False, True),
+    ("mit", " + DD + twirling", True, False),
+    ("all", " + DD + twirling + readout fix", True, True),
+]
+
 DESCRIPTIONS = {
     "oper-4q-1": "1 call, 4 eligible ambulances",
     "oper-6q-5": "2 calls, 6 eligible ambulance–call pairs",
@@ -119,27 +127,64 @@ def compare(iid: str, p: int, runs: list[dict[str, Any]], shots: int = 4096, see
          "two_qubit": None, "depth": None, "shots": shots}
         | _answer(model, variables, format(top, f"0{n}b"), exact_cost),
     ]
+    real_runs = [r for r in runs if r["kind"] == "real"]
+    for key, suffix, mitigated, readout in HW_GROUPS:
+        group = []
+        for r in real_runs:
+            c = _circuit(r, iid, p)
+            if not c or (r.get("mitigation", "none") != "none") != mitigated:
+                continue
+            if readout:
+                if "readout_corrected" not in c:
+                    continue
+                c = c | c["readout_corrected"] | {"p_opt_before_readout": c["p_opt"]}
+            group.append((r, c))
+        if group:
+            rows.append(_hardware_row(key, suffix, group, model, variables, exact_cost))
+    devices = {r["backend"].removeprefix("ibm_") for r in real_runs}
     for r in runs:
         c = _circuit(r, iid, p)
-        if not c:
+        if r["kind"] != "fake" or not c or r["backend"].removeprefix("fake_") not in devices:
             continue
-        t = r.get("timing", {})
-        real = r["kind"] == "real"
-        rows.append({"key": f"{r['kind']}_{r['backend']}",
-                     "name": f"QAOA · {r['backend']}" if real else f"QAOA · Fake{r['backend'].removeprefix('fake_').title()}",
-                     "kind": "hardware" if real else "fake",
-                     "where": f"Real IBM chip ({r['backend_qubits']} qubits)" if real
-                     else f"CPU, IBM {r['backend'].removeprefix('fake_')} noise copy",
+        rows.append({"key": f"fake_{r['backend']}", "name": f"QAOA · Fake{r['backend'].removeprefix('fake_').title()}",
+                     "kind": "fake", "where": f"CPU, IBM {r['backend'].removeprefix('fake_')} noise copy",
                      "p_opt": c["p_opt"], "p_valid": c["p_feasible"], "two_qubit": c["isa_2q"], "depth": c["isa_depth"],
-                     "shots": c["shots"], "job_id": r["job_id"] if real else None,
-                     "seconds": (t.get("queue_seconds", 0) + t.get("run_seconds", 0)) if real else None,
-                     "queue_seconds": t.get("queue_seconds"), "run_seconds": t.get("run_seconds"),
-                     "chip_seconds": t.get("circuit_execution_seconds"), "completed_utc": r.get("completed_utc")}
+                     "shots": c["shots"], "seconds": None}
                     | _answer(model, variables, c["most_frequent"], exact_cost))
     return {"id": iid, "p": p, "qubits": n, "description": DESCRIPTIONS.get(iid, ""),
             "uniform_p_opt": float(opt_mask.sum() / 2 ** n),
             "uniform_valid_p_opt": float(opt_mask.sum() / valid_mask.sum()),
             "exact_cost": exact_cost, "rows": rows}
+
+
+def _mean(xs):
+    xs = [x for x in xs if x is not None]
+    return float(np.mean(xs)) if xs else None
+
+
+def _hardware_row(key, suffix, group, model, variables, exact_cost) -> dict[str, Any]:
+    """One row for several jobs of the same circuit: mean and range over jobs, majority answer."""
+    r0, c0 = group[0]
+    p_opts = [c["p_opt"] for _, c in group]
+    answers = [c["most_frequent"] for _, c in group]
+    majority = max(set(answers), key=answers.count)
+    timing = [r.get("timing", {}) for r, _ in group]
+    queue = [t.get("queue_seconds") for t in timing]
+    run = [t.get("run_seconds") for t in timing]
+    return ({"key": f"hw_{key}", "name": f"QAOA · {r0['backend']}{suffix}", "kind": "hardware",
+             "mitigated": key != "raw", "where": f"Real IBM chip ({r0['backend_qubits']} qubits)",
+             "n_runs": len(group), "p_opt": float(np.mean(p_opts)), "p_opt_lo": min(p_opts), "p_opt_hi": max(p_opts),
+             "p_valid": _mean([c["p_feasible"] for _, c in group]),
+             "p_opt_before_readout": _mean([c.get("p_opt_before_readout") for _, c in group]),
+             "p_opt_by_run": [(r.get("completed_utc", ""), c["p_opt"]) for r, c in group],
+             "two_qubit": c0["isa_2q"], "depth": c0["isa_depth"], "shots": c0["shots"],
+             "optimal_runs": sum(c["most_frequent_is_optimal"] for _, c in group),
+             "queue_seconds": _mean(queue), "run_seconds": _mean(run),
+             "seconds": _mean([(q or 0) + (s or 0) for q, s in zip(queue, run) if q is not None or s is not None]),
+             "chip_seconds": _mean([t.get("circuit_execution_seconds") for t in timing]),
+             "job_ids": [r["job_id"] for r, _ in group],
+             "completed_utc": max(r.get("completed_utc", "") for r, _ in group)}
+            | _answer(model, variables, majority, exact_cost))
 
 
 def _answer(model, variables, bits: str, exact_cost: float) -> dict[str, Any]:
