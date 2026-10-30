@@ -136,6 +136,43 @@ with right:
         f'<a href="{REPO}/reports/ibm_hardware/README.md" target="_blank">IBM hardware report</a>.</p></div>',
         unsafe_allow_html=True)
 
+curve = hc.scaling_curve(runs)
+if curve:
+    ui.section("Real hardware across problem sizes",
+               f"The strongest benchmark problem at each size, depth {hc.SCALING_DEPTH}, on ibm_fez. "
+               "Above 1 = finds the best dispatch more often than guessing among valid plans.")
+    xs = [f"{d['qubits']} qubits<br>{d['two_qubit']} 2q gates" for d in curve]
+    fig = go.Figure()
+    fig.add_hline(y=1, line_dash="dot", line_color="#7A8798",
+                  annotation_text="random guessing", annotation_position="bottom right", annotation_font_color="#7A8798")
+    fig.add_trace(go.Scatter(x=xs, y=[d["noiseless_x"] for d in curve], name="Noiseless simulator", mode="lines+markers",
+                             line=dict(color=TONE["simulator"], dash="dash"), hovertemplate="%{x}: %{y:.2f}× guessing<extra></extra>"))
+    fig.add_trace(go.Scatter(x=xs, y=[d["hw_x"] for d in curve], name=f"Real ibm_fez ({curve[0]['n_runs']} jobs)",
+                             mode="lines+markers", line=dict(color=TONE["hardware"], width=3), marker=dict(size=9),
+                             error_y=dict(type="data", symmetric=False, array=[d["hw_x_hi"] - d["hw_x"] for d in curve],
+                                          arrayminus=[d["hw_x"] - d["hw_x_lo"] for d in curve], color=TONE["hardware"]),
+                             hovertemplate="%{x}: %{y:.2f}× guessing<extra></extra>"))
+    fig.update_yaxes(title_text="× random guessing", rangemode="tozero")
+    ui._chart(ui._style(fig, None, 380), "cvq_scaling")
+    sizes = lambda ds: ", ".join(str(d["qubits"]) for d in ds) or "none"
+    above = [d for d in curve if d["hw_x"] > 1.1]
+    below = [d for d in curve if d["hw_x"] < 0.9]
+    even = [d for d in curve if d not in above and d not in below]
+    kept = [d["hw"] / d["noiseless"] for d in curve]
+    top = max(curve, key=lambda d: d["noiseless_x"])
+    st.caption(
+        f"On the chip the best dispatch beats guessing at {sizes(above)} qubits, is about even at {sizes(even)} "
+        f"and falls below it at {sizes(below)} (within 10% counts as even). "
+        f"Noise keeps {min(kept):.0%}–{max(kept):.0%} of the noiseless gain, generally less for longer circuits, "
+        f"so the chip stays above guessing only where the noiseless gain is large: the {top['qubits']}-qubit problem "
+        f"starts at {top['noiseless_x']:.1f}× and ends at {top['hw_x']:.1f}× on the chip."
+        + (" The noiseless circuit beats guessing at every size: the limit is hardware noise, not the algorithm."
+           if all(d["noiseless_x"] > 1 for d in curve) else ""))
+    ui._data_expander("Real hardware across problem sizes", [
+        {"Problem": d["id"], "Qubits": d["qubits"], "2q gates": d["two_qubit"], "Noiseless P(opt)": _pct(d["noiseless"]),
+         "ibm_fez P(opt)": f"{_pct(d['hw'])} ({d['hw_lo']:.1%}–{d['hw_hi']:.1%})", "Guessing": _pct(d["guess"]),
+         "Top answer optimal": f"{d['top_optimal_runs']}/{d['n_runs']}"} for d in curve])
+
 if st.button("Run the classical solvers and simulator again", key="cvq_rerun", help="New random seed for the simulator's 4,096 samples."):
     st.session_state["cvq_seed"] = seed + 1
     st.rerun()

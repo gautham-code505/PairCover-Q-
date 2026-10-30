@@ -57,3 +57,13 @@ def test_mitigation_rows_compare_within_one_session(runs):
     ro = rows["hw_ro"]
     assert ro["p_opt_before_readout"] is not None and ro["n_runs"] <= rows["hw_raw"]["n_runs"]
     assert rows["hw_raw"]["p_opt_lo"] <= rows["hw_raw"]["p_opt"] <= rows["hw_raw"]["p_opt_hi"]
+
+
+def test_scaling_curve_is_sorted_and_relative_to_guessing(runs):
+    curve = hc.scaling_curve(runs)
+    if not curve:
+        pytest.skip("no depth-3 scaling runs")
+    assert [d["qubits"] for d in curve] == sorted(d["qubits"] for d in curve)
+    for d in curve:
+        assert d["hw_x"] == pytest.approx(d["hw"] / d["guess"])
+        assert d["hw_x_lo"] <= d["hw_x"] <= d["hw_x_hi"]

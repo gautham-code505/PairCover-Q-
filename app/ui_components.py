@@ -578,7 +578,13 @@ h1.page-title {{ font-family:var(--display); font-weight:600; font-size:2.05rem;
 .honest span {{ font-size:.9rem; color:var(--muted); line-height:1.5; }}
 .foot {{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; margin-top:2.4rem; padding-top:14px; border-top:1px solid var(--divider); font-size:.8rem; color:var(--muted); }}
 .foot a {{ color:var(--accent); }}
-@media (max-width: 900px) {{ .how, .proof {{ grid-template-columns:1fr; }} }}
+.hw-strip {{ display:grid; grid-template-columns:auto 1fr; gap:4px 22px; align-items:center; margin:1.6rem 0 .4rem; padding:16px 20px;
+  background:color-mix(in srgb, var(--violet) 7%, var(--surface)); border:1px solid color-mix(in srgb, var(--violet) 35%, transparent); border-radius:12px; }}
+.hw-strip .big {{ font-family:var(--display); font-weight:600; font-size:3rem; line-height:1; color:var(--violet); grid-row:span 2; font-variant-numeric:tabular-nums; }}
+.hw-strip .big small {{ font-size:1rem; color:var(--muted); font-weight:500; display:block; margin-top:4px; }}
+.hw-strip b.t {{ font-family:var(--display); font-size:1.2rem; font-weight:600; color:var(--text); }}
+.hw-strip p {{ margin:0; font-size:.92rem; line-height:1.5; color:var(--muted); }}
+@media (max-width: 900px) {{ .how, .proof {{ grid-template-columns:1fr; }} .hw-strip {{ grid-template-columns:1fr; }} .hw-strip .big {{ grid-row:auto; }} }}
 
 /* Evidence page */
 .ev-card {{ background:var(--surface); border:1px solid var(--divider); border-radius:12px; padding:16px 18px; }}

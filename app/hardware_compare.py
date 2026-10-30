@@ -25,6 +25,9 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 BENCH = os.path.join(ROOT, "reports", "qaoa_benchmark", "instances.json")
 HW_DIR = os.path.join(ROOT, "reports", "ibm_hardware")
 
+# The scaling jobs run the strongest benchmark problem at each size at this depth.
+SCALING_DEPTH = 3
+
 # Real-device rows: (key, name suffix, mitigated job?, readout-corrected numbers?)
 HW_GROUPS = [
     ("raw", "", False, False),
@@ -51,9 +54,30 @@ def load_hardware_runs() -> list[dict[str, Any]]:
 
 
 def problem_choices(runs: list[dict[str, Any]]) -> list[tuple[str, int]]:
-    """(instance, depth) pairs that ran on a real device, in run order."""
-    real = next((r for r in runs if r["kind"] == "real"), None)
+    """(instance, depth) pairs of the first real-device job, in run order."""
+    real = min((r for r in runs if r["kind"] == "real"), key=lambda r: r.get("completed_utc", ""), default=None)
     return [(c["id"], c["p"]) for c in real["circuits"]] if real else []
+
+
+def scaling_curve(runs: list[dict[str, Any]], p: int = SCALING_DEPTH) -> list[dict[str, Any]]:
+    """Per problem size at depth p: noiseless and real-device P(optimum) as a multiple of guessing among valid plans."""
+    by_id: dict[str, list[dict[str, Any]]] = {}
+    for r in runs:
+        if r["kind"] != "real" or r.get("mitigation", "none") != "none":
+            continue
+        for c in r["circuits"]:
+            if c["p"] == p:
+                by_id.setdefault(c["id"], []).append(c)
+    out = []
+    for iid, cs in by_id.items():
+        c0, guess = cs[0], cs[0]["random_feasible_p_opt"]
+        hw = [c["p_opt"] for c in cs]
+        out.append({"id": iid, "qubits": c0["qubits"], "two_qubit": c0["isa_2q"], "depth": c0["isa_depth"], "n_runs": len(cs),
+                    "guess": guess, "noiseless": c0["ideal_p_opt"], "hw": float(np.mean(hw)), "hw_lo": min(hw), "hw_hi": max(hw),
+                    "top_optimal_runs": sum(c["most_frequent_is_optimal"] for c in cs),
+                    "noiseless_x": c0["ideal_p_opt"] / guess, "hw_x": float(np.mean(hw)) / guess,
+                    "hw_x_lo": min(hw) / guess, "hw_x_hi": max(hw) / guess})
+    return sorted(out, key=lambda d: d["qubits"])
 
 
 def _circuit(run: dict[str, Any], iid: str, p: int) -> dict[str, Any] | None:
