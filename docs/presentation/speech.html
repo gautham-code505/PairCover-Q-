@@ -38,7 +38,8 @@ h1{font-size:28px;margin-bottom:4px} h2{margin-top:40px;border-top:2px solid #dd
 
 <h2>4. Classical vs quantum, on a real IBM quantum computer (3 min)</h2>
 <img src="versus.png" alt="Classical vs Quantum page">
-<div class="do">Open Quantum, then Classical vs Quantum. Start on "4 qubits &middot; depth 2". Point at the four timing cards, then the table, then the bar chart. Then click "6 qubits &middot; depth 2" and show that the chip is only around guessing.</div>
+<div class="do">Open Quantum, then Classical vs Quantum. Start on "4 qubits &middot; depth 2". Point at the four timing cards, then the table, then the bar chart. Then click "6 qubits &middot; depth 2" and show that the chip is only around guessing. Then scroll to the "Real hardware across problem sizes" chart.</div>
+<img src="scaling.png" alt="Real hardware across problem sizes chart">
 <div class="say">
 <p>Our mentor asked us to show classical and quantum side by side, and to run on real hardware. This page does both, on one dispatch problem.</p>
 <p>The first two rows are classical: the nearest-ambulance rule and an exact search over every option. They run live, in well under a millisecond. The third row is QAOA on a noiseless simulator, also live. The next row is the same circuit run on <b>ibm_fez</b>, a real 156-qubit IBM quantum processor, where we ran it six times on 28 October: three times raw and three times with error mitigation. The last row is IBM's noise copy of the same chip.</p>
@@ -46,7 +47,8 @@ h1{font-size:28px;margin-bottom:4px} h2{margin-top:40px;border-top:2px solid #dd
 <p>We also learned that the hardware drifts: our very first run, two hours earlier, on the same qubits, got only 28 percent. That is why we repeated every run and show the range.</p>
 <p>We tried error mitigation. Correcting readout errors added about one point, because readout on this chip is already very good, about 1 percent error. Dynamical decoupling and twirling did not help. So the remaining error is from two-qubit gates, and that tells us what to work on next.</p>
 <p>Now the latency. The classical answer takes a fraction of a millisecond. A quantum job took between 12 and 20 minutes end to end, mostly waiting in the queue. The circuits themselves ran on the chip for only 3 to 5 seconds per job. All six jobs used 45 seconds of our free 10 minutes a month.</p>
-<p>Now the 6-qubit problem. After mapping onto the chip the circuit has 82 two-qubit gates, and at that size the real chip finds the best plan between 5 and 10 percent of the time, around the 6.7 percent of guessing, and its most frequent answer is never the best plan. So today's hardware helps only at the very smallest sizes. Notice also that here the nearest-ambulance rule picks a worse plan than the exact solver, because it ignores coverage. That is the point of our method.</p>
+<p>Now the 6-qubit problem. After mapping onto the chip the circuit has 82 two-qubit gates, and at that size the real chip finds the best plan between 5 and 10 percent of the time, around the 6.7 percent of guessing, and its most frequent answer is never the best plan. Notice also that here the nearest-ambulance rule picks a worse plan than the exact solver, because it ignores coverage. That is the point of our method.</p>
+<p>Finally, scroll down to "Real hardware across problem sizes". Following our mentor's advice to build on the hardware results, we ran the strongest problem at each size from 4 to 10 qubits on the chip. The chip beats guessing at 4 qubits, 2.8 times, and still at 10 qubits, 2.7 times, with the best plan as its top answer, but falls below guessing at 7 and 8. Noise keeps between a quarter and three quarters of the noiseless gain, so the chip only stays ahead where the algorithm's gain is large. The limit is hardware noise, not the algorithm.</p>
 </div>
 
 <h2>5. Results, with honest limits (1.5 min)</h2>

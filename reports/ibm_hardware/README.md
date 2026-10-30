@@ -23,6 +23,7 @@ Script: [scripts/run_ibm_hardware.py](../../scripts/run_ibm_hardware.py). It nee
   | Guessing any bitstring | 6.25% |
 
   So the chip is **2.3–2.4× better than guessing among valid plans**, and keeps about 80% of the noiseless value.
+- **Across sizes** (depth 3, 30 Oct; see "Scaling across problem sizes" below): the chip beats guessing at 4, 5 and 10 qubits (2.8×, 1.1×, 2.7×), is about even at 6, and falls below at 7 and 8.
 - **The device drifts.** The same circuit on the same qubits moved from 27.7% to 47.9% within two hours. A single run is not enough evidence.
 - **6 qubits, depth 2:** 82 two-qubit gates after routing. Raw runs gave 5.2%, 10.1% and 10.0%, against 6.7% for guessing among valid plans. The most frequent outcome is never the optimum. The gain is marginal and not reliable at this size.
 - **Mitigation barely helps here.**
@@ -47,6 +48,24 @@ The readout-fix column uses only the two raw jobs that carried calibration circu
 
 **Fake vs real.** Fake backends replay a calibration snapshot. FakeFez (0.521) was close to the evening runs (0.46–0.49) but far from the first run (0.277). Treat fake-backend numbers as a best case for a device on a good day.
 
+## Scaling across problem sizes (depth 3, 2 raw jobs, 30 Oct 2026)
+
+The strongest benchmark problem at each size, at depth 3, the depth where the benchmark's noiseless gains are largest. Both jobs ran back to back (`real_ibm_fez_raw_dbi8*.json`). Gain = P(optimum) ÷ P(optimum) when guessing among valid plans.
+
+| Instance | Qubits | 2q gates / depth on chip | Noiseless gain | ibm_fez P(opt), 2 runs | ibm_fez gain | Share of noiseless gain kept | Top answer optimal |
+|---|---|---|---|---|---|---|---|
+| oper-4q-1 | 4 | 52 / 180 | 4.05× | 0.555, 0.574 | **2.82×** | 70% | 2/2 |
+| oper-5q-3 | 5 | 94 / 245 | 2.01× | 0.108, 0.117 | 1.13× | 56% | 2/2 |
+| oper-6q-5 | 6 | 121 / 284 | 1.46× | 0.068, 0.076 | 1.08× | 74% | 0/2 |
+| oper-7q-6 | 7 | 148 / 294 | 1.53× | 0.098, 0.102 | 0.85× | 56% | 0/2 |
+| surg-8q-12 | 8 | 211 / 423 | 3.46× | 0.018, 0.013 | 0.84× | 24% | 0/2 |
+| surg-10q-13 | 10 | 284 / 469 | 7.21× | 0.049, 0.053 | **2.68×** | 37% | 2/2 |
+
+- The gain does not fade smoothly with size. Noise keeps 24–74% of the noiseless gain, generally less for longer circuits. The chip stays above guessing only where the noiseless gain is large: the 10-qubit problem starts at 7.2× and still ends at 2.7×.
+- **Is it just relaxation bias?** We compared each result against a noise-only baseline: independent bits, each set to 1 at the rate the chip actually produced. The chip beat that baseline on every problem, by 1.5× at 4 qubits up to 7× at 10 qubits. Its samples concentrate on the best plan in a way per-qubit bias cannot explain.
+- Depth 3 also improves the 4-qubit case over depth 2: 55.5–57.4% against 46–49%, despite 52 rather than 33 two-qubit gates.
+- The exact classical solver still answers every one of these in under 0.5 ms.
+
 ## Mitigation used
 
 - **Readout fix.** Every job from the second batch also measured all-0 and all-1 on the 7 physical qubits used. The per-qubit assignment matrices are inverted on the measured distribution (tensor-product model, clipped and renormalised). Measured readout errors were 0.0–2.0% per qubit.
@@ -61,7 +80,7 @@ The readout-fix column uses only the two raw jobs that carried calibration circu
 | Queue on `ibm_fez` (open plan) | 2.8 min (first job), about 19 min (evening jobs) |
 | From job start to result (compile, load, run, read out) | 9.7 min (first job), 0.6–1.2 min (evening jobs) |
 | Circuit execution on the chip, per job | 3.2 s (3 circuits), 5.3 s (3 circuits + 2 calibrations) |
-| QPU time billed, all 6 jobs | 45 s of the 600 s monthly allowance |
+| QPU time billed, all 6 jobs on 28 Oct | 45 s of the 600 s monthly allowance |
 
 A real ambulance dispatch decision needs an answer in seconds. Today the hardware path is only for experiments and evidence, not for live dispatch.
 

@@ -1,0 +1,250 @@
+{
+ "label": "real_ibm_fez_raw_dbi8dt8h",
+ "kind": "real",
+ "backend": "ibm_fez",
+ "backend_qubits": 156,
+ "job_id": "dbi8dt8hoj4c73b5n530",
+ "shots": 4096,
+ "submitted_utc": "2026-10-30T12:00:53.431189+00:00",
+ "status": "submitted",
+ "note": "Real IBM Quantum device. Angles were tuned noiselessly, not on the device.",
+ "mitigation": "none",
+ "calibration": {
+  "qubits": [
+   23,
+   24,
+   25,
+   26,
+   37,
+   98,
+   110,
+   111,
+   112,
+   121,
+   122,
+   123,
+   124,
+   136,
+   141,
+   142,
+   143,
+   144,
+   145,
+   146
+  ],
+  "circuits": "all-0 and all-1, appended after the QAOA circuits"
+ },
+ "circuits": [
+  {
+   "id": "oper-4q-1",
+   "p": 3,
+   "qubits": 4,
+   "params": [
+    0.8843455398941288,
+    0.8995616654009263,
+    0.7824264021848755,
+    2.1372411668566818,
+    2.1617770830826877,
+    1.3363341581722572
+   ],
+   "isa_depth": 180,
+   "isa_2q": 52,
+   "physical_qubits": [
+    111,
+    112,
+    98,
+    110
+   ],
+   "ideal_p_opt": 0.8093619043156023,
+   "ideal_p_feasible": 0.8717337196641043,
+   "random_p_opt": 0.0625,
+   "random_feasible_p_opt": 0.2,
+   "random_p_feasible": 0.3125,
+   "classical_best": [
+    "A3->C1"
+   ],
+   "classical_energy": -38.109944988646845,
+   "classical_seconds": 0.00019619999511633068
+  },
+  {
+   "id": "oper-5q-3",
+   "p": 3,
+   "qubits": 5,
+   "params": [
+    2.384862919335574,
+    0.9389153298387809,
+    0.5426056792544441,
+    1.7738460906819202,
+    1.4954087384639356,
+    2.2758740333250826
+   ],
+   "isa_depth": 245,
+   "isa_2q": 94,
+   "physical_qubits": [
+    25,
+    26,
+    24,
+    37,
+    23
+   ],
+   "ideal_p_opt": 0.20095698893656902,
+   "ideal_p_feasible": 0.5960715756567785,
+   "random_p_opt": 0.03125,
+   "random_feasible_p_opt": 0.1,
+   "random_p_feasible": 0.3125,
+   "classical_best": [
+    "A1->C1",
+    "A3->C2"
+   ],
+   "classical_energy": -27.299943688107092,
+   "classical_seconds": 0.00010750000365078449
+  },
+  {
+   "id": "oper-6q-5",
+   "p": 3,
+   "qubits": 6,
+   "params": [
+    1.943782377294315,
+    2.8217133107300096,
+    3.3700859443088924,
+    2.580148099810704,
+    3.0507753326336586,
+    3.8141422347127243
+   ],
+   "isa_depth": 284,
+   "isa_2q": 121,
+   "physical_qubits": [
+    143,
+    136,
+    144,
+    142,
+    145,
+    123
+   ],
+   "ideal_p_opt": 0.0974019220200069,
+   "ideal_p_feasible": 0.6845502700592091,
+   "random_p_opt": 0.015625,
+   "random_feasible_p_opt": 0.06666666666666667,
+   "random_p_feasible": 0.234375,
+   "classical_best": [
+    "A1->C1",
+    "A4->C2"
+   ],
+   "classical_energy": -48.84147558719914,
+   "classical_seconds": 0.00012070000229869038
+  },
+  {
+   "id": "oper-7q-6",
+   "p": 3,
+   "qubits": 7,
+   "params": [
+    -0.5132006442139647,
+    -0.2418678471157686,
+    -0.16268869236659764,
+    0.33139383920220666,
+    0.8710991188923599,
+    1.8083919844417635
+   ],
+   "isa_depth": 294,
+   "isa_2q": 148,
+   "physical_qubits": [
+    143,
+    144,
+    136,
+    145,
+    123,
+    146,
+    142
+   ],
+   "ideal_p_opt": 0.18046927643406174,
+   "ideal_p_feasible": 0.9065177731096297,
+   "random_p_opt": 0.015625,
+   "random_feasible_p_opt": 0.11764705882352941,
+   "random_p_feasible": 0.1328125,
+   "classical_best": [
+    "A1->C1",
+    "A3->C2"
+   ],
+   "classical_energy": -29.702771448589687,
+   "classical_seconds": 0.00013309999485500157
+  },
+  {
+   "id": "surg-8q-12",
+   "p": 3,
+   "qubits": 8,
+   "params": [
+    0.7229505875479841,
+    0.41976982973183,
+    0.3217729995935764,
+    -0.5817842883605308,
+    -0.7266824686658245,
+    -1.30378443838499
+   ],
+   "isa_depth": 423,
+   "isa_2q": 211,
+   "physical_qubits": [
+    142,
+    143,
+    141,
+    144,
+    136,
+    123,
+    145,
+    146
+   ],
+   "ideal_p_opt": 0.06409333996163907,
+   "ideal_p_feasible": 0.874766319939684,
+   "random_p_opt": 0.00390625,
+   "random_feasible_p_opt": 0.018518518518518517,
+   "random_p_feasible": 0.2109375,
+   "classical_best": [
+    "A2->C2",
+    "A3->C4",
+    "A4->C5",
+    "A5->C3"
+   ],
+   "classical_energy": -63.910609415077964,
+   "classical_seconds": 0.00014030000602360815
+  },
+  {
+   "id": "surg-10q-13",
+   "p": 3,
+   "qubits": 10,
+   "params": [
+    0.5752841833078921,
+    0.31662356806495073,
+    0.19546877626015136,
+    -0.40133140492013203,
+    -1.0702951525992928,
+    -1.8794050363512245
+   ],
+   "isa_depth": 469,
+   "isa_2q": 284,
+   "physical_qubits": [
+    145,
+    144,
+    146,
+    143,
+    123,
+    142,
+    136,
+    124,
+    121,
+    122
+   ],
+   "ideal_p_opt": 0.13598816787325668,
+   "ideal_p_feasible": 0.8633926203910272,
+   "random_p_opt": 0.001953125,
+   "random_feasible_p_opt": 0.018867924528301886,
+   "random_p_feasible": 0.103515625,
+   "classical_best": [
+    "A1->C5",
+    "A2->C2",
+    "A4->C3",
+    "A6->C1"
+   ],
+   "classical_energy": -95.55459774493703,
+   "classical_seconds": 0.00029409999842755497
+  }
+ ]
+}

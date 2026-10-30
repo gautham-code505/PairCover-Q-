@@ -105,6 +105,14 @@ with right:
         f'<div class="film-note">A1 and A2 cover the same area for each other. Lines are travel minutes; positions are synthetic.</div></div>',
         unsafe_allow_html=True)
 
+st.markdown(
+    '<div class="hw-strip"><div class="big">2.8×<small>better than guessing</small></div>'
+    '<b class="t">Run on a real IBM quantum computer</b>'
+    '<p>On IBM\'s 156-qubit <b>ibm_fez</b>, a 4-qubit dispatch problem hit the best plan in 56–57% of shots against 20% for guessing '
+    'among valid plans, and a 10-qubit problem still reached 2.7× guessing. At 7–8 qubits noise pushed it below guessing, '
+    'and the exact solver is still faster at every size we ran.</p></div>', unsafe_allow_html=True)
+st.page_link(shell.PAGES["versus"], label="See classical vs quantum, side by side", icon=":material/compare_arrows:")
+
 st.markdown('<div class="section-label">How it works</div>', unsafe_allow_html=True)
 st.markdown(
     '<div class="how">'
@@ -134,9 +142,7 @@ st.markdown(
     f'<div class="src">Source: <a href="{REPO}/blob/main/reports/rolling_simulation/README.md" target="_blank">rolling-simulation report</a></div></div>'
     '<div class="q"><div class="big">19 <small>of 23</small></div>'
     '<p>Simulation-derived problems (4–12 qubits) where depth-3 QAOA put more probability on the optimum than random guessing among valid plans. '
-    'On the real IBM chip ibm_fez (6 runs) a 4-qubit case hit the best plan 46–49% of the time against 20% for guessing; '
-    'at 6 qubits the gain was marginal and unreliable. '
-    'The exact solver is still faster at these sizes.</p>'
+    'Simulated and noiseless; on real hardware the gain holds only for the smallest circuits (see above).</p>'
     f'<div class="src">Source: <a href="{REPO}/blob/main/reports/qaoa_benchmark/README.md" target="_blank">QAOA benchmark report</a></div></div>'
     '</div>', unsafe_allow_html=True)
 
