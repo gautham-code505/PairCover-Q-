@@ -24,6 +24,15 @@ Script: [scripts/run_ibm_hardware.py](../../scripts/run_ibm_hardware.py). It nee
 
   So the chip is **2.3–2.4× better than guessing among valid plans**, and keeps about 80% of the noiseless value.
 - **Across sizes** (depth 3, 30 Oct; see "Scaling across problem sizes" below): the chip beats guessing at 4, 5 and 10 qubits (2.8×, 1.1×, 2.7×), is about even at 6, and falls below at 7 and 8.
+- **A second device** (`ibm_marrakesh`, Heron, 156 qubits, 1 job on 30 Oct, empty queue: 11 s end to end). Its most frequent answer was the best plan at 4 qubits, and the results stay above guessing, though lower than on Fez:
+
+  | Problem | Marrakesh | Fez | Guessing |
+  |---|---|---|---|
+  | 4 qubits, depth 2 | 35.3% | 41.1% (3-job mean) | 20.0% |
+  | 4 qubits, depth 3 | 46.4% | 55.5–57.4% | 20.0% |
+  | 10 qubits, depth 3 | 3.5% (1.9×) | 4.9–5.3% (2.7×) | 1.9% |
+
+  At 10 qubits Marrakesh's top answer was not the best plan.
 - **The device drifts.** The same circuit on the same qubits moved from 27.7% to 47.9% within two hours. A single run is not enough evidence.
 - **6 qubits, depth 2:** 82 two-qubit gates after routing. Raw runs gave 5.2%, 10.1% and 10.0%, against 6.7% for guessing among valid plans. The most frequent outcome is never the optimum. The gain is marginal and not reliable at this size.
 - **Mitigation barely helps here.**

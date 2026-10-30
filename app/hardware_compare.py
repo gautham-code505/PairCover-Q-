@@ -59,11 +59,11 @@ def problem_choices(runs: list[dict[str, Any]]) -> list[tuple[str, int]]:
     return [(c["id"], c["p"]) for c in real["circuits"]] if real else []
 
 
-def scaling_curve(runs: list[dict[str, Any]], p: int = SCALING_DEPTH) -> list[dict[str, Any]]:
-    """Per problem size at depth p: noiseless and real-device P(optimum) as a multiple of guessing among valid plans."""
+def scaling_curve(runs: list[dict[str, Any]], p: int = SCALING_DEPTH, backend: str = "ibm_fez") -> list[dict[str, Any]]:
+    """Per problem size at depth p on one device: noiseless and real P(optimum) as a multiple of guessing among valid plans."""
     by_id: dict[str, list[dict[str, Any]]] = {}
     for r in runs:
-        if r["kind"] != "real" or r.get("mitigation", "none") != "none":
+        if r["kind"] != "real" or r["backend"] != backend or r.get("mitigation", "none") != "none":
             continue
         for c in r["circuits"]:
             if c["p"] == p:
@@ -152,10 +152,13 @@ def compare(iid: str, p: int, runs: list[dict[str, Any]], shots: int = 4096, see
         | _answer(model, variables, format(top, f"0{n}b"), exact_cost),
     ]
     real_runs = [r for r in runs if r["kind"] == "real"]
-    for key, suffix, mitigated, readout in HW_GROUPS:
+    # The device of the first job keeps the plain row keys the page reads; other devices get their own rows.
+    first = min(real_runs, key=lambda r: r.get("completed_utc", ""), default=None)
+    backends = sorted({r["backend"] for r in real_runs}, key=lambda b: b != (first or {}).get("backend"))
+    for backend, (key, suffix, mitigated, readout) in ((b, g) for b in backends for g in HW_GROUPS):
         group = []
         for r in real_runs:
-            c = _circuit(r, iid, p)
+            c = _circuit(r, iid, p) if r["backend"] == backend else None
             if not c or (r.get("mitigation", "none") != "none") != mitigated:
                 continue
             if readout:
@@ -164,7 +167,10 @@ def compare(iid: str, p: int, runs: list[dict[str, Any]], shots: int = 4096, see
                 c = c | c["readout_corrected"] | {"p_opt_before_readout": c["p_opt"]}
             group.append((r, c))
         if group:
-            rows.append(_hardware_row(key, suffix, group, model, variables, exact_cost))
+            row = _hardware_row(key, suffix, group, model, variables, exact_cost)
+            if backend != backends[0]:
+                row["key"] = f"hw_{backend}_{key}"
+            rows.append(row)
     devices = {r["backend"].removeprefix("ibm_") for r in real_runs}
     for r in runs:
         c = _circuit(r, iid, p)
