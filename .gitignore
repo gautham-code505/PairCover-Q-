@@ -65,3 +65,6 @@ screenshots/
 Thumbs.db
 desktop.ini
 
+
+# Local experiments, not part of the project
+scratch/

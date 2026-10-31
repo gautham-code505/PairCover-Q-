@@ -131,7 +131,8 @@ with right:
         points.append("The nearest-available rule picks a <b>worse</b> dispatch here: it ignores the coverage the exact solution keeps.")
     st.markdown(
         '<div class="ev-card"><h3>What this shows</h3><ul>' + "".join(f"<li>{x}</li>" for x in points) + '</ul>'
-        f'<p class="pc-caption" style="margin-top:10px">{n_jobs} IBM jobs on ibm_fez, '
+        f'<p class="pc-caption" style="margin-top:10px">{n_jobs} IBM jobs on '
+        f'{", ".join(sorted({r["name"].split(" · ")[1].split(" ")[0] for r in res["rows"] if r["kind"] == "hardware"}))}, '
         f'{(raw["completed_utc"] or "")[:10] if raw else ""}. Full write-up: '
         f'<a href="{REPO}/reports/ibm_hardware/README.md" target="_blank">IBM hardware report</a>.</p></div>',
         unsafe_allow_html=True)

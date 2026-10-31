@@ -1,0 +1,133 @@
+{
+ "label": "real_ibm_marrakesh_raw_dbi8ll8h",
+ "kind": "real",
+ "backend": "ibm_marrakesh",
+ "backend_qubits": 156,
+ "job_id": "dbi8ll8hoj4c73b5nf20",
+ "shots": 4096,
+ "submitted_utc": "2026-10-30T12:17:25.653332+00:00",
+ "status": "submitted",
+ "note": "Real IBM Quantum device. Angles were tuned noiselessly, not on the device.",
+ "mitigation": "none",
+ "calibration": {
+  "qubits": [
+   78,
+   87,
+   88,
+   89,
+   90,
+   91,
+   92,
+   98,
+   111,
+   112,
+   137,
+   146,
+   147,
+   148
+  ],
+  "circuits": "all-0 and all-1, appended after the QAOA circuits"
+ },
+ "circuits": [
+  {
+   "id": "oper-4q-1",
+   "p": 2,
+   "qubits": 4,
+   "params": [
+    0.31391173942435535,
+    0.834785592538656,
+    2.1790581786291012,
+    1.4311579372249636
+   ],
+   "isa_depth": 117,
+   "isa_2q": 33,
+   "physical_qubits": [
+    147,
+    137,
+    146,
+    148
+   ],
+   "ideal_p_opt": 0.5922059615924763,
+   "ideal_p_feasible": 0.8320957714412152,
+   "random_p_opt": 0.0625,
+   "random_feasible_p_opt": 0.2,
+   "random_p_feasible": 0.3125,
+   "classical_best": [
+    "A3->C1"
+   ],
+   "classical_energy": -38.109944988646845,
+   "classical_seconds": 0.00011449999874457717
+  },
+  {
+   "id": "oper-4q-1",
+   "p": 3,
+   "qubits": 4,
+   "params": [
+    0.8843455398941288,
+    0.8995616654009263,
+    0.7824264021848755,
+    2.1372411668566818,
+    2.1617770830826877,
+    1.3363341581722572
+   ],
+   "isa_depth": 175,
+   "isa_2q": 52,
+   "physical_qubits": [
+    147,
+    146,
+    137,
+    148
+   ],
+   "ideal_p_opt": 0.8093619043156023,
+   "ideal_p_feasible": 0.8717337196641043,
+   "random_p_opt": 0.0625,
+   "random_feasible_p_opt": 0.2,
+   "random_p_feasible": 0.3125,
+   "classical_best": [
+    "A3->C1"
+   ],
+   "classical_energy": -38.109944988646845,
+   "classical_seconds": 8.81000014487654e-05
+  },
+  {
+   "id": "surg-10q-13",
+   "p": 3,
+   "qubits": 10,
+   "params": [
+    0.5752841833078921,
+    0.31662356806495073,
+    0.19546877626015136,
+    -0.40133140492013203,
+    -1.0702951525992928,
+    -1.8794050363512245
+   ],
+   "isa_depth": 470,
+   "isa_2q": 284,
+   "physical_qubits": [
+    111,
+    98,
+    112,
+    91,
+    89,
+    92,
+    90,
+    78,
+    87,
+    88
+   ],
+   "ideal_p_opt": 0.13598816787325668,
+   "ideal_p_feasible": 0.8633926203910272,
+   "random_p_opt": 0.001953125,
+   "random_feasible_p_opt": 0.018867924528301886,
+   "random_p_feasible": 0.103515625,
+   "classical_best": [
+    "A1->C5",
+    "A2->C2",
+    "A4->C3",
+    "A6->C1"
+   ],
+   "classical_energy": -95.55459774493703,
+   "classical_seconds": 0.0003749000024981797
+  }
+ ]
+}
